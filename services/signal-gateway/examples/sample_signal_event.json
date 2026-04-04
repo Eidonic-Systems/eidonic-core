@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "signal_id": "sig-001",
+  "signal_type": "user_message",
+  "source": "chat",
+  "content": {
+    "text": "Hello Eidon. This is the first manual ingest test."
+  },
+  "created_at": "2026-04-04T12:00:00Z",
+  "session_hint": "session-demo-001",
+  "sensitivity_hint": "low",
+  "metadata": {
+    "test_case": "manual_ingest",
+    "author": "founder"
+  }
+}
