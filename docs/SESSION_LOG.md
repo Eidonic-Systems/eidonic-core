@@ -23,3 +23,10 @@
 - Updated `signal-gateway` README with current endpoints and scope
 - Marked `signal-gateway` scaffold as complete in the build checklist
 - Next step: open PR for the first executable service shell
+
+## 2026-04-04
+- Created branch `phase-1/gitignore-and-local-run-docs`
+- Added a root `.gitignore` for Python and local environment files
+- Documented local run steps for `signal-gateway`
+- Confirmed the service runs locally with Uvicorn
+- Next step: open PR for repo hygiene and local run documentation
