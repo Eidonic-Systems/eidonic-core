@@ -1,2 +1,36 @@
-# eidonic-core
-The Eidonic Core is the living center of the Eidonic ecosystem.  It is not a generic backend, not a simple agent shell, and not only a metaphor. It is the canonical architecture that treats intelligence as a living system.
+\# Eidonic Core
+
+
+
+Implementation repository for the Eidonic Core.
+
+
+
+This repo contains the executable runtime, services, schemas, and interface layers for the Eidonic Core build.
+
+
+
+\## Current phase
+
+Phase 0: repo spine and scaffold
+
+
+
+\## Initial focus
+
+\- signal gateway
+
+\- herald service
+
+\- session engine
+
+\- eidon orchestrator
+
+
+
+\## Grounding repos
+
+\- eidonic-language-elol
+
+\- eidonic\_container\_protocol
+
