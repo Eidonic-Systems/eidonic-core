@@ -11,5 +11,10 @@ The Signal Gateway is the first ingress service for Eidonic Core.
 ## Current phase
 Phase 1 scaffold only
 
-## First contract
-- SignalEvent schema v1
+## Current endpoints
+- `GET /health`
+- `POST /signals/ingest`
+
+## Notes
+This service currently accepts and echoes valid signal input.
+Thresholding, session binding, persistence, and routing are not implemented yet.
