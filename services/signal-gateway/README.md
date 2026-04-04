@@ -18,3 +18,10 @@ Phase 1 scaffold only
 ## Notes
 This service currently accepts and echoes valid signal input.
 Thresholding, session binding, persistence, and routing are not implemented yet.
+
+## Local run
+From the repository root or from this service directory:
+
+### 1. Enter the service folder
+```powershell
+cd C:\eidonic_core\services\signal-gateway
