@@ -4,7 +4,7 @@
 
 \## Phase 0: Repo Spine
 
-\- \[ ] Initial scaffold committed
+\- \[X] Initial scaffold committed
 
 \- \[ ] README created
 
@@ -16,13 +16,13 @@
 
 \- \[ ] SESSION\_LOG.md created
 
-\- \[ ] First branch merged through PR
+\- \[X] First branch merged through PR
 
 
 
 \## Phase 1: Core Loop Skeleton
 
-\- \[ ] SignalEvent schema defined
+\- \[X] SignalEvent schema defined
 
 \- \[ ] signal-gateway scaffolded
 
