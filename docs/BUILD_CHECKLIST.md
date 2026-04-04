@@ -24,7 +24,7 @@
 
 \- \[X] SignalEvent schema defined
 
-\- \[ ] signal-gateway scaffolded
+\- \[X] signal-gateway scaffolded
 
 \- \[ ] herald-service scaffolded
 
