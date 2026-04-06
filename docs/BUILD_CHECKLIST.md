@@ -26,7 +26,7 @@
 
 \- \[X] signal-gateway scaffolded
 
-\- \[ ] herald-service scaffolded
+\- \[X] herald-service scaffolded
 
 \- \[ ] session-engine scaffolded
 

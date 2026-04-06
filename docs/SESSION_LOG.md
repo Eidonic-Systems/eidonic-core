@@ -30,3 +30,11 @@
 - Documented local run steps for `signal-gateway`
 - Confirmed the service runs locally with Uvicorn
 - Next step: open PR for repo hygiene and local run documentation
+
+## 2026-04-04
+- Created branch `phase-1/herald-service-fastapi-scaffold`
+- Added initial FastAPI scaffold for `herald-service`
+- Added Python dependencies for the service
+- Added `herald-service` README
+- Marked `herald-service` scaffold as complete in the build checklist
+- Next step: open PR for the first thresholding service shell
