@@ -38,3 +38,11 @@
 - Added `herald-service` README
 - Marked `herald-service` scaffold as complete in the build checklist
 - Next step: open PR for the first thresholding service shell
+
+## 2026-04-04
+- Created branch `phase-1/session-engine-fastapi-scaffold`
+- Added initial FastAPI scaffold for `session-engine`
+- Added Python dependencies for the service
+- Added `session-engine` README
+- Marked `session-engine` scaffold as complete in the build checklist
+- Next step: open PR for the first session binding service shell
