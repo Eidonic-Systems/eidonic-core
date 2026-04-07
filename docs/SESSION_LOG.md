@@ -85,3 +85,11 @@
 - Added `scripts/test_phase_1_core_loop.ps1` for the first local end-to-end Phase 1 service checks
 - Updated `scripts/README.md` with local runner instructions
 - Next step: open PR for the first scripted local core loop runner
+
+## 2026-04-07
+- Created branch `phase-1/shared-python-schemas`
+- Added shared Python schema package under `packages/common-schemas/python`
+- Refactored service request models to import from `eidonic_schemas`
+- Updated service requirements to install the shared package in editable mode
+- Added `packages/common-schemas/README.md`
+- Next step: open PR for the first shared Python schema package

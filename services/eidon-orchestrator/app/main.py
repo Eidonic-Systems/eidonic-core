@@ -1,16 +1,7 @@
-from typing import Any, Literal
+from typing import Any
 
 from fastapi import FastAPI
-from pydantic import BaseModel
-
-
-class OrchestrateInput(BaseModel):
-    session_id: str
-    signal_id: str
-    signal_type: Literal["user_message", "file_upload", "system_event", "command"]
-    source: Literal["chat", "upload", "internal", "api"]
-    threshold_result: Literal["pass", "hold", "escalate"]
-    content: dict[str, Any]
+from eidonic_schemas import EidonOrchestrationInput
 
 
 app = FastAPI(
@@ -29,11 +20,11 @@ def health() -> dict[str, str]:
 
 
 @app.post("/orchestrate")
-def orchestrate(payload: OrchestrateInput) -> dict[str, Any]:
+def orchestrate(payload: EidonOrchestrationInput) -> dict[str, Any]:
     return {
         "status": "orchestrated",
         "service": "eidon-orchestrator",
         "session_id": payload.session_id,
         "signal_id": payload.signal_id,
-        "message": "Eidon scaffold orchestrated the request. Routing, tool use, memory access, and multi-organ weaving are not implemented yet.",
+        "message": "Eidon scaffold orchestrated the request. Tool selection, memory use, and response generation are not implemented yet.",
     }

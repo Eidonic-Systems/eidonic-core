@@ -1,15 +1,7 @@
-from typing import Any, Literal
+from typing import Any
 
 from fastapi import FastAPI
-from pydantic import BaseModel
-
-
-class SessionStartInput(BaseModel):
-    signal_id: str
-    signal_type: Literal["user_message", "file_upload", "system_event", "command"]
-    source: Literal["chat", "upload", "internal", "api"]
-    threshold_result: Literal["pass", "hold", "escalate"]
-    content: dict[str, Any]
+from eidonic_schemas import SessionStartInput
 
 
 app = FastAPI(

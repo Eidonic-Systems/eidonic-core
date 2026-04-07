@@ -1,15 +1,7 @@
-from typing import Any, Literal
+from typing import Any
 
 from fastapi import FastAPI
-from pydantic import BaseModel
-
-
-class HeraldCheckInput(BaseModel):
-    signal_id: str
-    signal_type: Literal["user_message", "file_upload", "system_event", "command"]
-    source: Literal["chat", "upload", "internal", "api"]
-    sensitivity_hint: Literal["low", "moderate", "high", "unknown"] | None = None
-    content: dict[str, Any]
+from eidonic_schemas import HeraldCheckInput
 
 
 app = FastAPI(
