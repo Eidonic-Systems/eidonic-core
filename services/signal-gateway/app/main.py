@@ -1,20 +1,7 @@
-from typing import Any, Literal
+from typing import Any
 
 from fastapi import FastAPI
-from pydantic import BaseModel, Field
-from datetime import datetime
-
-
-class SignalEventInput(BaseModel):
-    schema_version: Literal["1.0.0"]
-    signal_id: str
-    signal_type: Literal["user_message", "file_upload", "system_event", "command"]
-    source: Literal["chat", "upload", "internal", "api"]
-    content: dict[str, Any]
-    created_at: datetime
-    session_hint: str | None = None
-    sensitivity_hint: Literal["low", "moderate", "high", "unknown"] | None = None
-    metadata: dict[str, Any] = Field(default_factory=dict)
+from eidonic_schemas import SignalEventInput
 
 
 app = FastAPI(

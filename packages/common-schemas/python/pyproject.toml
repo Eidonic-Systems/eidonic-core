@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eidonic-schemas"
+version = "0.1.0"
+description = "Shared Pydantic models for Eidonic Core services."
+requires-python = ">=3.12"
+dependencies = [
+  "pydantic==2.9.2"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["eidonic_schemas*"]
