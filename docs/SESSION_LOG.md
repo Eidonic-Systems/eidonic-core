@@ -77,3 +77,11 @@
 - Added manual test payloads for Herald, Session Engine, and Eidon Orchestrator
 - Added Phase 1 core loop manual test document
 - Next step: open PR for the first complete manual test pack
+
+## 2026-04-07
+- Synced local `main` with `origin/main`
+- Verified local repo is clean and connected to GitHub
+- Created branch `phase-1/core-loop-local-runner-script`
+- Added `scripts/test_phase_1_core_loop.ps1` for the first local end-to-end Phase 1 service checks
+- Updated `scripts/README.md` with local runner instructions
+- Next step: open PR for the first scripted local core loop runner
