@@ -1,0 +1,9 @@
+{
+  "signal_id": "sig-001",
+  "signal_type": "user_message",
+  "source": "chat",
+  "threshold_result": "pass",
+  "content": {
+    "text": "Hello Session Engine. This is the first manual session start."
+  }
+}

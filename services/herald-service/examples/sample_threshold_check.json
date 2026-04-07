@@ -1,0 +1,9 @@
+{
+  "signal_id": "sig-001",
+  "signal_type": "user_message",
+  "source": "chat",
+  "sensitivity_hint": "low",
+  "content": {
+    "text": "Hello Herald. This is the first manual threshold check."
+  }
+}

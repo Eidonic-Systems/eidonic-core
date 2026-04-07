@@ -1,0 +1,11 @@
+{
+  "session_id": "session-sig-001",
+  "signal_id": "sig-001",
+  "signal_type": "user_message",
+  "source": "chat",
+  "threshold_result": "pass",
+  "intent": "Respond to the user's first message",
+  "content": {
+    "text": "Hello Eidon. This is the first orchestration test."
+  }
+}

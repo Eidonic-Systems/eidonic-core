@@ -69,3 +69,11 @@
 - Added `eidon-orchestrator` README
 - Marked `eidon-orchestrator` scaffold as complete in the build checklist
 - Next step: open PR for the first orchestration service shell
+
+## 2026-04-07
+- Verified `eidon-orchestrator` runs locally on port 8003
+- Verified manual orchestration request passes with required fields
+- Created branch `phase-1/core-loop-manual-test-pack`
+- Added manual test payloads for Herald, Session Engine, and Eidon Orchestrator
+- Added Phase 1 core loop manual test document
+- Next step: open PR for the first complete manual test pack
