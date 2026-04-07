@@ -30,7 +30,7 @@
 
 \- \[X] session-engine scaffolded
 
-\- \[ ] eidon-orchestrator scaffolded
+\- \[X] eidon-orchestrator scaffolded
 
 \- \[ ] first local dev stack decided
 
