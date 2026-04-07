@@ -28,7 +28,7 @@
 
 \- \[X] herald-service scaffolded
 
-\- \[ ] session-engine scaffolded
+\- \[X] session-engine scaffolded
 
 \- \[ ] eidon-orchestrator scaffolded
 
