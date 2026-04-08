@@ -159,3 +159,12 @@
 - Added `docs/PHASE_2_SESSION_STORE_ADAPTER.md`
 - Updated `session-engine` README for the store adapter step
 - Next step: open PR for the first session store adapter boundary
+
+## 2026-04-08
+- Created branch `phase-2/postgres-ready-session-store-contract`
+- Expanded the `SessionStore` contract surface for a future Postgres backend
+- Updated `LocalJsonSessionStore` to implement `backend_name`, `list_recent`, and `ping`
+- Updated `session-engine` to use the richer store contract surface
+- Added `docs/PHASE_2_POSTGRES_READY_SESSION_STORE_CONTRACT.md`
+- Updated `session-engine` README for the Postgres-ready contract step
+- Next step: open PR for the Postgres-ready session store contract surface
