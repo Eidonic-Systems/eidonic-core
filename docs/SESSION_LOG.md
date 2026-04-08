@@ -93,3 +93,11 @@
 - Updated service requirements to install the shared package in editable mode
 - Added `packages/common-schemas/README.md`
 - Next step: open PR for the first shared Python schema package
+
+## 2026-04-07
+- Created branch `phase-2/gateway-to-herald-http-chain`
+- Added the first live HTTP handoff from `signal-gateway` to `herald-service`
+- Updated `signal-gateway` requirements to include `httpx`
+- Updated `signal-gateway` README for the first downstream chain behavior
+- Added `docs/PHASE_2_GATEWAY_TO_HERALD_CHAIN.md`
+- Next step: open PR for the first real service-to-service link in the core spine

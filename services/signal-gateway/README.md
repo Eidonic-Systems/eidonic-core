@@ -4,20 +4,33 @@ The Signal Gateway is the first ingress service for Eidonic Core.
 
 ## Responsibility
 - receive incoming signals
-- normalize them into SignalEvent objects
+- normalize them into `SignalEvent` objects
 - reject malformed ingress
-- pass valid signals to thresholding and session logic
+- forward accepted signal data to `herald-service` for threshold review
 
 ## Current phase
-Phase 1 scaffold only
+Phase 2 first live chain step
 
 ## Current endpoints
 - `GET /health`
 - `POST /signals/ingest`
 
-## Notes
-This service currently accepts and echoes valid signal input.
-Thresholding, session binding, persistence, and routing are not implemented yet.
+## Current behavior
+`signal-gateway` now performs the first real downstream handoff in the system:
+- accepts a valid `SignalEvent`
+- forwards a threshold payload to `herald-service`
+- returns both the ingest acceptance and Herald's response
+
+Session binding and orchestration are still separate services and are not chained yet.
+
+## Herald dependency
+By default, `signal-gateway` calls:
+
+`http://127.0.0.1:8001`
+
+You can override this with the environment variable:
+
+`HERALD_BASE_URL`
 
 ## Local run
 
@@ -31,19 +44,18 @@ cd C:\eidonic_core\services\signal-gateway
 py -V:3.12 -m venv .venv
 ```
 
-### 3. Activate the virtual environment
+### 3. Install dependencies
 ```powershell
-.venv\Scripts\Activate.ps1
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-### 4. Install dependencies
-```powershell
-python -m pip install -r requirements.txt
-```
+### 4. Make sure `herald-service` is running
+Default Herald URL:
+`http://127.0.0.1:8001`
 
 ### 5. Run the service
 ```powershell
-python -m uvicorn app.main:app --reload
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload --port 8000
 ```
 
 ### 6. Test the health endpoint
@@ -51,31 +63,30 @@ Open this in your browser:
 
 `http://127.0.0.1:8000/health`
 
-### 7. Optional API docs
-Open this in your browser:
-
-`http://127.0.0.1:8000/docs`
-
-## Manual ingest test
-
-You can test `POST /signals/ingest` in two ways.
+## Manual chain test
 
 ### Option 1: FastAPI docs in the browser
-1. Run the service:
-   ```powershell
-   python -m uvicorn app.main:app --reload
-   ```
-2. Open:
+1. Make sure `herald-service` is running on port `8001`
+2. Run `signal-gateway` on port `8000`
+3. Open:
    `http://127.0.0.1:8000/docs`
-3. Expand `POST /signals/ingest`
-4. Click **Try it out**
-5. Open `examples/sample_signal_event.json`
-6. Copy its full contents
-7. Paste that JSON into the request body box
-8. Click **Execute**
+4. Expand `POST /signals/ingest`
+5. Click **Try it out**
+6. Open `examples/sample_signal_event.json`
+7. Copy its full contents
+8. Paste that JSON into the request body box
+9. Click **Execute**
+
+### Expected response
+You should receive a JSON response showing:
+- `status` as `accepted`
+- `service` as `signal-gateway`
+- `received_signal_id` matching the sample payload
+- `herald_result.service` as `herald-service`
+- `herald_result.threshold_result` as `pass`
 
 ### Option 2: PowerShell in the terminal
-Run this from `services/signal-gateway` while the service is running:
+Run this from `services/signal-gateway` while both services are running:
 
 ```powershell
 $body = Get-Content .\examples\sample_signal_event.json -Raw
@@ -84,9 +95,3 @@ Invoke-RestMethod -Uri "http://127.0.0.1:8000/signals/ingest" `
   -ContentType "application/json" `
   -Body $body
 ```
-
-### Expected response
-You should receive a JSON response showing:
-- `status` as `accepted`
-- `service` as `signal-gateway`
-- `received_signal_id` matching the sample payload
