@@ -1,20 +1,29 @@
 # Eidon Orchestrator
 
-The Eidon Orchestrator is the first orchestration service for Eidonic Core.
+The Eidon Orchestrator is the current orchestration service for Eidonic Core.
 
 ## Responsibility
-- receive thresholded and session-bound input
-- perform the first orchestration pass
-- return a basic orchestration result
-- later hold routing, tool use, memory access, and multi-organ weaving logic
+- receive a session-bound orchestration request
+- produce the current orchestration outcome
+- persist an orchestration artifact record
+- return an artifact identifier
 
 ## Current phase
-Phase 1 scaffold only
+Phase 2 local artifact contract scaffold
 
 ## Current endpoints
 - `GET /health`
 - `POST /orchestrate`
+- `GET /artifacts/{artifact_id}`
+
+## Orchestration artifact contract
+The current implementation builds and stores a shared `EidonArtifactRecord` contract before writing it to the local JSON store.
+
+## Local persistence
+The current scaffold writes artifact records to:
+`services/eidon-orchestrator/data/artifacts.json`
+
+This file is ignored by Git and acts as a temporary local persistence layer until a real durable backend is introduced.
 
 ## Notes
-This service currently accepts and echoes valid orchestration input.
-Routing, memory access, tool invocation, council logic, and response shaping are not implemented yet.
+This is a temporary local artifact persistence step, not the final witness or memory layer.

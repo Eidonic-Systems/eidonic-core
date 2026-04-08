@@ -168,3 +168,12 @@
 - Added `docs/PHASE_2_POSTGRES_READY_SESSION_STORE_CONTRACT.md`
 - Updated `session-engine` README for the Postgres-ready contract step
 - Next step: open PR for the Postgres-ready session store contract surface
+
+## 2026-04-08
+- Created branch `phase-2/eidon-orchestration-artifact-contract`
+- Added shared `EidonArtifactRecord` model to `eidonic_schemas`
+- Added temporary local JSON persistence for `eidon-orchestrator` outputs
+- Added `GET /artifacts/{artifact_id}` for simple artifact retrieval
+- Added `docs/PHASE_2_EIDON_ARTIFACT_CONTRACT.md`
+- Updated `eidon-orchestrator` README for the artifact contract step
+- Next step: open PR for the first explicit orchestration artifact contract

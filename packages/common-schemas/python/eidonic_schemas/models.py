@@ -51,3 +51,18 @@ class SessionRecord(BaseModel):
     status: Literal["started"]
     created_at: str
     storage_backend: Literal["local_json", "postgres"]
+
+
+class EidonArtifactRecord(BaseModel):
+    artifact_id: str
+    session_id: str
+    signal_id: str
+    signal_type: Literal["user_message", "file_upload", "system_event", "command"]
+    source: Literal["chat", "upload", "internal", "api"]
+    threshold_result: Literal["pass", "hold", "escalate"]
+    intent: str
+    content: dict[str, Any]
+    status: Literal["orchestrated"]
+    response_text: str
+    created_at: str
+    storage_backend: Literal["local_json", "postgres"]
