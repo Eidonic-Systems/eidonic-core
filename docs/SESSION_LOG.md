@@ -143,3 +143,11 @@
 - Extended `tests/integration/test_full_chain.ps1` to verify persisted session lookup
 - Updated `tests/README.md` for session persistence coverage
 - Next step: open PR for persistence-aware full-chain integration testing
+
+## 2026-04-08
+- Created branch `phase-2/session-record-contract`
+- Added shared `SessionRecord` model to `eidonic_schemas`
+- Refactored `session-engine` to build and store explicit session records through the shared contract
+- Added `docs/PHASE_2_SESSION_RECORD_CONTRACT.md`
+- Updated `session-engine` README for the session record contract step
+- Next step: open PR for the first explicit session record contract
