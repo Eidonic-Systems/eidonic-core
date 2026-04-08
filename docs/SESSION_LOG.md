@@ -108,3 +108,10 @@
 - Added documentation for the first three-step HTTP chain
 - Updated `signal-gateway` README to reflect chained downstream behavior
 - Next step: open PR for the first gateway → herald → session chain
+
+## 2026-04-07
+- Created branch phase-2/gateway-herald-session-eidon-http-chain
+- Updated signal-gateway to call idon-orchestrator after successful Herald and Session results
+- Added docs/PHASE_2_FULL_CHAIN.md
+- Updated signal-gateway README for the first full downstream chain
+- Next step: open PR for the first full HTTP chained spine

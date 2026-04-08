@@ -1,12 +1,12 @@
 # Signal Gateway
 
-The Signal Gateway is the first ingress service for Eidonic Core.
+The Signal Gateway is the ingress service for Eidonic Core.
 
 ## Responsibility
 - receive incoming signals
-- normalize them into SignalEvent objects
-- reject malformed ingress
-- pass valid signals to thresholding and session logic
+- normalize them into shared schema objects
+- forward accepted work into the current downstream chain
+- return the current chain results in one response
 
 ## Current phase
 Phase 2 chained scaffold
@@ -15,17 +15,9 @@ Phase 2 chained scaffold
 - `GET /health`
 - `POST /signals/ingest`
 
-## Current behavior
-This service now performs the first downstream handoff chain:
-1. accept a valid `SignalEvent`
-2. call `herald-service` at `/threshold/check`
-3. if Herald returns `threshold_result = "pass"`, call `session-engine` at `/sessions/start`
-4. return both downstream results in the gateway response
-
-## Environment variables
-- `HERALD_SERVICE_BASE_URL` defaults to `http://127.0.0.1:8001`
-- `SESSION_ENGINE_BASE_URL` defaults to `http://127.0.0.1:8002`
+## Current downstream chain
+`signal-gateway` → `herald-service` → `session-engine` → `eidon-orchestrator`
 
 ## Notes
-Clarification, consent checks, persistence, retries, and orchestration routing are not implemented yet.
-This is still a narrow first chain, not a full service graph.
+This service now performs the first full downstream HTTP chain for the current scaffold.
+Persistence, retries, queueing, governance, and deeper orchestration logic are not implemented yet.
