@@ -4,7 +4,12 @@ from typing import Any
 import httpx
 from fastapi import FastAPI, HTTPException
 
-from eidonic_schemas import SignalEventInput
+from eidonic_schemas import (
+    EidonOrchestrationInput,
+    HeraldCheckInput,
+    SessionStartInput,
+    SignalEventInput,
+)
 
 
 HERALD_BASE_URL = os.getenv("HERALD_BASE_URL", "http://127.0.0.1:8001")
@@ -14,8 +19,8 @@ EIDON_BASE_URL = os.getenv("EIDON_BASE_URL", "http://127.0.0.1:8003")
 
 app = FastAPI(
     title="Eidonic Core Signal Gateway",
-    version="0.1.0",
-    description="Ingress service scaffold for the Eidonic Core with downstream chaining.",
+    version="0.2.0",
+    description="Ingress service scaffold for the Eidonic Core with full downstream chaining.",
 )
 
 
@@ -37,17 +42,39 @@ def post_json(url: str, payload: dict[str, Any]) -> dict[str, Any]:
         raise HTTPException(status_code=502, detail=f"Downstream call failed for {url}: {exc}") from exc
 
 
+def derive_intent(signal: SignalEventInput) -> str:
+    if signal.signal_type == "user_message":
+        text = signal.content.get("text")
+        if isinstance(text, str) and text.strip():
+            return f"Respond to the user message: {text.strip()}"
+        return "Respond to the user message."
+
+    if signal.signal_type == "file_upload":
+        return "Review the uploaded file and determine the next useful response."
+
+    if signal.signal_type == "system_event":
+        return "Interpret the system event and determine the next useful response."
+
+    if signal.signal_type == "command":
+        return "Execute or respond to the command in the current session context."
+
+    return "Determine the next useful response."
+
+
 @app.post("/signals/ingest")
 def ingest_signal(signal: SignalEventInput) -> dict[str, Any]:
-    herald_payload = {
-        "signal_id": signal.signal_id,
-        "signal_type": signal.signal_type,
-        "source": signal.source,
-        "sensitivity_hint": signal.sensitivity_hint,
-        "content": signal.content,
-    }
+    herald_payload = HeraldCheckInput(
+        signal_id=signal.signal_id,
+        signal_type=signal.signal_type,
+        source=signal.source,
+        sensitivity_hint=signal.sensitivity_hint,
+        content=signal.content,
+    )
 
-    herald_result = post_json(f"{HERALD_BASE_URL}/threshold/check", herald_payload)
+    herald_result = post_json(
+        f"{HERALD_BASE_URL}/threshold/check",
+        herald_payload.model_dump(),
+    )
 
     response: dict[str, Any] = {
         "status": "accepted",
@@ -60,34 +87,46 @@ def ingest_signal(signal: SignalEventInput) -> dict[str, Any]:
     if herald_result.get("threshold_result") != "pass":
         response["session_result"] = None
         response["eidon_result"] = None
+        response["derived_intent"] = None
         return response
 
-    session_payload = {
-        "signal_id": signal.signal_id,
-        "signal_type": signal.signal_type,
-        "source": signal.source,
-        "threshold_result": herald_result["threshold_result"],
-        "content": signal.content,
-    }
+    session_payload = SessionStartInput(
+        signal_id=signal.signal_id,
+        signal_type=signal.signal_type,
+        source=signal.source,
+        threshold_result=herald_result["threshold_result"],
+        content=signal.content,
+    )
 
-    session_result = post_json(f"{SESSION_ENGINE_BASE_URL}/sessions/start", session_payload)
+    session_result = post_json(
+        f"{SESSION_ENGINE_BASE_URL}/sessions/start",
+        session_payload.model_dump(),
+    )
     response["session_result"] = session_result
 
     if session_result.get("status") != "started":
         response["eidon_result"] = None
+        response["derived_intent"] = None
         return response
 
-    eidon_payload = {
-        "session_id": session_result["session_id"],
-        "signal_id": signal.signal_id,
-        "signal_type": signal.signal_type,
-        "source": signal.source,
-        "threshold_result": herald_result["threshold_result"],
-        "intent": "Respond to the user's first message",
-        "content": signal.content,
-    }
+    derived_intent = derive_intent(signal)
 
-    eidon_result = post_json(f"{EIDON_BASE_URL}/orchestrate", eidon_payload)
+    eidon_payload = EidonOrchestrationInput(
+        session_id=session_result["session_id"],
+        signal_id=signal.signal_id,
+        signal_type=signal.signal_type,
+        source=signal.source,
+        threshold_result=herald_result["threshold_result"],
+        intent=derived_intent,
+        content=signal.content,
+    )
+
+    eidon_result = post_json(
+        f"{EIDON_BASE_URL}/orchestrate",
+        eidon_payload.model_dump(),
+    )
+
+    response["derived_intent"] = derived_intent
     response["eidon_result"] = eidon_result
 
     return response
