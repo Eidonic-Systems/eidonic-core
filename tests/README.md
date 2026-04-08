@@ -11,7 +11,9 @@ This test sends one request to `signal-gateway` and verifies the full nested dow
 - `session-engine`
 - `eidon-orchestrator`
 
-It also verifies that the started session can be retrieved from `session-engine` persistence.
+It also verifies that:
+- the started session can be retrieved from `session-engine` persistence
+- the orchestration artifact can be retrieved from `eidon-orchestrator` persistence
 
 ## Run from repository root
 ```powershell
@@ -31,3 +33,4 @@ The current Phase 2 services must already be running locally on:
 - nested Session result
 - nested Eidon result
 - persisted session lookup from `session-engine`
+- persisted artifact lookup from `eidon-orchestrator`

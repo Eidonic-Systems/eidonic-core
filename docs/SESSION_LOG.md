@@ -177,3 +177,9 @@
 - Added `docs/PHASE_2_EIDON_ARTIFACT_CONTRACT.md`
 - Updated `eidon-orchestrator` README for the artifact contract step
 - Next step: open PR for the first explicit orchestration artifact contract
+
+## 2026-04-08
+- Created branch `phase-2/integration-test-artifact-persistence`
+- Extended `tests/integration/test_full_chain.ps1` to verify persisted artifact lookup
+- Updated `tests/README.md` for artifact persistence coverage
+- Next step: open PR for artifact-aware full-chain integration testing
