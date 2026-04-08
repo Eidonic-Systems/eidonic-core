@@ -1,7 +1,9 @@
 import os
+from pathlib import Path
 from typing import Any
 
 import httpx
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 
 from eidonic_schemas import (
@@ -12,6 +14,9 @@ from eidonic_schemas import (
 )
 
 
+REPO_ROOT = Path(__file__).resolve().parents[3]
+load_dotenv(REPO_ROOT / ".env")
+
 HERALD_BASE_URL = os.getenv("HERALD_BASE_URL", "http://127.0.0.1:8001")
 SESSION_ENGINE_BASE_URL = os.getenv("SESSION_ENGINE_BASE_URL", "http://127.0.0.1:8002")
 EIDON_BASE_URL = os.getenv("EIDON_BASE_URL", "http://127.0.0.1:8003")
@@ -19,7 +24,7 @@ EIDON_BASE_URL = os.getenv("EIDON_BASE_URL", "http://127.0.0.1:8003")
 
 app = FastAPI(
     title="Eidonic Core Signal Gateway",
-    version="0.2.0",
+    version="0.2.1",
     description="Ingress service scaffold for the Eidonic Core with full downstream chaining.",
 )
 

@@ -113,3 +113,12 @@
 - Added 	ests/integration/test_full_chain.ps1
 - Added 	ests/README.md
 - Next step: open PR for the first automated full-chain integration test
+
+## 2026-04-07
+- Created branch `phase-2/environment-config-for-chain`
+- Added root `.env.example` with downstream service URLs
+- Updated `.gitignore` to ignore local `.env` files
+- Updated `signal-gateway` to load downstream URLs from a repo root `.env` file when present
+- Added `python-dotenv` to `signal-gateway` dependencies
+- Updated `signal-gateway` README for environment configuration
+- Next step: open PR for the first environment config layer
