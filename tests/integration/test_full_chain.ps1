@@ -4,7 +4,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$repoRoot = Split-Path -Parent $PSScriptRoot
+$repoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $payloadPath = Join-Path $repoRoot "services\signal-gateway\examples\sample_signal_event.json"
 
 if (-not (Test-Path $payloadPath)) {
