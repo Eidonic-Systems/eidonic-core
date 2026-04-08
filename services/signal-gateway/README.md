@@ -18,6 +18,14 @@ Phase 2 chained scaffold
 ## Current downstream chain
 `signal-gateway` → `herald-service` → `session-engine` → `eidon-orchestrator`
 
+## Environment configuration
+If a repo root `.env` file is present, `signal-gateway` loads these values:
+- `HERALD_BASE_URL`
+- `SESSION_ENGINE_BASE_URL`
+- `EIDON_BASE_URL`
+
+Copy `.env.example` to `.env` and change the values there if you need different downstream service addresses.
+
 ## Notes
-This service now performs the first full downstream HTTP chain for the current scaffold.
+This service performs the current full downstream HTTP chain for the scaffold.
 Persistence, retries, queueing, governance, and deeper orchestration logic are not implemented yet.
