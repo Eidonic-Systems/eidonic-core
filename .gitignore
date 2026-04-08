@@ -33,3 +33,6 @@ build/
 
 # Local environment
 .env
+
+# Session engine local persistence
+services/session-engine/data/sessions.json

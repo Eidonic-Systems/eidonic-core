@@ -128,3 +128,12 @@
 - Added `scripts/start_phase_2_stack.ps1`
 - Updated `scripts/README.md` with stack launcher instructions
 - Next step: open PR for the first local stack launcher
+
+## 2026-04-08
+- Created branch `phase-2/session-engine-local-persistence`
+- Added a temporary local JSON persistence layer to `session-engine`
+- Added `GET /sessions/{session_id}` for simple retrieval
+- Added `docs/PHASE_2_SESSION_ENGINE_LOCAL_PERSISTENCE.md`
+- Updated `.gitignore` for local session data
+- Updated `session-engine` README for local persistence
+- Next step: open PR for the first real session persistence layer

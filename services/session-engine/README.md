@@ -1,20 +1,27 @@
 # Session Engine
 
-The Session Engine is the first session binding service for Eidonic Core.
+The Session Engine is the session binding service for Eidonic Core.
 
 ## Responsibility
 - receive thresholded signal input
 - start a session for accepted work
+- persist the session record in the current local store
 - return a session identifier
-- later hold persistence, stage tracking, and closure logic
 
 ## Current phase
-Phase 1 scaffold only
+Phase 2 local persistence scaffold
 
 ## Current endpoints
 - `GET /health`
 - `POST /sessions/start`
+- `GET /sessions/{session_id}`
+
+## Local persistence
+The current scaffold writes session records to:
+`services/session-engine/data/sessions.json`
+
+This file is ignored by Git and acts as a temporary local persistence layer until a real database is introduced.
 
 ## Notes
-This service currently accepts and echoes valid session start input.
-Persistence, stage progression, working memory linkage, and closure logic are not implemented yet.
+This is a local JSON persistence step, not the final state layer.
+Persistence currently supports simple upsert-by-session-id behavior and basic retrieval by session ID.
