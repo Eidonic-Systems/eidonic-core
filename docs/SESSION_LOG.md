@@ -122,3 +122,9 @@
 - Added `python-dotenv` to `signal-gateway` dependencies
 - Updated `signal-gateway` README for environment configuration
 - Next step: open PR for the first environment config layer
+
+## 2026-04-07
+- Created branch `phase-2/local-stack-launcher`
+- Added `scripts/start_phase_2_stack.ps1`
+- Updated `scripts/README.md` with stack launcher instructions
+- Next step: open PR for the first local stack launcher
