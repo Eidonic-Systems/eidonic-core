@@ -151,3 +151,11 @@
 - Added `docs/PHASE_2_SESSION_RECORD_CONTRACT.md`
 - Updated `session-engine` README for the session record contract step
 - Next step: open PR for the first explicit session record contract
+
+## 2026-04-08
+- Created branch `phase-2/session-store-adapter`
+- Added `SessionStore` and `LocalJsonSessionStore` to `session-engine`
+- Refactored `session-engine` to use a store adapter instead of direct JSON file mechanics
+- Added `docs/PHASE_2_SESSION_STORE_ADAPTER.md`
+- Updated `session-engine` README for the store adapter step
+- Next step: open PR for the first session store adapter boundary
