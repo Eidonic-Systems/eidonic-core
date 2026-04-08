@@ -101,3 +101,15 @@
 - Updated `signal-gateway` README for the first downstream chain behavior
 - Added `docs/PHASE_2_GATEWAY_TO_HERALD_CHAIN.md`
 - Next step: open PR for the first real service-to-service link in the core spine
+
+## 2026-04-07
+- Created branch phase-2/full-chain-integration-test
+- Added 	ests/integration/test_full_chain.ps1
+- Added 	ests/README.md
+- Next step: open PR for the first automated full-chain integration test
+
+## 2026-04-07
+- Created branch phase-2/full-chain-integration-test
+- Added 	ests/integration/test_full_chain.ps1
+- Added 	ests/README.md
+- Next step: open PR for the first automated full-chain integration test
