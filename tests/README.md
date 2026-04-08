@@ -1,6 +1,24 @@
-\# Placeholder
+# Tests
 
+This directory holds integration and verification checks for the Eidonic Core build.
 
+## Current integration test
+- `integration/test_full_chain.ps1`
 
-This directory is reserved for future implementation in the current build phase.
+## Purpose
+This test sends one request to `signal-gateway` and verifies the full nested downstream response from:
+- `herald-service`
+- `session-engine`
+- `eidon-orchestrator`
 
+## Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\tests\integration\test_full_chain.ps1
+```
+
+## Expected condition
+The four Phase 2 services must already be running locally on:
+- port 8000 for `signal-gateway`
+- port 8001 for `herald-service`
+- port 8002 for `session-engine`
+- port 8003 for `eidon-orchestrator`
