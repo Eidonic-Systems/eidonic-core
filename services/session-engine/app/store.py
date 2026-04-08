@@ -7,10 +7,20 @@ from eidonic_schemas import SessionRecord
 
 
 class SessionStore(Protocol):
+    @property
+    def backend_name(self) -> str:
+        ...
+
     def upsert(self, record: SessionRecord) -> SessionRecord:
         ...
 
     def get(self, session_id: str) -> SessionRecord | None:
+        ...
+
+    def list_recent(self, limit: int = 50) -> list[SessionRecord]:
+        ...
+
+    def ping(self) -> dict[str, str]:
         ...
 
 
@@ -19,6 +29,10 @@ class LocalJsonSessionStore:
         self.store_path = store_path
         self.data_dir = store_path.parent
         self._ensure_store()
+
+    @property
+    def backend_name(self) -> str:
+        return "local_json"
 
     def _ensure_store(self) -> None:
         self.data_dir.mkdir(parents=True, exist_ok=True)
@@ -68,3 +82,16 @@ class LocalJsonSessionStore:
             if record.session_id == session_id:
                 return record
         return None
+
+    def list_recent(self, limit: int = 50) -> list[SessionRecord]:
+        records = self._load_records()
+        ordered = sorted(records, key=lambda record: record.created_at, reverse=True)
+        return ordered[:limit]
+
+    def ping(self) -> dict[str, str]:
+        self._ensure_store()
+        return {
+            "status": "ok",
+            "backend": self.backend_name,
+            "store_path": str(self.store_path),
+        }
