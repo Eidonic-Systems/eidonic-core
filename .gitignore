@@ -36,3 +36,6 @@ build/
 
 # Session engine local persistence
 services/session-engine/data/sessions.json
+
+# Eidon local artifact persistence
+services/eidon-orchestrator/data/artifacts.json

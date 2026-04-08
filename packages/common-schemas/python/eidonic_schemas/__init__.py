@@ -1,4 +1,5 @@
 from .models import (
+    EidonArtifactRecord,
     EidonOrchestrationInput,
     HeraldCheckInput,
     SessionRecord,
@@ -12,4 +13,5 @@ __all__ = [
     "SessionStartInput",
     "EidonOrchestrationInput",
     "SessionRecord",
+    "EidonArtifactRecord",
 ]
