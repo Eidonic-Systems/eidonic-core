@@ -98,4 +98,30 @@ Assert-Equal -Name "persisted artifact status" -Actual $persistedArtifact.artifa
 Assert-Equal -Name "persisted artifact storage backend" -Actual $persistedArtifact.artifact.storage_backend -Expected "local_json"
 
 Write-Host ""
-Write-Host "Full chain integration test with session and artifact persistence passed." -ForegroundColor Green
+$artifactId = $response.eidon_result.artifact_id
+
+$persistedLineage = Invoke-RestMethod -Uri "$EidonBaseUrl/lineage/$artifactId" `
+  -Method Get
+
+$persistedLineageJson = $persistedLineage | ConvertTo-Json -Depth 12
+Write-Host ""
+Write-Host $persistedLineageJson
+
+Assert-Equal -Name "persisted lineage lookup status" `
+  -Actual $persistedLineage.status `
+  -Expected "found"
+
+Assert-Equal -Name "persisted lineage lookup service" `
+  -Actual $persistedLineage.service `
+  -Expected "eidon-orchestrator"
+
+if ($null -eq $persistedLineage.lineage) {
+  throw "Missing persisted lineage object in lookup response."
+}
+
+Assert-Equal -Name "persisted lineage artifact id" `
+  -Actual $persistedLineage.lineage.artifact_id `
+  -Expected $artifactId
+
+Write-Host "Full chain integration test with session, artifact, and lineage persistence passed." -ForegroundColor Green
+
