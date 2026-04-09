@@ -23,6 +23,20 @@ class HeraldCheckInput(BaseModel):
     content: dict[str, Any]
 
 
+class ThresholdRecord(BaseModel):
+    threshold_id: str
+    signal_id: str
+    signal_type: Literal["user_message", "file_upload", "system_event", "command"]
+    source: Literal["chat", "upload", "internal", "api"]
+    sensitivity_hint: Literal["low", "moderate", "high", "unknown"] | None = None
+    content: dict[str, Any]
+    threshold_result: Literal["pass", "hold", "escalate"]
+    status: Literal["reviewed"]
+    message: str
+    created_at: str
+    storage_backend: Literal["local_json", "postgres"]
+
+
 class SessionStartInput(BaseModel):
     signal_id: str
     signal_type: Literal["user_message", "file_upload", "system_event", "command"]

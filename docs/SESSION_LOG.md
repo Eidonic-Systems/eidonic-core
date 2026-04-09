@@ -208,3 +208,12 @@
 - Extended the full integration test to verify `GET /lineage`
 - Added `docs/PHASE_2_INTEGRATION_TEST_ORCHESTRATOR_LIST_SURFACES.md`
 - Next step: open PR for orchestrator list surface integration proof
+
+## 2026-04-09
+- Created branch `phase-2/herald-threshold-record-contract`
+- Added shared `ThresholdRecord` model to `eidonic_schemas`
+- Added temporary local JSON persistence for `herald-service` threshold results
+- Added `GET /thresholds/{signal_id}` for threshold record retrieval
+- Added `docs/PHASE_2_HERALD_THRESHOLD_RECORD_CONTRACT.md`
+- Updated `services/herald-service/README.md` for the threshold contract step
+- Next step: open PR for the first explicit Herald threshold record contract
