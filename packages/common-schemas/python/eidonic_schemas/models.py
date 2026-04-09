@@ -66,3 +66,17 @@ class EidonArtifactRecord(BaseModel):
     response_text: str
     created_at: str
     storage_backend: Literal["local_json", "postgres"]
+
+
+class ArtifactLineageRecord(BaseModel):
+    lineage_id: str
+    artifact_id: str
+    session_id: str
+    signal_id: str
+    signal_type: Literal["user_message", "file_upload", "system_event", "command"]
+    source: Literal["chat", "upload", "internal", "api"]
+    threshold_result: Literal["pass", "hold", "escalate"]
+    artifact_status: Literal["orchestrated"]
+    artifact_storage_backend: Literal["local_json", "postgres"]
+    artifact_kind: Literal["eidon_orchestration"]
+    created_at: str

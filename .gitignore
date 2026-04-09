@@ -39,3 +39,6 @@ services/session-engine/data/sessions.json
 
 # Eidon local artifact persistence
 services/eidon-orchestrator/data/artifacts.json
+
+# Eidon local lineage persistence
+services/eidon-orchestrator/data/lineage.json
