@@ -181,6 +181,49 @@ if ($null -eq $lineageFromList) {
   throw "Expected artifact id $artifactId was not found in orchestrator lineage list response."
 }
 
-Write-Host "Full chain integration test with session, artifact, lineage, and orchestrator list surfaces passed." -ForegroundColor Green
+$signalId = $response.received_signal_id
+
+$persistedThreshold = Invoke-RestMethod -Uri "http://127.0.0.1:8001/thresholds/$signalId" `
+  -Method Get
+
+$persistedThresholdJson = $persistedThreshold | ConvertTo-Json -Depth 12
+Write-Host ""
+Write-Host $persistedThresholdJson
+
+Assert-Equal -Name "persisted threshold lookup status" `
+  -Actual $persistedThreshold.status `
+  -Expected "found"
+
+Assert-Equal -Name "persisted threshold lookup service" `
+  -Actual $persistedThreshold.service `
+  -Expected "herald-service"
+
+if ($null -eq $persistedThreshold.threshold) {
+  throw "Missing persisted threshold object in lookup response."
+}
+
+Assert-Equal -Name "persisted threshold id" `
+  -Actual $persistedThreshold.threshold.threshold_id `
+  -Expected "threshold-$signalId"
+
+Assert-Equal -Name "persisted threshold signal id" `
+  -Actual $persistedThreshold.threshold.signal_id `
+  -Expected $signalId
+
+Assert-Equal -Name "persisted threshold result" `
+  -Actual $persistedThreshold.threshold.threshold_result `
+  -Expected "pass"
+
+Assert-Equal -Name "persisted threshold status" `
+  -Actual $persistedThreshold.threshold.status `
+  -Expected "reviewed"
+
+Assert-Equal -Name "persisted threshold storage backend" `
+  -Actual $persistedThreshold.threshold.storage_backend `
+  -Expected "local_json"
+
+Write-Host "Full chain integration test with threshold, session, artifact, lineage, and orchestrator list surfaces passed." -ForegroundColor Green
+
+
 
 

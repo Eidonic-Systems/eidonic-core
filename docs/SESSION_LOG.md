@@ -217,3 +217,9 @@
 - Added `docs/PHASE_2_HERALD_THRESHOLD_RECORD_CONTRACT.md`
 - Updated `services/herald-service/README.md` for the threshold contract step
 - Next step: open PR for the first explicit Herald threshold record contract
+
+## 2026-04-09
+- Created branch `phase-2/integration-test-herald-threshold-record`
+- Extended the full integration test to verify `GET /thresholds/{signal_id}`
+- Added `docs/PHASE_2_INTEGRATION_TEST_HERALD_THRESHOLD_RECORD.md`
+- Next step: open PR for Herald threshold record integration proof
