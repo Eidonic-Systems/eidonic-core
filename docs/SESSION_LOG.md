@@ -183,3 +183,12 @@
 - Extended `tests/integration/test_full_chain.ps1` to verify persisted artifact lookup
 - Updated `tests/README.md` for artifact persistence coverage
 - Next step: open PR for artifact-aware full-chain integration testing
+
+## 2026-04-08
+- Created branch `phase-2/artifact-lineage-surface`
+- Added shared `ArtifactLineageRecord` model to `eidonic_schemas`
+- Added temporary local JSON persistence for Eidon artifact lineage records
+- Added `GET /lineage/{artifact_id}` for lineage retrieval
+- Added `docs/PHASE_2_ARTIFACT_LINEAGE_SURFACE.md`
+- Updated `eidon-orchestrator` README for the lineage surface step
+- Next step: open PR for the first artifact lineage surface

@@ -3,22 +3,25 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
-from eidonic_schemas import EidonArtifactRecord, EidonOrchestrationInput
+from eidonic_schemas import ArtifactLineageRecord, EidonArtifactRecord, EidonOrchestrationInput
 
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
-STORE_PATH = DATA_DIR / "artifacts.json"
+ARTIFACT_STORE_PATH = DATA_DIR / "artifacts.json"
+LINEAGE_STORE_PATH = DATA_DIR / "lineage.json"
 
 
 def ensure_store() -> None:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
-    if not STORE_PATH.exists():
-        STORE_PATH.write_text("[]", encoding="utf-8")
+    if not ARTIFACT_STORE_PATH.exists():
+        ARTIFACT_STORE_PATH.write_text("[]", encoding="utf-8")
+    if not LINEAGE_STORE_PATH.exists():
+        LINEAGE_STORE_PATH.write_text("[]", encoding="utf-8")
 
 
 def load_artifacts() -> list[EidonArtifactRecord]:
     ensure_store()
-    raw = STORE_PATH.read_text(encoding="utf-8").strip()
+    raw = ARTIFACT_STORE_PATH.read_text(encoding="utf-8").strip()
     if not raw:
         return []
 
@@ -36,7 +39,30 @@ def load_artifacts() -> list[EidonArtifactRecord]:
 def save_artifacts(records: list[EidonArtifactRecord]) -> None:
     ensure_store()
     payload = [record.model_dump() for record in records]
-    STORE_PATH.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    ARTIFACT_STORE_PATH.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+
+def load_lineage() -> list[ArtifactLineageRecord]:
+    ensure_store()
+    raw = LINEAGE_STORE_PATH.read_text(encoding="utf-8").strip()
+    if not raw:
+        return []
+
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise HTTPException(status_code=500, detail=f"Lineage store is invalid JSON: {exc}") from exc
+
+    if not isinstance(data, list):
+        raise HTTPException(status_code=500, detail="Lineage store must contain a JSON list.")
+
+    return [ArtifactLineageRecord.model_validate(item) for item in data]
+
+
+def save_lineage(records: list[ArtifactLineageRecord]) -> None:
+    ensure_store()
+    payload = [record.model_dump() for record in records]
+    LINEAGE_STORE_PATH.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
 
 def build_artifact(payload: EidonOrchestrationInput, storage_backend: str = "local_json") -> EidonArtifactRecord:
@@ -64,6 +90,22 @@ def build_artifact(payload: EidonOrchestrationInput, storage_backend: str = "loc
     )
 
 
+def build_lineage_record(artifact: EidonArtifactRecord) -> ArtifactLineageRecord:
+    return ArtifactLineageRecord(
+        lineage_id=f"lineage-{artifact.artifact_id}",
+        artifact_id=artifact.artifact_id,
+        session_id=artifact.session_id,
+        signal_id=artifact.signal_id,
+        signal_type=artifact.signal_type,
+        source=artifact.source,
+        threshold_result=artifact.threshold_result,
+        artifact_status=artifact.status,
+        artifact_storage_backend=artifact.storage_backend,
+        artifact_kind="eidon_orchestration",
+        created_at=datetime.now(timezone.utc).isoformat(),
+    )
+
+
 def upsert_artifact(record: EidonArtifactRecord) -> EidonArtifactRecord:
     records = load_artifacts()
 
@@ -81,6 +123,23 @@ def upsert_artifact(record: EidonArtifactRecord) -> EidonArtifactRecord:
     return record
 
 
+def upsert_lineage(record: ArtifactLineageRecord) -> ArtifactLineageRecord:
+    records = load_lineage()
+
+    updated = False
+    for index, existing in enumerate(records):
+        if existing.lineage_id == record.lineage_id:
+            records[index] = record
+            updated = True
+            break
+
+    if not updated:
+        records.append(record)
+
+    save_lineage(records)
+    return record
+
+
 def get_artifact(artifact_id: str) -> EidonArtifactRecord | None:
     records = load_artifacts()
     for record in records:
@@ -89,10 +148,18 @@ def get_artifact(artifact_id: str) -> EidonArtifactRecord | None:
     return None
 
 
+def get_lineage_by_artifact_id(artifact_id: str) -> ArtifactLineageRecord | None:
+    records = load_lineage()
+    for record in records:
+        if record.artifact_id == artifact_id:
+            return record
+    return None
+
+
 app = FastAPI(
     title="Eidonic Core Eidon Orchestrator",
-    version="0.2.0",
-    description="Orchestration service scaffold for the Eidonic Core with local artifact persistence.",
+    version="0.2.1",
+    description="Orchestration service scaffold for the Eidonic Core with artifact lineage persistence.",
 )
 
 
@@ -122,17 +189,34 @@ def get_artifact_by_id(artifact_id: str) -> dict[str, object]:
     }
 
 
+@app.get("/lineage/{artifact_id}")
+def get_lineage(artifact_id: str) -> dict[str, object]:
+    record = get_lineage_by_artifact_id(artifact_id)
+    if record is None:
+        raise HTTPException(status_code=404, detail=f"Lineage not found for artifact: {artifact_id}")
+
+    return {
+        "status": "found",
+        "service": "eidon-orchestrator",
+        "lineage": record.model_dump(),
+    }
+
+
 @app.post("/orchestrate")
 def orchestrate(payload: EidonOrchestrationInput) -> dict[str, object]:
     artifact = build_artifact(payload)
-    saved = upsert_artifact(artifact)
+    saved_artifact = upsert_artifact(artifact)
+
+    lineage = build_lineage_record(saved_artifact)
+    saved_lineage = upsert_lineage(lineage)
 
     return {
         "status": "orchestrated",
         "service": "eidon-orchestrator",
-        "session_id": saved.session_id,
-        "signal_id": saved.signal_id,
-        "artifact_id": saved.artifact_id,
-        "storage_backend": saved.storage_backend,
-        "message": "Eidon scaffold orchestrated the request and persisted an artifact record.",
+        "session_id": saved_artifact.session_id,
+        "signal_id": saved_artifact.signal_id,
+        "artifact_id": saved_artifact.artifact_id,
+        "lineage_id": saved_lineage.lineage_id,
+        "storage_backend": saved_artifact.storage_backend,
+        "message": "Eidon scaffold orchestrated the request and persisted artifact and lineage records.",
     }

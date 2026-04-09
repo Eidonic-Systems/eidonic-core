@@ -6,24 +6,34 @@ The Eidon Orchestrator is the current orchestration service for Eidonic Core.
 - receive a session-bound orchestration request
 - produce the current orchestration outcome
 - persist an orchestration artifact record
-- return an artifact identifier
+- persist a simple artifact lineage record
+- return artifact and lineage identifiers
 
 ## Current phase
-Phase 2 local artifact contract scaffold
+Phase 2 artifact lineage surface scaffold
 
 ## Current endpoints
 - `GET /health`
 - `POST /orchestrate`
 - `GET /artifacts/{artifact_id}`
+- `GET /lineage/{artifact_id}`
 
 ## Orchestration artifact contract
-The current implementation builds and stores a shared `EidonArtifactRecord` contract before writing it to the local JSON store.
+The current implementation builds and stores a shared `EidonArtifactRecord` contract.
+
+## Artifact lineage surface
+The current implementation also builds and stores a shared `ArtifactLineageRecord` contract that links:
+- session
+- signal
+- artifact
+- storage backend
 
 ## Local persistence
-The current scaffold writes artifact records to:
-`services/eidon-orchestrator/data/artifacts.json`
+The current scaffold writes records to:
+- `services/eidon-orchestrator/data/artifacts.json`
+- `services/eidon-orchestrator/data/lineage.json`
 
-This file is ignored by Git and acts as a temporary local persistence layer until a real durable backend is introduced.
+Both files are ignored by Git and act as temporary local persistence layers.
 
 ## Notes
-This is a temporary local artifact persistence step, not the final witness or memory layer.
+This is still a temporary local lineage step, not a final witness or graph layer.
