@@ -32,8 +32,8 @@ def build_threshold_record(payload: HeraldCheckInput, storage_backend: str) -> T
 
 app = FastAPI(
     title="Eidonic Core Herald Service",
-    version="0.2.1",
-    description="Threshold review scaffold for the Eidonic Core with a store contract surface for threshold persistence.",
+    version="0.2.2",
+    description="Threshold review scaffold for the Eidonic Core with store contract list surfaces for threshold persistence.",
 )
 
 
@@ -43,6 +43,17 @@ def health() -> dict[str, object]:
         "status": "ok",
         "service": "herald-service",
         "store": STORE.ping(),
+    }
+
+
+@app.get("/thresholds")
+def list_thresholds() -> dict[str, object]:
+    records = STORE.list()
+    return {
+        "status": "found",
+        "service": "herald-service",
+        "count": len(records),
+        "thresholds": [record.model_dump() for record in records],
     }
 
 

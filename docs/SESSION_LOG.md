@@ -223,3 +223,11 @@
 - Extended the full integration test to verify `GET /thresholds/{signal_id}`
 - Added `docs/PHASE_2_INTEGRATION_TEST_HERALD_THRESHOLD_RECORD.md`
 - Next step: open PR for Herald threshold record integration proof
+
+## 2026-04-09
+- Created branch `phase-2/herald-list-surfaces`
+- Added `GET /thresholds` to list persisted Herald threshold records
+- Extended Herald threshold store with list semantics
+- Updated `services/herald-service/README.md`
+- Added `docs/PHASE_2_HERALD_LIST_SURFACES.md`
+- Next step: open PR for Herald list surfaces
