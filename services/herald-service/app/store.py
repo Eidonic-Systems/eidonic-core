@@ -14,6 +14,8 @@ class ThresholdStore(Protocol):
 
     def get(self, signal_id: str) -> ThresholdRecord | None: ...
 
+    def list(self) -> list[ThresholdRecord]: ...
+
     def ping(self) -> dict[str, str]: ...
 
 
@@ -75,6 +77,9 @@ class LocalJsonThresholdStore:
             if record.signal_id == signal_id:
                 return record
         return None
+
+    def list(self) -> list[ThresholdRecord]:
+        return self._load_records()
 
     def ping(self) -> dict[str, str]:
         self._ensure_store()
