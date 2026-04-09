@@ -201,3 +201,10 @@
 - Updated `services/eidon-orchestrator/README.md`
 - Added `docs/PHASE_2_ORCHESTRATOR_LIST_SURFACES.md`
 - Next step: open PR for orchestrator list surfaces
+
+## 2026-04-09
+- Created branch `phase-2/integration-test-orchestrator-list-surfaces`
+- Extended the full integration test to verify `GET /artifacts`
+- Extended the full integration test to verify `GET /lineage`
+- Added `docs/PHASE_2_INTEGRATION_TEST_ORCHESTRATOR_LIST_SURFACES.md`
+- Next step: open PR for orchestrator list surface integration proof

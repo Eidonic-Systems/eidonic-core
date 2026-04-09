@@ -123,5 +123,64 @@ Assert-Equal -Name "persisted lineage artifact id" `
   -Actual $persistedLineage.lineage.artifact_id `
   -Expected $artifactId
 
-Write-Host "Full chain integration test with session, artifact, and lineage persistence passed." -ForegroundColor Green
+$artifactList = Invoke-RestMethod -Uri "$EidonBaseUrl/artifacts" `
+  -Method Get
+
+$artifactListJson = $artifactList | ConvertTo-Json -Depth 12
+Write-Host ""
+Write-Host $artifactListJson
+
+Assert-Equal -Name "artifact list status" `
+  -Actual $artifactList.status `
+  -Expected "found"
+
+Assert-Equal -Name "artifact list service" `
+  -Actual $artifactList.service `
+  -Expected "eidon-orchestrator"
+
+if ($null -eq $artifactList.artifacts) {
+  throw "Missing artifacts list in orchestrator artifact list response."
+}
+
+if ($artifactList.count -lt 1) {
+  throw "Expected at least one artifact in orchestrator artifact list response."
+}
+
+$artifactFromList = $artifactList.artifacts | Where-Object { $_.artifact_id -eq $artifactId } | Select-Object -First 1
+
+if ($null -eq $artifactFromList) {
+  throw "Expected artifact id $artifactId was not found in orchestrator artifact list response."
+}
+
+$lineageList = Invoke-RestMethod -Uri "$EidonBaseUrl/lineage" `
+  -Method Get
+
+$lineageListJson = $lineageList | ConvertTo-Json -Depth 12
+Write-Host ""
+Write-Host $lineageListJson
+
+Assert-Equal -Name "lineage list status" `
+  -Actual $lineageList.status `
+  -Expected "found"
+
+Assert-Equal -Name "lineage list service" `
+  -Actual $lineageList.service `
+  -Expected "eidon-orchestrator"
+
+if ($null -eq $lineageList.lineage) {
+  throw "Missing lineage list in orchestrator lineage list response."
+}
+
+if ($lineageList.count -lt 1) {
+  throw "Expected at least one lineage record in orchestrator lineage list response."
+}
+
+$lineageFromList = $lineageList.lineage | Where-Object { $_.artifact_id -eq $artifactId } | Select-Object -First 1
+
+if ($null -eq $lineageFromList) {
+  throw "Expected artifact id $artifactId was not found in orchestrator lineage list response."
+}
+
+Write-Host "Full chain integration test with session, artifact, lineage, and orchestrator list surfaces passed." -ForegroundColor Green
+
 
