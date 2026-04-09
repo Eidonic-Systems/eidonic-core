@@ -222,7 +222,37 @@ Assert-Equal -Name "persisted threshold storage backend" `
   -Actual $persistedThreshold.threshold.storage_backend `
   -Expected "local_json"
 
-Write-Host "Full chain integration test with threshold, session, artifact, lineage, and orchestrator list surfaces passed." -ForegroundColor Green
+$thresholdList = Invoke-RestMethod -Uri "http://127.0.0.1:8001/thresholds" `
+  -Method Get
+
+$thresholdListJson = $thresholdList | ConvertTo-Json -Depth 12
+Write-Host ""
+Write-Host $thresholdListJson
+
+Assert-Equal -Name "threshold list status" `
+  -Actual $thresholdList.status `
+  -Expected "found"
+
+Assert-Equal -Name "threshold list service" `
+  -Actual $thresholdList.service `
+  -Expected "herald-service"
+
+if ($null -eq $thresholdList.thresholds) {
+  throw "Missing thresholds list in Herald threshold list response."
+}
+
+if ($thresholdList.count -lt 1) {
+  throw "Expected at least one threshold record in Herald threshold list response."
+}
+
+$thresholdFromList = $thresholdList.thresholds | Where-Object { $_.signal_id -eq $signalId } | Select-Object -First 1
+
+if ($null -eq $thresholdFromList) {
+  throw "Expected signal id $signalId was not found in Herald threshold list response."
+}
+
+Write-Host "Full chain integration test with threshold, session, artifact, lineage, orchestrator list surfaces, and Herald list surfaces passed." -ForegroundColor Green
+
 
 
 

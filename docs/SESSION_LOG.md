@@ -231,3 +231,9 @@
 - Updated `services/herald-service/README.md`
 - Added `docs/PHASE_2_HERALD_LIST_SURFACES.md`
 - Next step: open PR for Herald list surfaces
+
+## 2026-04-09
+- Created branch `phase-2/integration-test-herald-list-surfaces`
+- Extended the full integration test to verify `GET /thresholds`
+- Added `docs/PHASE_2_INTEGRATION_TEST_HERALD_LIST_SURFACES.md`
+- Next step: open PR for Herald list surface integration proof
