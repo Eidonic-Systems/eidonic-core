@@ -8,18 +8,21 @@ The Eidon Orchestrator is the current orchestration service for Eidonic Core.
 - persist an orchestration artifact record
 - persist a simple artifact lineage record
 - return artifact and lineage identifiers
+- expose list and retrieval surfaces for persisted orchestrator records
 
 ## Current phase
-Phase 2 store contract surface scaffold
+Phase 2 store contract list surface scaffold
 
 ## Current endpoints
 - `GET /health`
 - `POST /orchestrate`
+- `GET /artifacts`
 - `GET /artifacts/{artifact_id}`
+- `GET /lineage`
 - `GET /lineage/{artifact_id}`
 
 ## Store contract surface
-The current implementation now uses explicit local store adapters for both artifact and lineage persistence instead of keeping JSON persistence inline in the main service file.
+The current implementation uses explicit local store adapters for both artifact and lineage persistence instead of keeping JSON persistence inline in the main service file.
 
 ## Local persistence
 The current scaffold writes records to:

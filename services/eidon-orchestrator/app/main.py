@@ -63,8 +63,8 @@ def build_lineage_record(artifact: EidonArtifactRecord) -> ArtifactLineageRecord
 
 app = FastAPI(
     title="Eidonic Core Eidon Orchestrator",
-    version="0.2.2",
-    description="Orchestration service scaffold for the Eidonic Core with a store contract surface for artifact and lineage persistence.",
+    version="0.2.3",
+    description="Orchestration service scaffold for the Eidonic Core with store contract list surfaces for artifact and lineage persistence.",
 )
 
 
@@ -78,6 +78,17 @@ def health() -> dict[str, object]:
     }
 
 
+@app.get("/artifacts")
+def list_artifacts() -> dict[str, object]:
+    records = ARTIFACT_STORE.list()
+    return {
+        "status": "found",
+        "service": "eidon-orchestrator",
+        "count": len(records),
+        "artifacts": [record.model_dump() for record in records],
+    }
+
+
 @app.get("/artifacts/{artifact_id}")
 def get_artifact_by_id(artifact_id: str) -> dict[str, object]:
     record = ARTIFACT_STORE.get(artifact_id)
@@ -88,6 +99,17 @@ def get_artifact_by_id(artifact_id: str) -> dict[str, object]:
         "status": "found",
         "service": "eidon-orchestrator",
         "artifact": record.model_dump(),
+    }
+
+
+@app.get("/lineage")
+def list_lineage() -> dict[str, object]:
+    records = LINEAGE_STORE.list()
+    return {
+        "status": "found",
+        "service": "eidon-orchestrator",
+        "count": len(records),
+        "lineage": [record.model_dump() for record in records],
     }
 
 

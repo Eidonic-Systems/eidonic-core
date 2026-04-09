@@ -14,6 +14,8 @@ class ArtifactStore(Protocol):
 
     def get(self, artifact_id: str) -> EidonArtifactRecord | None: ...
 
+    def list(self) -> list[EidonArtifactRecord]: ...
+
     def ping(self) -> dict[str, str]: ...
 
 
@@ -24,6 +26,8 @@ class ArtifactLineageStore(Protocol):
     def upsert(self, record: ArtifactLineageRecord) -> ArtifactLineageRecord: ...
 
     def get_by_artifact_id(self, artifact_id: str) -> ArtifactLineageRecord | None: ...
+
+    def list(self) -> list[ArtifactLineageRecord]: ...
 
     def ping(self) -> dict[str, str]: ...
 
@@ -86,6 +90,9 @@ class LocalJsonArtifactStore:
             if record.artifact_id == artifact_id:
                 return record
         return None
+
+    def list(self) -> list[EidonArtifactRecord]:
+        return self._load_records()
 
     def ping(self) -> dict[str, str]:
         self._ensure_store()
@@ -154,6 +161,9 @@ class LocalJsonArtifactLineageStore:
             if record.artifact_id == artifact_id:
                 return record
         return None
+
+    def list(self) -> list[ArtifactLineageRecord]:
+        return self._load_records()
 
     def ping(self) -> dict[str, str]:
         self._ensure_store()
