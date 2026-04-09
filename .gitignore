@@ -42,3 +42,6 @@ services/eidon-orchestrator/data/artifacts.json
 
 # Eidon local lineage persistence
 services/eidon-orchestrator/data/lineage.json
+
+# Herald local threshold persistence
+services/herald-service/data/thresholds.json
