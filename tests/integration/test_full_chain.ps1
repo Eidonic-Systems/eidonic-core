@@ -474,7 +474,178 @@ Assert-Equal -Name "eidon lineage store backend" `
   -Actual $eidonHealth.lineage_store.backend `
   -Expected "local_json"
 
-Write-Host "Full chain integration test with signal, signal list, threshold, session, session list, artifact, lineage, orchestrator list surfaces, Herald list surfaces, and service health surfaces passed." -ForegroundColor Green
+$signalId = $response.received_signal_id
+$sessionId = $response.session_result.session_id
+$artifactId = $response.eidon_result.artifact_id
+
+$signalListLimited = Invoke-RestMethod -Uri "$GatewayBaseUrl/signals?limit=1" `
+  -Method Get
+
+$signalListLimitedJson = $signalListLimited | ConvertTo-Json -Depth 12
+Write-Host ""
+Write-Host $signalListLimitedJson
+
+Assert-Equal -Name "signal limited list status" `
+  -Actual $signalListLimited.status `
+  -Expected "found"
+
+Assert-Equal -Name "signal limited list service" `
+  -Actual $signalListLimited.service `
+  -Expected "signal-gateway"
+
+Assert-Equal -Name "signal limited list count" `
+  -Actual $signalListLimited.count `
+  -Expected 1
+
+if ($null -eq $signalListLimited.signals) {
+  throw "Missing signals list in Signal Gateway limited list response."
+}
+
+$signalFromLimitedList = $signalListLimited.signals | Select-Object -First 1
+
+if ($null -eq $signalFromLimitedList) {
+  throw "Missing signal record in Signal Gateway limited list response."
+}
+
+Assert-Equal -Name "signal limited list first id" `
+  -Actual $signalFromLimitedList.signal_id `
+  -Expected $signalId
+
+$thresholdListLimited = Invoke-RestMethod -Uri "http://127.0.0.1:8001/thresholds?limit=1" `
+  -Method Get
+
+$thresholdListLimitedJson = $thresholdListLimited | ConvertTo-Json -Depth 12
+Write-Host ""
+Write-Host $thresholdListLimitedJson
+
+Assert-Equal -Name "threshold limited list status" `
+  -Actual $thresholdListLimited.status `
+  -Expected "found"
+
+Assert-Equal -Name "threshold limited list service" `
+  -Actual $thresholdListLimited.service `
+  -Expected "herald-service"
+
+Assert-Equal -Name "threshold limited list count" `
+  -Actual $thresholdListLimited.count `
+  -Expected 1
+
+if ($null -eq $thresholdListLimited.thresholds) {
+  throw "Missing thresholds list in Herald limited list response."
+}
+
+$thresholdFromLimitedList = $thresholdListLimited.thresholds | Select-Object -First 1
+
+if ($null -eq $thresholdFromLimitedList) {
+  throw "Missing threshold record in Herald limited list response."
+}
+
+Assert-Equal -Name "threshold limited list first signal id" `
+  -Actual $thresholdFromLimitedList.signal_id `
+  -Expected $signalId
+
+$sessionListLimited = Invoke-RestMethod -Uri "$SessionEngineBaseUrl/sessions?limit=1" `
+  -Method Get
+
+$sessionListLimitedJson = $sessionListLimited | ConvertTo-Json -Depth 12
+Write-Host ""
+Write-Host $sessionListLimitedJson
+
+Assert-Equal -Name "session limited list status" `
+  -Actual $sessionListLimited.status `
+  -Expected "listed"
+
+Assert-Equal -Name "session limited list service" `
+  -Actual $sessionListLimited.service `
+  -Expected "session-engine"
+
+Assert-Equal -Name "session limited list count" `
+  -Actual $sessionListLimited.count `
+  -Expected 1
+
+if ($null -eq $sessionListLimited.sessions) {
+  throw "Missing sessions list in Session Engine limited list response."
+}
+
+$sessionFromLimitedList = $sessionListLimited.sessions | Select-Object -First 1
+
+if ($null -eq $sessionFromLimitedList) {
+  throw "Missing session record in Session Engine limited list response."
+}
+
+Assert-Equal -Name "session limited list first id" `
+  -Actual $sessionFromLimitedList.session_id `
+  -Expected $sessionId
+
+$artifactListLimited = Invoke-RestMethod -Uri "$EidonBaseUrl/artifacts?limit=1" `
+  -Method Get
+
+$artifactListLimitedJson = $artifactListLimited | ConvertTo-Json -Depth 12
+Write-Host ""
+Write-Host $artifactListLimitedJson
+
+Assert-Equal -Name "artifact limited list status" `
+  -Actual $artifactListLimited.status `
+  -Expected "found"
+
+Assert-Equal -Name "artifact limited list service" `
+  -Actual $artifactListLimited.service `
+  -Expected "eidon-orchestrator"
+
+Assert-Equal -Name "artifact limited list count" `
+  -Actual $artifactListLimited.count `
+  -Expected 1
+
+if ($null -eq $artifactListLimited.artifacts) {
+  throw "Missing artifacts list in Orchestrator limited artifact list response."
+}
+
+$artifactFromLimitedList = $artifactListLimited.artifacts | Select-Object -First 1
+
+if ($null -eq $artifactFromLimitedList) {
+  throw "Missing artifact record in Orchestrator limited artifact list response."
+}
+
+Assert-Equal -Name "artifact limited list first id" `
+  -Actual $artifactFromLimitedList.artifact_id `
+  -Expected $artifactId
+
+$lineageListLimited = Invoke-RestMethod -Uri "$EidonBaseUrl/lineage?limit=1" `
+  -Method Get
+
+$lineageListLimitedJson = $lineageListLimited | ConvertTo-Json -Depth 12
+Write-Host ""
+Write-Host $lineageListLimitedJson
+
+Assert-Equal -Name "lineage limited list status" `
+  -Actual $lineageListLimited.status `
+  -Expected "found"
+
+Assert-Equal -Name "lineage limited list service" `
+  -Actual $lineageListLimited.service `
+  -Expected "eidon-orchestrator"
+
+Assert-Equal -Name "lineage limited list count" `
+  -Actual $lineageListLimited.count `
+  -Expected 1
+
+if ($null -eq $lineageListLimited.lineage) {
+  throw "Missing lineage list in Orchestrator limited lineage list response."
+}
+
+$lineageFromLimitedList = $lineageListLimited.lineage | Select-Object -First 1
+
+if ($null -eq $lineageFromLimitedList) {
+  throw "Missing lineage record in Orchestrator limited lineage list response."
+}
+
+Assert-Equal -Name "lineage limited list first artifact id" `
+  -Actual $lineageFromLimitedList.artifact_id `
+  -Expected $artifactId
+
+Write-Host "Full chain integration test with list limit surfaces passed." -ForegroundColor Green
+
+
 
 
 

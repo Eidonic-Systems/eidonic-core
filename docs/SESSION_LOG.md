@@ -326,3 +326,9 @@
 - Updated `services/eidon-orchestrator/README.md`
 - Added `docs/PHASE_2_ORCHESTRATOR_POSTGRES_READY_STORE_CONTRACT.md`
 - Next step: open PR for Orchestrator Postgres-ready store contract surface
+
+## 2026-04-09
+- Created branch `phase-2/integration-test-list-limit-surfaces`
+- Extended the full integration test to verify `limit=1` behavior across current list surfaces
+- Added `docs/PHASE_2_INTEGRATION_TEST_LIST_LIMIT_SURFACES.md`
+- Next step: open PR for list limit surface integration proof
