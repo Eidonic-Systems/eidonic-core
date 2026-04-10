@@ -6,11 +6,13 @@ from .models import (
     SessionRecord,
     SessionStartInput,
     SignalEventInput,
+    SignalRecord,
     ThresholdRecord,
 )
 
 __all__ = [
     "SignalEventInput",
+    "SignalRecord",
     "HeraldCheckInput",
     "ThresholdRecord",
     "SessionStartInput",

@@ -15,6 +15,20 @@ class SignalEventInput(BaseModel):
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 
+class SignalRecord(BaseModel):
+    schema_version: Literal["1.0.0"]
+    signal_id: str
+    signal_type: Literal["user_message", "file_upload", "system_event", "command"]
+    source: Literal["chat", "upload", "internal", "api"]
+    content: dict[str, Any]
+    created_at: str
+    session_hint: str | None = None
+    sensitivity_hint: Literal["low", "moderate", "high", "unknown"] | None = None
+    metadata: dict[str, Any] = Field(default_factory=dict)
+    status: Literal["accepted"]
+    storage_backend: Literal["local_json", "postgres"]
+
+
 class HeraldCheckInput(BaseModel):
     signal_id: str
     signal_type: Literal["user_message", "file_upload", "system_event", "command"]
