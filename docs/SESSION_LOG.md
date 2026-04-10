@@ -246,3 +246,9 @@
 - Added `docs/PHASE_2_SIGNAL_RECORD_CONTRACT.md`
 - Updated `services/signal-gateway/README.md` for the signal contract step
 - Next step: open PR for the first explicit signal record contract
+
+## 2026-04-09
+- Created branch `phase-2/integration-test-signal-record`
+- Extended the full integration test to verify `GET /signals/{signal_id}`
+- Added `docs/PHASE_2_INTEGRATION_TEST_SIGNAL_RECORD.md`
+- Next step: open PR for signal record integration proof

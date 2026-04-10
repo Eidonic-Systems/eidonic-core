@@ -251,7 +251,49 @@ if ($null -eq $thresholdFromList) {
   throw "Expected signal id $signalId was not found in Herald threshold list response."
 }
 
-Write-Host "Full chain integration test with threshold, session, artifact, lineage, orchestrator list surfaces, and Herald list surfaces passed." -ForegroundColor Green
+$signalId = $response.received_signal_id
+
+$persistedSignal = Invoke-RestMethod -Uri "$GatewayBaseUrl/signals/$signalId" `
+  -Method Get
+
+$persistedSignalJson = $persistedSignal | ConvertTo-Json -Depth 12
+Write-Host ""
+Write-Host $persistedSignalJson
+
+Assert-Equal -Name "persisted signal lookup status" `
+  -Actual $persistedSignal.status `
+  -Expected "found"
+
+Assert-Equal -Name "persisted signal lookup service" `
+  -Actual $persistedSignal.service `
+  -Expected "signal-gateway"
+
+if ($null -eq $persistedSignal.signal) {
+  throw "Missing persisted signal object in lookup response."
+}
+
+Assert-Equal -Name "persisted signal id" `
+  -Actual $persistedSignal.signal.signal_id `
+  -Expected $signalId
+
+Assert-Equal -Name "persisted signal type" `
+  -Actual $persistedSignal.signal.signal_type `
+  -Expected "user_message"
+
+Assert-Equal -Name "persisted signal source" `
+  -Actual $persistedSignal.signal.source `
+  -Expected "chat"
+
+Assert-Equal -Name "persisted signal status" `
+  -Actual $persistedSignal.signal.status `
+  -Expected "accepted"
+
+Assert-Equal -Name "persisted signal storage backend" `
+  -Actual $persistedSignal.signal.storage_backend `
+  -Expected "local_json"
+
+Write-Host "Full chain integration test with signal, threshold, session, artifact, lineage, orchestrator list surfaces, and Herald list surfaces passed." -ForegroundColor Green
+
 
 
 
