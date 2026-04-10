@@ -268,3 +268,9 @@
 - Updated `services/signal-gateway/README.md`
 - Added `docs/PHASE_2_SIGNAL_LIST_SURFACES.md`
 - Next step: open PR for signal list surfaces
+
+## 2026-04-09
+- Created branch `phase-2/integration-test-signal-list-surfaces`
+- Extended the full integration test to verify `GET /signals`
+- Added `docs/PHASE_2_INTEGRATION_TEST_SIGNAL_LIST_SURFACES.md`
+- Next step: open PR for signal list surface integration proof
