@@ -1,4 +1,3 @@
-import json
 import os
 from pathlib import Path
 from typing import Any
@@ -14,10 +13,11 @@ from eidonic_schemas import (
     SignalRecord,
 )
 
+from app.store import LocalJsonSignalStore, SignalStore
+
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-DATA_DIR = Path(__file__).resolve().parents[1] / "data"
-STORE_PATH = DATA_DIR / "signals.json"
+STORE_PATH = Path(__file__).resolve().parents[1] / "data" / "signals.json"
 
 load_dotenv(REPO_ROOT / ".env")
 
@@ -25,37 +25,10 @@ HERALD_BASE_URL = os.getenv("HERALD_BASE_URL", "http://127.0.0.1:8001")
 SESSION_ENGINE_BASE_URL = os.getenv("SESSION_ENGINE_BASE_URL", "http://127.0.0.1:8002")
 EIDON_BASE_URL = os.getenv("EIDON_BASE_URL", "http://127.0.0.1:8003")
 
-
-def ensure_store() -> None:
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    if not STORE_PATH.exists():
-        STORE_PATH.write_text("[]", encoding="utf-8")
+STORE: SignalStore = LocalJsonSignalStore(STORE_PATH)
 
 
-def load_signals() -> list[SignalRecord]:
-    ensure_store()
-    raw = STORE_PATH.read_text(encoding="utf-8").strip()
-    if not raw:
-        return []
-
-    try:
-        data = json.loads(raw)
-    except json.JSONDecodeError as exc:
-        raise HTTPException(status_code=500, detail=f"Signal store is invalid JSON: {exc}") from exc
-
-    if not isinstance(data, list):
-        raise HTTPException(status_code=500, detail="Signal store must contain a JSON list.")
-
-    return [SignalRecord.model_validate(item) for item in data]
-
-
-def save_signals(records: list[SignalRecord]) -> None:
-    ensure_store()
-    payload = [record.model_dump() for record in records]
-    STORE_PATH.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-
-def build_signal_record(signal: SignalEventInput, storage_backend: str = "local_json") -> SignalRecord:
+def build_signal_record(signal: SignalEventInput, storage_backend: str) -> SignalRecord:
     return SignalRecord(
         schema_version=signal.schema_version,
         signal_id=signal.signal_id,
@@ -69,64 +42,6 @@ def build_signal_record(signal: SignalEventInput, storage_backend: str = "local_
         status="accepted",
         storage_backend=storage_backend,
     )
-
-
-def upsert_signal(record: SignalRecord) -> SignalRecord:
-    records = load_signals()
-
-    updated = False
-    for index, existing in enumerate(records):
-        if existing.signal_id == record.signal_id:
-            records[index] = record
-            updated = True
-            break
-
-    if not updated:
-        records.append(record)
-
-    save_signals(records)
-    return record
-
-
-def get_signal(signal_id: str) -> SignalRecord | None:
-    records = load_signals()
-    for record in records:
-        if record.signal_id == signal_id:
-            return record
-    return None
-
-
-app = FastAPI(
-    title="Eidonic Core Signal Gateway",
-    version="0.2.2",
-    description="Ingress service scaffold for the Eidonic Core with signal record persistence and full downstream chaining.",
-)
-
-
-@app.on_event("startup")
-def startup() -> None:
-    ensure_store()
-
-
-@app.get("/health")
-def health() -> dict[str, str]:
-    return {
-        "status": "ok",
-        "service": "signal-gateway",
-    }
-
-
-@app.get("/signals/{signal_id}")
-def get_signal_by_id(signal_id: str) -> dict[str, object]:
-    record = get_signal(signal_id)
-    if record is None:
-        raise HTTPException(status_code=404, detail=f"Signal not found: {signal_id}")
-
-    return {
-        "status": "found",
-        "service": "signal-gateway",
-        "signal": record.model_dump(),
-    }
 
 
 def post_json(url: str, payload: dict[str, Any]) -> dict[str, Any]:
@@ -158,9 +73,38 @@ def derive_intent(signal: SignalEventInput) -> str:
     return "Determine the next useful response."
 
 
+app = FastAPI(
+    title="Eidonic Core Signal Gateway",
+    version="0.2.3",
+    description="Ingress service scaffold for the Eidonic Core with a store contract surface for signal persistence and full downstream chaining.",
+)
+
+
+@app.get("/health")
+def health() -> dict[str, object]:
+    return {
+        "status": "ok",
+        "service": "signal-gateway",
+        "store": STORE.ping(),
+    }
+
+
+@app.get("/signals/{signal_id}")
+def get_signal_by_id(signal_id: str) -> dict[str, object]:
+    record = STORE.get(signal_id)
+    if record is None:
+        raise HTTPException(status_code=404, detail=f"Signal not found: {signal_id}")
+
+    return {
+        "status": "found",
+        "service": "signal-gateway",
+        "signal": record.model_dump(),
+    }
+
+
 @app.post("/signals/ingest")
 def ingest_signal(signal: SignalEventInput) -> dict[str, Any]:
-    saved_signal = upsert_signal(build_signal_record(signal))
+    saved_signal = STORE.upsert(build_signal_record(signal, storage_backend=STORE.backend_name))
 
     herald_payload = HeraldCheckInput(
         signal_id=signal.signal_id,

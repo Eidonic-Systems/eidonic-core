@@ -252,3 +252,11 @@
 - Extended the full integration test to verify `GET /signals/{signal_id}`
 - Added `docs/PHASE_2_INTEGRATION_TEST_SIGNAL_RECORD.md`
 - Next step: open PR for signal record integration proof
+
+## 2026-04-09
+- Created branch `phase-2/signal-store-contract-surface`
+- Added `services/signal-gateway/app/store.py`
+- Extracted signal persistence behind a `SignalStore`
+- Updated `services/signal-gateway/app/main.py` to use the store adapter
+- Updated `services/signal-gateway/README.md`
+- Next step: open PR for signal store contract surface
