@@ -237,3 +237,12 @@
 - Extended the full integration test to verify `GET /thresholds`
 - Added `docs/PHASE_2_INTEGRATION_TEST_HERALD_LIST_SURFACES.md`
 - Next step: open PR for Herald list surface integration proof
+
+## 2026-04-09
+- Created branch `phase-2/signal-record-contract`
+- Added shared `SignalRecord` model to `eidonic_schemas`
+- Added temporary local JSON persistence for `signal-gateway` accepted ingress records
+- Added `GET /signals/{signal_id}` for signal record retrieval
+- Added `docs/PHASE_2_SIGNAL_RECORD_CONTRACT.md`
+- Updated `services/signal-gateway/README.md` for the signal contract step
+- Next step: open PR for the first explicit signal record contract

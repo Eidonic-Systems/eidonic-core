@@ -45,3 +45,6 @@ services/eidon-orchestrator/data/lineage.json
 
 # Herald local threshold persistence
 services/herald-service/data/thresholds.json
+
+# Signal Gateway local signal persistence
+services/signal-gateway/data/signals.json

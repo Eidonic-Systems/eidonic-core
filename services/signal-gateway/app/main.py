@@ -1,3 +1,4 @@
+import json
 import os
 from pathlib import Path
 from typing import Any
@@ -5,16 +6,19 @@ from typing import Any
 import httpx
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
-
 from eidonic_schemas import (
     EidonOrchestrationInput,
     HeraldCheckInput,
     SessionStartInput,
     SignalEventInput,
+    SignalRecord,
 )
 
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
+DATA_DIR = Path(__file__).resolve().parents[1] / "data"
+STORE_PATH = DATA_DIR / "signals.json"
+
 load_dotenv(REPO_ROOT / ".env")
 
 HERALD_BASE_URL = os.getenv("HERALD_BASE_URL", "http://127.0.0.1:8001")
@@ -22,11 +26,86 @@ SESSION_ENGINE_BASE_URL = os.getenv("SESSION_ENGINE_BASE_URL", "http://127.0.0.1
 EIDON_BASE_URL = os.getenv("EIDON_BASE_URL", "http://127.0.0.1:8003")
 
 
+def ensure_store() -> None:
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    if not STORE_PATH.exists():
+        STORE_PATH.write_text("[]", encoding="utf-8")
+
+
+def load_signals() -> list[SignalRecord]:
+    ensure_store()
+    raw = STORE_PATH.read_text(encoding="utf-8").strip()
+    if not raw:
+        return []
+
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise HTTPException(status_code=500, detail=f"Signal store is invalid JSON: {exc}") from exc
+
+    if not isinstance(data, list):
+        raise HTTPException(status_code=500, detail="Signal store must contain a JSON list.")
+
+    return [SignalRecord.model_validate(item) for item in data]
+
+
+def save_signals(records: list[SignalRecord]) -> None:
+    ensure_store()
+    payload = [record.model_dump() for record in records]
+    STORE_PATH.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+
+def build_signal_record(signal: SignalEventInput, storage_backend: str = "local_json") -> SignalRecord:
+    return SignalRecord(
+        schema_version=signal.schema_version,
+        signal_id=signal.signal_id,
+        signal_type=signal.signal_type,
+        source=signal.source,
+        content=signal.content,
+        created_at=signal.created_at,
+        session_hint=signal.session_hint,
+        sensitivity_hint=signal.sensitivity_hint,
+        metadata=signal.metadata,
+        status="accepted",
+        storage_backend=storage_backend,
+    )
+
+
+def upsert_signal(record: SignalRecord) -> SignalRecord:
+    records = load_signals()
+
+    updated = False
+    for index, existing in enumerate(records):
+        if existing.signal_id == record.signal_id:
+            records[index] = record
+            updated = True
+            break
+
+    if not updated:
+        records.append(record)
+
+    save_signals(records)
+    return record
+
+
+def get_signal(signal_id: str) -> SignalRecord | None:
+    records = load_signals()
+    for record in records:
+        if record.signal_id == signal_id:
+            return record
+    return None
+
+
 app = FastAPI(
     title="Eidonic Core Signal Gateway",
-    version="0.2.1",
-    description="Ingress service scaffold for the Eidonic Core with full downstream chaining.",
+    version="0.2.2",
+    description="Ingress service scaffold for the Eidonic Core with signal record persistence and full downstream chaining.",
 )
+
+
+@app.on_event("startup")
+def startup() -> None:
+    ensure_store()
 
 
 @app.get("/health")
@@ -34,6 +113,19 @@ def health() -> dict[str, str]:
     return {
         "status": "ok",
         "service": "signal-gateway",
+    }
+
+
+@app.get("/signals/{signal_id}")
+def get_signal_by_id(signal_id: str) -> dict[str, object]:
+    record = get_signal(signal_id)
+    if record is None:
+        raise HTTPException(status_code=404, detail=f"Signal not found: {signal_id}")
+
+    return {
+        "status": "found",
+        "service": "signal-gateway",
+        "signal": record.model_dump(),
     }
 
 
@@ -68,6 +160,8 @@ def derive_intent(signal: SignalEventInput) -> str:
 
 @app.post("/signals/ingest")
 def ingest_signal(signal: SignalEventInput) -> dict[str, Any]:
+    saved_signal = upsert_signal(build_signal_record(signal))
+
     herald_payload = HeraldCheckInput(
         signal_id=signal.signal_id,
         signal_type=signal.signal_type,
@@ -84,8 +178,9 @@ def ingest_signal(signal: SignalEventInput) -> dict[str, Any]:
     response: dict[str, Any] = {
         "status": "accepted",
         "service": "signal-gateway",
-        "received_signal_id": signal.signal_id,
-        "message": "Signal accepted and sent through the current downstream chain.",
+        "received_signal_id": saved_signal.signal_id,
+        "storage_backend": saved_signal.storage_backend,
+        "message": "Signal accepted, persisted, and sent through the current downstream chain.",
         "herald_result": herald_result,
     }
 
@@ -107,6 +202,7 @@ def ingest_signal(signal: SignalEventInput) -> dict[str, Any]:
         f"{SESSION_ENGINE_BASE_URL}/sessions/start",
         session_payload.model_dump(),
     )
+
     response["session_result"] = session_result
 
     if session_result.get("status") != "started":
@@ -133,5 +229,4 @@ def ingest_signal(signal: SignalEventInput) -> dict[str, Any]:
 
     response["derived_intent"] = derived_intent
     response["eidon_result"] = eidon_result
-
     return response
