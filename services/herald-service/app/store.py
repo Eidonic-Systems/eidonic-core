@@ -14,7 +14,7 @@ class ThresholdStore(Protocol):
 
     def get(self, signal_id: str) -> ThresholdRecord | None: ...
 
-    def list(self) -> list[ThresholdRecord]: ...
+    def list_recent(self, limit: int = 50) -> list[ThresholdRecord]: ...
 
     def ping(self) -> dict[str, str]: ...
 
@@ -78,8 +78,10 @@ class LocalJsonThresholdStore:
                 return record
         return None
 
-    def list(self) -> list[ThresholdRecord]:
-        return self._load_records()
+    def list_recent(self, limit: int = 50) -> list[ThresholdRecord]:
+        records = self._load_records()
+        ordered = sorted(records, key=lambda record: record.created_at, reverse=True)
+        return ordered[:limit]
 
     def ping(self) -> dict[str, str]:
         self._ensure_store()

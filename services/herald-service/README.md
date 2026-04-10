@@ -10,7 +10,7 @@ The Herald Service is the current threshold review service for Eidonic Core.
 - expose list and retrieval surfaces for persisted threshold records
 
 ## Current phase
-Phase 2 threshold store contract list surface scaffold
+Phase 2 Postgres-ready threshold store contract scaffold
 
 ## Current endpoints
 - `GET /health`
@@ -19,7 +19,9 @@ Phase 2 threshold store contract list surface scaffold
 - `GET /thresholds/{signal_id}`
 
 ## Store contract surface
-The current implementation uses an explicit local store adapter for threshold persistence instead of keeping JSON persistence inline in the main service file.
+The current implementation uses an explicit threshold store contract with `upsert`, `get`, `list_recent(limit)`, and `ping()` semantics.
+
+The active implementation is still `LocalJsonThresholdStore`, but the contract surface is now shaped for a future durable backend without changing the current runtime behavior.
 
 ## Local persistence
 The current scaffold writes threshold records to:
@@ -28,4 +30,4 @@ The current scaffold writes threshold records to:
 This file is ignored by Git and acts as a temporary local persistence layer until a real durable backend is introduced.
 
 ## Notes
-This is a temporary local threshold persistence step, not the final review, provenance, or witness layer.
+This is still not a database-backed review, provenance, or witness layer.
