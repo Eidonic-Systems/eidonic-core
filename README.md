@@ -54,6 +54,10 @@ The standard integration test now verifies:
 - lineage retrieval
 - artifact list retrieval
 - lineage list retrieval
+- service health on `signal-gateway`
+- service health on `herald-service`
+- service health on `session-engine`
+- service health on `eidon-orchestrator`
 
 ## Working rules
 - terminal-first local workflow
