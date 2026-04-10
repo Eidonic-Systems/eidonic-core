@@ -280,3 +280,10 @@
 - Extended the full integration test to verify `GET /sessions`
 - Added `docs/PHASE_2_INTEGRATION_TEST_SESSION_LIST_SURFACES.md`
 - Next step: open PR for session list surface integration proof
+
+## 2026-04-09
+- Created branch `phase-2/repo-truth-surface-sync`
+- Updated root `README.md` to reflect the proven Phase 2 scaffold truth
+- Updated `AGENTS.md` to reflect current build discipline and proven surfaces
+- Added `docs/PHASE_2_REPO_TRUTH_SURFACE_SYNC.md`
+- Next step: open PR for repo truth surface sync
