@@ -292,7 +292,39 @@ Assert-Equal -Name "persisted signal storage backend" `
   -Actual $persistedSignal.signal.storage_backend `
   -Expected "local_json"
 
-Write-Host "Full chain integration test with signal, threshold, session, artifact, lineage, orchestrator list surfaces, and Herald list surfaces passed." -ForegroundColor Green
+$signalId = $response.received_signal_id
+
+$signalList = Invoke-RestMethod -Uri "$GatewayBaseUrl/signals" `
+  -Method Get
+
+$signalListJson = $signalList | ConvertTo-Json -Depth 12
+Write-Host ""
+Write-Host $signalListJson
+
+Assert-Equal -Name "signal list status" `
+  -Actual $signalList.status `
+  -Expected "found"
+
+Assert-Equal -Name "signal list service" `
+  -Actual $signalList.service `
+  -Expected "signal-gateway"
+
+if ($null -eq $signalList.signals) {
+  throw "Missing signals list in Signal Gateway list response."
+}
+
+if ($signalList.count -lt 1) {
+  throw "Expected at least one signal record in Signal Gateway list response."
+}
+
+$signalFromList = $signalList.signals | Where-Object { $_.signal_id -eq $signalId } | Select-Object -First 1
+
+if ($null -eq $signalFromList) {
+  throw "Expected signal id $signalId was not found in Signal Gateway list response."
+}
+
+Write-Host "Full chain integration test with signal, signal list, threshold, session, artifact, lineage, orchestrator list surfaces, and Herald list surfaces passed." -ForegroundColor Green
+
 
 
 
