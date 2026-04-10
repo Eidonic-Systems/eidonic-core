@@ -293,3 +293,9 @@
 - Extended the full integration test to verify service health surfaces
 - Added `docs/PHASE_2_INTEGRATION_TEST_HEALTH_SURFACES.md`
 - Next step: open PR for service health surface integration proof
+
+## 2026-04-09
+- Created branch `phase-2/proof-surface-sync`
+- Updated root `README.md` to include service health surfaces in the current integration proof
+- Added `docs/PHASE_2_PROOF_SURFACE_SYNC.md`
+- Next step: open PR for proof surface sync
