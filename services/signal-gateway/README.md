@@ -8,20 +8,22 @@ The Signal Gateway is the ingress service for Eidonic Core.
 - persist accepted signal records
 - forward accepted work into the current downstream chain
 - return the current chain results in one response
+- expose list and retrieval surfaces for persisted signal records
 
 ## Current phase
-Phase 2 signal store contract surface scaffold
+Phase 2 signal store contract list surface scaffold
 
 ## Current endpoints
 - `GET /health`
 - `POST /signals/ingest`
+- `GET /signals`
 - `GET /signals/{signal_id}`
 
 ## Current downstream chain
 `signal-gateway` → `herald-service` → `session-engine` → `eidon-orchestrator`
 
 ## Store contract surface
-The current implementation now uses an explicit local store adapter for signal persistence instead of keeping JSON persistence inline in the main service file.
+The current implementation uses an explicit local store adapter for signal persistence instead of keeping JSON persistence inline in the main service file.
 
 ## Local persistence
 The current scaffold writes signal records to:

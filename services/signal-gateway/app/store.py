@@ -14,6 +14,8 @@ class SignalStore(Protocol):
 
     def get(self, signal_id: str) -> SignalRecord | None: ...
 
+    def list(self) -> list[SignalRecord]: ...
+
     def ping(self) -> dict[str, str]: ...
 
 
@@ -75,6 +77,9 @@ class LocalJsonSignalStore:
             if record.signal_id == signal_id:
                 return record
         return None
+
+    def list(self) -> list[SignalRecord]:
+        return self._load_records()
 
     def ping(self) -> dict[str, str]:
         self._ensure_store()

@@ -260,3 +260,11 @@
 - Updated `services/signal-gateway/app/main.py` to use the store adapter
 - Updated `services/signal-gateway/README.md`
 - Next step: open PR for signal store contract surface
+
+## 2026-04-09
+- Created branch `phase-2/signal-list-surfaces`
+- Added `GET /signals` to list persisted signal records
+- Extended signal store with list semantics
+- Updated `services/signal-gateway/README.md`
+- Added `docs/PHASE_2_SIGNAL_LIST_SURFACES.md`
+- Next step: open PR for signal list surfaces
