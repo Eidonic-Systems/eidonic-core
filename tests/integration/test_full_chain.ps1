@@ -354,7 +354,128 @@ if ($null -eq $sessionFromList) {
   throw "Expected session id $sessionId was not found in Session Engine list response."
 }
 
-Write-Host "Full chain integration test with signal, signal list, threshold, session, session list, artifact, lineage, orchestrator list surfaces, and Herald list surfaces passed." -ForegroundColor Green
+$signalGatewayHealth = Invoke-RestMethod -Uri "$GatewayBaseUrl/health" `
+  -Method Get
+
+$signalGatewayHealthJson = $signalGatewayHealth | ConvertTo-Json -Depth 12
+Write-Host ""
+Write-Host $signalGatewayHealthJson
+
+Assert-Equal -Name "signal gateway health status" `
+  -Actual $signalGatewayHealth.status `
+  -Expected "ok"
+
+Assert-Equal -Name "signal gateway health service" `
+  -Actual $signalGatewayHealth.service `
+  -Expected "signal-gateway"
+
+if ($null -eq $signalGatewayHealth.store) {
+  throw "Missing store object in Signal Gateway health response."
+}
+
+Assert-Equal -Name "signal gateway store status" `
+  -Actual $signalGatewayHealth.store.status `
+  -Expected "ok"
+
+Assert-Equal -Name "signal gateway store backend" `
+  -Actual $signalGatewayHealth.store.backend `
+  -Expected "local_json"
+
+$heraldHealth = Invoke-RestMethod -Uri "http://127.0.0.1:8001/health" `
+  -Method Get
+
+$heraldHealthJson = $heraldHealth | ConvertTo-Json -Depth 12
+Write-Host ""
+Write-Host $heraldHealthJson
+
+Assert-Equal -Name "herald health status" `
+  -Actual $heraldHealth.status `
+  -Expected "ok"
+
+Assert-Equal -Name "herald health service" `
+  -Actual $heraldHealth.service `
+  -Expected "herald-service"
+
+if ($null -eq $heraldHealth.store) {
+  throw "Missing store object in Herald health response."
+}
+
+Assert-Equal -Name "herald store status" `
+  -Actual $heraldHealth.store.status `
+  -Expected "ok"
+
+Assert-Equal -Name "herald store backend" `
+  -Actual $heraldHealth.store.backend `
+  -Expected "local_json"
+
+$sessionEngineHealth = Invoke-RestMethod -Uri "$SessionEngineBaseUrl/health" `
+  -Method Get
+
+$sessionEngineHealthJson = $sessionEngineHealth | ConvertTo-Json -Depth 12
+Write-Host ""
+Write-Host $sessionEngineHealthJson
+
+Assert-Equal -Name "session engine health status" `
+  -Actual $sessionEngineHealth.status `
+  -Expected "ok"
+
+Assert-Equal -Name "session engine health service" `
+  -Actual $sessionEngineHealth.service `
+  -Expected "session-engine"
+
+if ($null -eq $sessionEngineHealth.store) {
+  throw "Missing store object in Session Engine health response."
+}
+
+Assert-Equal -Name "session engine store status" `
+  -Actual $sessionEngineHealth.store.status `
+  -Expected "ok"
+
+Assert-Equal -Name "session engine store backend" `
+  -Actual $sessionEngineHealth.store.backend `
+  -Expected "local_json"
+
+$eidonHealth = Invoke-RestMethod -Uri "$EidonBaseUrl/health" `
+  -Method Get
+
+$eidonHealthJson = $eidonHealth | ConvertTo-Json -Depth 12
+Write-Host ""
+Write-Host $eidonHealthJson
+
+Assert-Equal -Name "eidon health status" `
+  -Actual $eidonHealth.status `
+  -Expected "ok"
+
+Assert-Equal -Name "eidon health service" `
+  -Actual $eidonHealth.service `
+  -Expected "eidon-orchestrator"
+
+if ($null -eq $eidonHealth.artifact_store) {
+  throw "Missing artifact_store object in Eidon Orchestrator health response."
+}
+
+if ($null -eq $eidonHealth.lineage_store) {
+  throw "Missing lineage_store object in Eidon Orchestrator health response."
+}
+
+Assert-Equal -Name "eidon artifact store status" `
+  -Actual $eidonHealth.artifact_store.status `
+  -Expected "ok"
+
+Assert-Equal -Name "eidon artifact store backend" `
+  -Actual $eidonHealth.artifact_store.backend `
+  -Expected "local_json"
+
+Assert-Equal -Name "eidon lineage store status" `
+  -Actual $eidonHealth.lineage_store.status `
+  -Expected "ok"
+
+Assert-Equal -Name "eidon lineage store backend" `
+  -Actual $eidonHealth.lineage_store.backend `
+  -Expected "local_json"
+
+Write-Host "Full chain integration test with signal, signal list, threshold, session, session list, artifact, lineage, orchestrator list surfaces, Herald list surfaces, and service health surfaces passed." -ForegroundColor Green
+
 
 
 
