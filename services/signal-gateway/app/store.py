@@ -14,7 +14,7 @@ class SignalStore(Protocol):
 
     def get(self, signal_id: str) -> SignalRecord | None: ...
 
-    def list(self) -> list[SignalRecord]: ...
+    def list_recent(self, limit: int = 50) -> list[SignalRecord]: ...
 
     def ping(self) -> dict[str, str]: ...
 
@@ -78,8 +78,10 @@ class LocalJsonSignalStore:
                 return record
         return None
 
-    def list(self) -> list[SignalRecord]:
-        return self._load_records()
+    def list_recent(self, limit: int = 50) -> list[SignalRecord]:
+        records = self._load_records()
+        ordered = sorted(records, key=lambda record: record.created_at, reverse=True)
+        return ordered[:limit]
 
     def ping(self) -> dict[str, str]:
         self._ensure_store()

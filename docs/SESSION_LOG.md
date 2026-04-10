@@ -308,3 +308,12 @@
 - Updated `services/herald-service/README.md`
 - Added `docs/PHASE_2_HERALD_POSTGRES_READY_STORE_CONTRACT.md`
 - Next step: open PR for Herald Postgres-ready store contract surface
+
+## 2026-04-09
+- Created branch `phase-2/signal-postgres-ready-store-contract`
+- Hardened `SignalStore` with `list_recent(limit)` semantics
+- Kept local JSON as the active Signal Gateway store implementation
+- Updated `services/signal-gateway/app/main.py` to use the mature store contract surface
+- Updated `services/signal-gateway/README.md`
+- Added `docs/PHASE_2_SIGNAL_POSTGRES_READY_STORE_CONTRACT.md`
+- Next step: open PR for Signal Gateway Postgres-ready store contract surface

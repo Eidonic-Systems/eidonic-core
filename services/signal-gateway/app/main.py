@@ -75,8 +75,8 @@ def derive_intent(signal: SignalEventInput) -> str:
 
 app = FastAPI(
     title="Eidonic Core Signal Gateway",
-    version="0.2.4",
-    description="Ingress service scaffold for the Eidonic Core with store contract list surfaces for signal persistence and full downstream chaining.",
+    version="0.2.5",
+    description="Ingress service scaffold for the Eidonic Core with a Postgres-ready store contract surface for signal persistence and full downstream chaining.",
 )
 
 
@@ -90,8 +90,8 @@ def health() -> dict[str, object]:
 
 
 @app.get("/signals")
-def list_signals() -> dict[str, object]:
-    records = STORE.list()
+def list_signals(limit: int = 50) -> dict[str, object]:
+    records = STORE.list_recent(limit=limit)
     return {
         "status": "found",
         "service": "signal-gateway",
