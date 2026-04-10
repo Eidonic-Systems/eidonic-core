@@ -299,3 +299,12 @@
 - Updated root `README.md` to include service health surfaces in the current integration proof
 - Added `docs/PHASE_2_PROOF_SURFACE_SYNC.md`
 - Next step: open PR for proof surface sync
+
+## 2026-04-09
+- Created branch `phase-2/herald-postgres-ready-store-contract`
+- Hardened `ThresholdStore` with `list_recent(limit)` semantics
+- Kept local JSON as the active Herald store implementation
+- Updated `services/herald-service/app/main.py` to use the mature store contract surface
+- Updated `services/herald-service/README.md`
+- Added `docs/PHASE_2_HERALD_POSTGRES_READY_STORE_CONTRACT.md`
+- Next step: open PR for Herald Postgres-ready store contract surface
