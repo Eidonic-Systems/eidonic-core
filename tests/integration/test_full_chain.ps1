@@ -323,7 +323,39 @@ if ($null -eq $signalFromList) {
   throw "Expected signal id $signalId was not found in Signal Gateway list response."
 }
 
-Write-Host "Full chain integration test with signal, signal list, threshold, session, artifact, lineage, orchestrator list surfaces, and Herald list surfaces passed." -ForegroundColor Green
+$sessionId = $response.session_result.session_id
+
+$sessionList = Invoke-RestMethod -Uri "$SessionEngineBaseUrl/sessions" `
+  -Method Get
+
+$sessionListJson = $sessionList | ConvertTo-Json -Depth 12
+Write-Host ""
+Write-Host $sessionListJson
+
+Assert-Equal -Name "session list status" `
+  -Actual $sessionList.status `
+  -Expected "listed"
+
+Assert-Equal -Name "session list service" `
+  -Actual $sessionList.service `
+  -Expected "session-engine"
+
+if ($null -eq $sessionList.sessions) {
+  throw "Missing sessions list in Session Engine list response."
+}
+
+if ($sessionList.count -lt 1) {
+  throw "Expected at least one session record in Session Engine list response."
+}
+
+$sessionFromList = $sessionList.sessions | Where-Object { $_.session_id -eq $sessionId } | Select-Object -First 1
+
+if ($null -eq $sessionFromList) {
+  throw "Expected session id $sessionId was not found in Session Engine list response."
+}
+
+Write-Host "Full chain integration test with signal, signal list, threshold, session, session list, artifact, lineage, orchestrator list surfaces, and Herald list surfaces passed." -ForegroundColor Green
+
 
 
 
