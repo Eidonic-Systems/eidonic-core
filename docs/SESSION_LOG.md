@@ -317,3 +317,12 @@
 - Updated `services/signal-gateway/README.md`
 - Added `docs/PHASE_2_SIGNAL_POSTGRES_READY_STORE_CONTRACT.md`
 - Next step: open PR for Signal Gateway Postgres-ready store contract surface
+
+## 2026-04-09
+- Created branch `phase-2/orchestrator-postgres-ready-store-contract`
+- Hardened orchestrator store contracts with `list_recent(limit)` semantics
+- Kept local JSON as the active orchestrator store implementation
+- Updated `services/eidon-orchestrator/app/main.py` to use the mature store contract surfaces
+- Updated `services/eidon-orchestrator/README.md`
+- Added `docs/PHASE_2_ORCHESTRATOR_POSTGRES_READY_STORE_CONTRACT.md`
+- Next step: open PR for Orchestrator Postgres-ready store contract surface

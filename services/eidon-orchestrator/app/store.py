@@ -14,7 +14,7 @@ class ArtifactStore(Protocol):
 
     def get(self, artifact_id: str) -> EidonArtifactRecord | None: ...
 
-    def list(self) -> list[EidonArtifactRecord]: ...
+    def list_recent(self, limit: int = 50) -> list[EidonArtifactRecord]: ...
 
     def ping(self) -> dict[str, str]: ...
 
@@ -27,7 +27,7 @@ class ArtifactLineageStore(Protocol):
 
     def get_by_artifact_id(self, artifact_id: str) -> ArtifactLineageRecord | None: ...
 
-    def list(self) -> list[ArtifactLineageRecord]: ...
+    def list_recent(self, limit: int = 50) -> list[ArtifactLineageRecord]: ...
 
     def ping(self) -> dict[str, str]: ...
 
@@ -70,17 +70,14 @@ class LocalJsonArtifactStore:
 
     def upsert(self, record: EidonArtifactRecord) -> EidonArtifactRecord:
         records = self._load_records()
-
         updated = False
         for index, existing in enumerate(records):
             if existing.artifact_id == record.artifact_id:
                 records[index] = record
                 updated = True
                 break
-
         if not updated:
             records.append(record)
-
         self._save_records(records)
         return record
 
@@ -91,8 +88,10 @@ class LocalJsonArtifactStore:
                 return record
         return None
 
-    def list(self) -> list[EidonArtifactRecord]:
-        return self._load_records()
+    def list_recent(self, limit: int = 50) -> list[EidonArtifactRecord]:
+        records = self._load_records()
+        ordered = sorted(records, key=lambda record: record.created_at, reverse=True)
+        return ordered[:limit]
 
     def ping(self) -> dict[str, str]:
         self._ensure_store()
@@ -141,17 +140,14 @@ class LocalJsonArtifactLineageStore:
 
     def upsert(self, record: ArtifactLineageRecord) -> ArtifactLineageRecord:
         records = self._load_records()
-
         updated = False
         for index, existing in enumerate(records):
             if existing.lineage_id == record.lineage_id:
                 records[index] = record
                 updated = True
                 break
-
         if not updated:
             records.append(record)
-
         self._save_records(records)
         return record
 
@@ -162,8 +158,10 @@ class LocalJsonArtifactLineageStore:
                 return record
         return None
 
-    def list(self) -> list[ArtifactLineageRecord]:
-        return self._load_records()
+    def list_recent(self, limit: int = 50) -> list[ArtifactLineageRecord]:
+        records = self._load_records()
+        ordered = sorted(records, key=lambda record: record.created_at, reverse=True)
+        return ordered[:limit]
 
     def ping(self) -> dict[str, str]:
         self._ensure_store()
