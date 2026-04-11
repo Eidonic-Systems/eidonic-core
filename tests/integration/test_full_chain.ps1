@@ -660,13 +660,14 @@ Assert-Equal -Name "provider status" `
 
 Assert-Equal -Name "provider backend" `
   -Actual $eidonHealth.provider.backend `
-  -Expected "stub"
+  -Expected "ollama"
 
 Assert-Equal -Name "provider model" `
   -Actual $eidonHealth.provider.model `
-  -Expected "stub-eidon-v1"
+  -Expected "gemma3n:e4b"
 
 Write-Host "Full chain integration test with provider surface passed." -ForegroundColor Green
+
 
 
 
