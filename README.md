@@ -24,10 +24,6 @@ Phase 2 scaffold with chained services, PostgreSQL-backed state spine, real loca
 - persisted provider failure semantics
 - explicit provider warmup and readiness surface
 
-## Fallback persistence still available
-- local JSON store adapters remain available as fallback
-- the current proven local stack uses PostgreSQL-backed services
-
 ## Current verified retrieval surfaces
 - Signal Gateway
   - `GET /health`
@@ -72,6 +68,7 @@ The standard integration coverage now verifies:
 - provider provenance retrieval
 - provider failure surface
 - provider warmup surface
+- provider warmup failure surface
 
 ## Working rules
 - terminal-first local workflow
@@ -79,14 +76,25 @@ The standard integration coverage now verifies:
 - after every merge, update local first
 - prove changes from `main` after merge
 - no live hosted model in runtime
-- persistence, provenance, failure semantics, and readiness before model complexity
+- persistence, provenance, failure semantics, readiness, and preflight before model complexity
 
 ## Local workflow
+Run preflight from repo root before startup:
+
+`powershell -ExecutionPolicy Bypass -File .\scripts\check_phase_2_runtime_prereqs.ps1`
+
+This verifies:
+- required `.env` keys
+- PostgreSQL reachability
+- Ollama reachability when selected
+- configured local model presence
+- Orchestrator Python environment presence
+
 Start stack from repo root:
 
 `powershell -ExecutionPolicy Bypass -File .\scripts\start_phase_2_stack.ps1`
 
-This now starts the four service windows, waits for health, and warms the Eidon provider before handing control back.
+This starts the four service windows, waits for health, and warms the Eidon provider before handing control back.
 
 Run happy-path integration proof from repo root:
 
@@ -100,9 +108,15 @@ Run focused provider-warmup proof from repo root:
 
 `powershell -ExecutionPolicy Bypass -File .\tests\integration\test_provider_warmup_surface.ps1`
 
+Run focused provider-warmup failure proof from repo root:
+
+`powershell -ExecutionPolicy Bypass -File .\tests\integration\test_provider_warmup_failure_surface.ps1`
+
 ## Notes
 PostgreSQL now backs the current proven Phase 2 state spine.
 
 Local JSON adapters remain in the repo as fallback implementations, not as the current proven primary backend.
 
 The stack startup sequence now includes provider warmup so the local system enters a ready state instead of relying on a manual warmup ritual.
+
+Preflight exists to catch missing local prerequisites before startup instead of discovering them only after boot attempts.

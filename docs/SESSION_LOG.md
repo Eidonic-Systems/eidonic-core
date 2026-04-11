@@ -469,3 +469,11 @@
 - Added `tests/integration/test_provider_warmup_failure_surface.ps1`
 - Added `docs/PHASE_2_INTEGRATION_TEST_PROVIDER_WARMUP_FAILURE_SURFACE.md`
 - Next step: open PR for provider warmup failure surface integration proof
+
+## 2026-04-11
+- Created branch `phase-2/local-runtime-preflight-surface`
+- Added `scripts/check_phase_2_runtime_prereqs.ps1`
+- Added explicit local runtime preflight for env keys, PostgreSQL reachability, Ollama reachability, configured model presence, and Orchestrator Python presence
+- Updated `README.md` to include the preflight step in the standard local workflow
+- Added `docs/PHASE_2_LOCAL_RUNTIME_PREFLIGHT_SURFACE.md`
+- Next step: prove the preflight passes before normal stack startup
