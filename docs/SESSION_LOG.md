@@ -454,3 +454,11 @@
 - Added `tests/integration/test_provider_warmup_surface.ps1`
 - Added `docs/PHASE_2_INTEGRATION_TEST_PROVIDER_WARMUP_SURFACE.md`
 - Next step: open PR for provider warmup surface integration proof
+
+## 2026-04-11
+- Created branch `phase-2/stack-provider-warmup-sequence`
+- Updated the Phase 2 stack launcher to wait for health and warm the Eidon provider automatically
+- Added clear startup failure behavior when provider warmup fails
+- Updated `README.md` to reflect the standard warmup startup sequence
+- Added `docs/PHASE_2_STACK_PROVIDER_WARMUP_SEQUENCE.md`
+- Next step: prove stack startup now warms the provider automatically
