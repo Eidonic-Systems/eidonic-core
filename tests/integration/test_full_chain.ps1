@@ -56,7 +56,7 @@ if ($null -eq $response.eidon_result) {
 Assert-Equal -Name "eidon status" -Actual $response.eidon_result.status -Expected "orchestrated"
 Assert-Equal -Name "eidon service" -Actual $response.eidon_result.service -Expected "eidon-orchestrator"
 Assert-Equal -Name "eidon session id" -Actual $response.eidon_result.session_id -Expected "session-sig-001"
-Assert-Equal -Name "eidon storage backend" -Actual $response.eidon_result.storage_backend -Expected "local_json"
+Assert-Equal -Name "eidon storage backend" -Actual $response.eidon_result.storage_backend -Expected "postgres"
 
 $artifactId = $response.eidon_result.artifact_id
 Assert-Equal -Name "artifact id" -Actual $artifactId -Expected "artifact-session-sig-001"
@@ -95,7 +95,7 @@ Assert-Equal -Name "persisted artifact id" -Actual $persistedArtifact.artifact.a
 Assert-Equal -Name "persisted artifact session id" -Actual $persistedArtifact.artifact.session_id -Expected "session-sig-001"
 Assert-Equal -Name "persisted artifact signal id" -Actual $persistedArtifact.artifact.signal_id -Expected "sig-001"
 Assert-Equal -Name "persisted artifact status" -Actual $persistedArtifact.artifact.status -Expected "orchestrated"
-Assert-Equal -Name "persisted artifact storage backend" -Actual $persistedArtifact.artifact.storage_backend -Expected "local_json"
+Assert-Equal -Name "persisted artifact storage backend" -Actual $persistedArtifact.artifact.storage_backend -Expected "postgres"
 
 Write-Host ""
 $artifactId = $response.eidon_result.artifact_id
@@ -464,7 +464,7 @@ Assert-Equal -Name "eidon artifact store status" `
 
 Assert-Equal -Name "eidon artifact store backend" `
   -Actual $eidonHealth.artifact_store.backend `
-  -Expected "local_json"
+  -Expected "postgres"
 
 Assert-Equal -Name "eidon lineage store status" `
   -Actual $eidonHealth.lineage_store.status `
@@ -472,7 +472,7 @@ Assert-Equal -Name "eidon lineage store status" `
 
 Assert-Equal -Name "eidon lineage store backend" `
   -Actual $eidonHealth.lineage_store.backend `
-  -Expected "local_json"
+  -Expected "postgres"
 
 $signalId = $response.received_signal_id
 $sessionId = $response.session_result.session_id
@@ -644,6 +644,7 @@ Assert-Equal -Name "lineage limited list first artifact id" `
   -Expected $artifactId
 
 Write-Host "Full chain integration test with list limit surfaces passed." -ForegroundColor Green
+
 
 
 

@@ -1,23 +1,27 @@
 from datetime import datetime, timezone
 from pathlib import Path
 
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from eidonic_schemas import ArtifactLineageRecord, EidonArtifactRecord, EidonOrchestrationInput
 
 from app.store import (
     ArtifactLineageStore,
     ArtifactStore,
-    LocalJsonArtifactLineageStore,
-    LocalJsonArtifactStore,
+    build_artifact_store,
+    build_lineage_store,
 )
 
 
+REPO_ROOT = Path(__file__).resolve().parents[3]
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 ARTIFACT_STORE_PATH = DATA_DIR / "artifacts.json"
 LINEAGE_STORE_PATH = DATA_DIR / "lineage.json"
 
-ARTIFACT_STORE: ArtifactStore = LocalJsonArtifactStore(ARTIFACT_STORE_PATH)
-LINEAGE_STORE: ArtifactLineageStore = LocalJsonArtifactLineageStore(LINEAGE_STORE_PATH)
+load_dotenv(REPO_ROOT / ".env")
+
+ARTIFACT_STORE: ArtifactStore = build_artifact_store(ARTIFACT_STORE_PATH)
+LINEAGE_STORE: ArtifactLineageStore = build_lineage_store(LINEAGE_STORE_PATH)
 
 
 def build_artifact(payload: EidonOrchestrationInput, storage_backend: str) -> EidonArtifactRecord:
@@ -63,8 +67,8 @@ def build_lineage_record(artifact: EidonArtifactRecord) -> ArtifactLineageRecord
 
 app = FastAPI(
     title="Eidonic Core Eidon Orchestrator",
-    version="0.2.4",
-    description="Orchestration service scaffold for the Eidonic Core with a Postgres-ready store contract surface for artifact and lineage persistence.",
+    version="0.2.5",
+    description="Orchestration service scaffold for the Eidonic Core with a Postgres backend pilot.",
 )
 
 

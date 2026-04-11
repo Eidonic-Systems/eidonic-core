@@ -350,3 +350,12 @@
 - Updated `services/signal-gateway/README.md`
 - Added `docs/PHASE_2_SIGNAL_GATEWAY_POSTGRES_BACKEND_PILOT.md`
 - Next step: prove Signal Gateway against local PostgreSQL
+
+## 2026-04-10
+- Created branch `phase-2/orchestrator-postgres-backend-pilot`
+- Added PostgreSQL artifact and lineage stores for the fourth real durable-backend pilot
+- Kept local JSON artifact and lineage stores as fallback
+- Added backend selection through environment variables
+- Updated `services/eidon-orchestrator/README.md`
+- Added `docs/PHASE_2_ORCHESTRATOR_POSTGRES_BACKEND_PILOT.md`
+- Next step: prove Orchestrator against local PostgreSQL
