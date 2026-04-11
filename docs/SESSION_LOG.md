@@ -477,3 +477,11 @@
 - Updated `README.md` to include the preflight step in the standard local workflow
 - Added `docs/PHASE_2_LOCAL_RUNTIME_PREFLIGHT_SURFACE.md`
 - Next step: prove the preflight passes before normal stack startup
+
+## 2026-04-11
+- Created branch `phase-2/stack-runtime-preflight-sequence`
+- Updated the Phase 2 stack launcher to run runtime preflight before opening service windows
+- Startup now fails fast if preflight fails
+- Updated `README.md` to reflect enforced startup preflight
+- Added `docs/PHASE_2_STACK_RUNTIME_PREFLIGHT_SEQUENCE.md`
+- Next step: prove stack startup now enforces runtime preflight before boot
