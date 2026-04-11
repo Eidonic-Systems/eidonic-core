@@ -90,12 +90,15 @@ class EidonArtifactRecord(BaseModel):
     threshold_result: Literal["pass", "hold", "escalate"]
     intent: str
     content: dict[str, Any]
-    status: Literal["orchestrated"]
+    status: Literal["orchestrated", "provider_failed"]
     response_text: str
     created_at: str
     storage_backend: Literal["local_json", "postgres"]
     provider_backend: str
     provider_model: str
+    provider_status: Literal["succeeded", "failed"]
+    provider_error_code: str | None = None
+    provider_error_message: str | None = None
 
 
 class ArtifactLineageRecord(BaseModel):
@@ -106,9 +109,12 @@ class ArtifactLineageRecord(BaseModel):
     signal_type: Literal["user_message", "file_upload", "system_event", "command"]
     source: Literal["chat", "upload", "internal", "api"]
     threshold_result: Literal["pass", "hold", "escalate"]
-    artifact_status: Literal["orchestrated"]
+    artifact_status: Literal["orchestrated", "provider_failed"]
     artifact_storage_backend: Literal["local_json", "postgres"]
     artifact_provider_backend: str
     artifact_provider_model: str
+    artifact_provider_status: Literal["succeeded", "failed"]
+    artifact_provider_error_code: str | None = None
+    artifact_provider_error_message: str | None = None
     artifact_kind: Literal["eidon_orchestration"]
     created_at: str

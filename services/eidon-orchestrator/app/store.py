@@ -67,6 +67,9 @@ class LocalJsonArtifactStore:
             if isinstance(item, dict):
                 item.setdefault("provider_backend", "unknown")
                 item.setdefault("provider_model", "unknown")
+                item.setdefault("provider_status", "succeeded")
+                item.setdefault("provider_error_code", None)
+                item.setdefault("provider_error_message", None)
             records.append(EidonArtifactRecord.model_validate(item))
         return records
 
@@ -141,6 +144,9 @@ class LocalJsonArtifactLineageStore:
             if isinstance(item, dict):
                 item.setdefault("artifact_provider_backend", "unknown")
                 item.setdefault("artifact_provider_model", "unknown")
+                item.setdefault("artifact_provider_status", "succeeded")
+                item.setdefault("artifact_provider_error_code", None)
+                item.setdefault("artifact_provider_error_message", None)
             records.append(ArtifactLineageRecord.model_validate(item))
         return records
 
@@ -226,11 +232,17 @@ class PostgresArtifactStore:
             created_at timestamptz not null,
             storage_backend text not null,
             provider_backend text not null default 'unknown',
-            provider_model text not null default 'unknown'
+            provider_model text not null default 'unknown',
+            provider_status text not null default 'succeeded',
+            provider_error_code text null,
+            provider_error_message text null
         );
         create index if not exists idx_artifact_records_created_at on artifact_records (created_at desc);
         alter table artifact_records add column if not exists provider_backend text not null default 'unknown';
         alter table artifact_records add column if not exists provider_model text not null default 'unknown';
+        alter table artifact_records add column if not exists provider_status text not null default 'succeeded';
+        alter table artifact_records add column if not exists provider_error_code text null;
+        alter table artifact_records add column if not exists provider_error_message text null;
         """
         try:
             with self._connect() as conn:
@@ -243,9 +255,9 @@ class PostgresArtifactStore:
     def upsert(self, record: EidonArtifactRecord) -> EidonArtifactRecord:
         sql = """
         insert into artifact_records (
-            artifact_id, session_id, signal_id, signal_type, source, threshold_result, intent, content, status, response_text, created_at, storage_backend, provider_backend, provider_model
+            artifact_id, session_id, signal_id, signal_type, source, threshold_result, intent, content, status, response_text, created_at, storage_backend, provider_backend, provider_model, provider_status, provider_error_code, provider_error_message
         ) values (
-            %(artifact_id)s, %(session_id)s, %(signal_id)s, %(signal_type)s, %(source)s, %(threshold_result)s, %(intent)s, %(content)s::jsonb, %(status)s, %(response_text)s, %(created_at)s::timestamptz, %(storage_backend)s, %(provider_backend)s, %(provider_model)s
+            %(artifact_id)s, %(session_id)s, %(signal_id)s, %(signal_type)s, %(source)s, %(threshold_result)s, %(intent)s, %(content)s::jsonb, %(status)s, %(response_text)s, %(created_at)s::timestamptz, %(storage_backend)s, %(provider_backend)s, %(provider_model)s, %(provider_status)s, %(provider_error_code)s, %(provider_error_message)s
         )
         on conflict (artifact_id) do update set
             session_id = excluded.session_id,
@@ -260,7 +272,10 @@ class PostgresArtifactStore:
             created_at = excluded.created_at,
             storage_backend = excluded.storage_backend,
             provider_backend = excluded.provider_backend,
-            provider_model = excluded.provider_model;
+            provider_model = excluded.provider_model,
+            provider_status = excluded.provider_status,
+            provider_error_code = excluded.provider_error_code,
+            provider_error_message = excluded.provider_error_message;
         """
         data = record.model_dump(mode="json")
         data["content"] = json.dumps(data["content"])
@@ -275,7 +290,7 @@ class PostgresArtifactStore:
 
     def get(self, artifact_id: str) -> EidonArtifactRecord | None:
         sql = """
-        select artifact_id, session_id, signal_id, signal_type, source, threshold_result, intent, content, status, response_text, created_at, storage_backend, provider_backend, provider_model
+        select artifact_id, session_id, signal_id, signal_type, source, threshold_result, intent, content, status, response_text, created_at, storage_backend, provider_backend, provider_model, provider_status, provider_error_code, provider_error_message
         from artifact_records
         where artifact_id = %(artifact_id)s
         limit 1;
@@ -293,7 +308,7 @@ class PostgresArtifactStore:
 
     def list_recent(self, limit: int = 50) -> list[EidonArtifactRecord]:
         sql = """
-        select artifact_id, session_id, signal_id, signal_type, source, threshold_result, intent, content, status, response_text, created_at, storage_backend, provider_backend, provider_model
+        select artifact_id, session_id, signal_id, signal_type, source, threshold_result, intent, content, status, response_text, created_at, storage_backend, provider_backend, provider_model, provider_status, provider_error_code, provider_error_message
         from artifact_records
         order by created_at desc
         limit %(limit)s;
@@ -355,12 +370,18 @@ class PostgresArtifactLineageStore:
             artifact_storage_backend text not null,
             artifact_provider_backend text not null default 'unknown',
             artifact_provider_model text not null default 'unknown',
+            artifact_provider_status text not null default 'succeeded',
+            artifact_provider_error_code text null,
+            artifact_provider_error_message text null,
             artifact_kind text not null,
             created_at timestamptz not null
         );
         create index if not exists idx_artifact_lineage_records_created_at on artifact_lineage_records (created_at desc);
         alter table artifact_lineage_records add column if not exists artifact_provider_backend text not null default 'unknown';
         alter table artifact_lineage_records add column if not exists artifact_provider_model text not null default 'unknown';
+        alter table artifact_lineage_records add column if not exists artifact_provider_status text not null default 'succeeded';
+        alter table artifact_lineage_records add column if not exists artifact_provider_error_code text null;
+        alter table artifact_lineage_records add column if not exists artifact_provider_error_message text null;
         """
         try:
             with self._connect() as conn:
@@ -373,9 +394,9 @@ class PostgresArtifactLineageStore:
     def upsert(self, record: ArtifactLineageRecord) -> ArtifactLineageRecord:
         sql = """
         insert into artifact_lineage_records (
-            lineage_id, artifact_id, session_id, signal_id, signal_type, source, threshold_result, artifact_status, artifact_storage_backend, artifact_provider_backend, artifact_provider_model, artifact_kind, created_at
+            lineage_id, artifact_id, session_id, signal_id, signal_type, source, threshold_result, artifact_status, artifact_storage_backend, artifact_provider_backend, artifact_provider_model, artifact_provider_status, artifact_provider_error_code, artifact_provider_error_message, artifact_kind, created_at
         ) values (
-            %(lineage_id)s, %(artifact_id)s, %(session_id)s, %(signal_id)s, %(signal_type)s, %(source)s, %(threshold_result)s, %(artifact_status)s, %(artifact_storage_backend)s, %(artifact_provider_backend)s, %(artifact_provider_model)s, %(artifact_kind)s, %(created_at)s::timestamptz
+            %(lineage_id)s, %(artifact_id)s, %(session_id)s, %(signal_id)s, %(signal_type)s, %(source)s, %(threshold_result)s, %(artifact_status)s, %(artifact_storage_backend)s, %(artifact_provider_backend)s, %(artifact_provider_model)s, %(artifact_provider_status)s, %(artifact_provider_error_code)s, %(artifact_provider_error_message)s, %(artifact_kind)s, %(created_at)s::timestamptz
         )
         on conflict (lineage_id) do update set
             artifact_id = excluded.artifact_id,
@@ -388,6 +409,9 @@ class PostgresArtifactLineageStore:
             artifact_storage_backend = excluded.artifact_storage_backend,
             artifact_provider_backend = excluded.artifact_provider_backend,
             artifact_provider_model = excluded.artifact_provider_model,
+            artifact_provider_status = excluded.artifact_provider_status,
+            artifact_provider_error_code = excluded.artifact_provider_error_code,
+            artifact_provider_error_message = excluded.artifact_provider_error_message,
             artifact_kind = excluded.artifact_kind,
             created_at = excluded.created_at;
         """
@@ -403,7 +427,7 @@ class PostgresArtifactLineageStore:
 
     def get_by_artifact_id(self, artifact_id: str) -> ArtifactLineageRecord | None:
         sql = """
-        select lineage_id, artifact_id, session_id, signal_id, signal_type, source, threshold_result, artifact_status, artifact_storage_backend, artifact_provider_backend, artifact_provider_model, artifact_kind, created_at
+        select lineage_id, artifact_id, session_id, signal_id, signal_type, source, threshold_result, artifact_status, artifact_storage_backend, artifact_provider_backend, artifact_provider_model, artifact_provider_status, artifact_provider_error_code, artifact_provider_error_message, artifact_kind, created_at
         from artifact_lineage_records
         where artifact_id = %(artifact_id)s
         limit 1;
@@ -421,7 +445,7 @@ class PostgresArtifactLineageStore:
 
     def list_recent(self, limit: int = 50) -> list[ArtifactLineageRecord]:
         sql = """
-        select lineage_id, artifact_id, session_id, signal_id, signal_type, source, threshold_result, artifact_status, artifact_storage_backend, artifact_provider_backend, artifact_provider_model, artifact_kind, created_at
+        select lineage_id, artifact_id, session_id, signal_id, signal_type, source, threshold_result, artifact_status, artifact_storage_backend, artifact_provider_backend, artifact_provider_model, artifact_provider_status, artifact_provider_error_code, artifact_provider_error_message, artifact_kind, created_at
         from artifact_lineage_records
         order by created_at desc
         limit %(limit)s;

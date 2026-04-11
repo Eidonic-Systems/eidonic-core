@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from eidonic_schemas import ArtifactLineageRecord, EidonArtifactRecord, EidonOrchestrationInput
 
-from app.provider import ModelProvider, build_model_provider
+from app.provider import ModelProvider, ModelProviderError, build_model_provider
 from app.store import (
     ArtifactLineageStore,
     ArtifactStore,
@@ -31,7 +31,11 @@ def build_artifact(
     storage_backend: str,
     provider_backend: str,
     provider_model: str,
+    status: str,
     response_text: str,
+    provider_status: str,
+    provider_error_code: str | None = None,
+    provider_error_message: str | None = None,
 ) -> EidonArtifactRecord:
     artifact_id = f"artifact-{payload.session_id}"
 
@@ -44,12 +48,15 @@ def build_artifact(
         threshold_result=payload.threshold_result,
         intent=payload.intent,
         content=payload.content,
-        status="orchestrated",
+        status=status,
         response_text=response_text,
         created_at=datetime.now(timezone.utc).isoformat(),
         storage_backend=storage_backend,
         provider_backend=provider_backend,
         provider_model=provider_model,
+        provider_status=provider_status,
+        provider_error_code=provider_error_code,
+        provider_error_message=provider_error_message,
     )
 
 
@@ -66,6 +73,9 @@ def build_lineage_record(artifact: EidonArtifactRecord) -> ArtifactLineageRecord
         artifact_storage_backend=artifact.storage_backend,
         artifact_provider_backend=artifact.provider_backend,
         artifact_provider_model=artifact.provider_model,
+        artifact_provider_status=artifact.provider_status,
+        artifact_provider_error_code=artifact.provider_error_code,
+        artifact_provider_error_message=artifact.provider_error_message,
         artifact_kind="eidon_orchestration",
         created_at=datetime.now(timezone.utc).isoformat(),
     )
@@ -73,8 +83,8 @@ def build_lineage_record(artifact: EidonArtifactRecord) -> ArtifactLineageRecord
 
 app = FastAPI(
     title="Eidonic Core Eidon Orchestrator",
-    version="0.2.8",
-    description="Orchestration service scaffold for the Eidonic Core with provider provenance persisted in artifact and lineage records.",
+    version="0.2.9",
+    description="Orchestration service scaffold for the Eidonic Core with explicit provider failure semantics and persisted failure provenance.",
 )
 
 
@@ -139,27 +149,63 @@ def get_lineage(artifact_id: str) -> dict[str, object]:
 
 @app.post("/orchestrate")
 def orchestrate(payload: EidonOrchestrationInput) -> dict[str, object]:
-    response_text = PROVIDER.generate_response(intent=payload.intent, content=payload.content)
+    try:
+        response_text = PROVIDER.generate_response(intent=payload.intent, content=payload.content)
+        artifact = build_artifact(
+            payload,
+            storage_backend=ARTIFACT_STORE.backend_name,
+            provider_backend=PROVIDER.backend_name,
+            provider_model=PROVIDER.model_name,
+            status="orchestrated",
+            response_text=response_text,
+            provider_status="succeeded",
+        )
+        saved_artifact = ARTIFACT_STORE.upsert(artifact)
+        lineage = build_lineage_record(saved_artifact)
+        saved_lineage = LINEAGE_STORE.upsert(lineage)
 
-    artifact = build_artifact(
-        payload,
-        storage_backend=ARTIFACT_STORE.backend_name,
-        provider_backend=PROVIDER.backend_name,
-        provider_model=PROVIDER.model_name,
-        response_text=response_text,
-    )
-    saved_artifact = ARTIFACT_STORE.upsert(artifact)
+        return {
+            "status": "orchestrated",
+            "service": "eidon-orchestrator",
+            "session_id": saved_artifact.session_id,
+            "signal_id": saved_artifact.signal_id,
+            "artifact_id": saved_artifact.artifact_id,
+            "lineage_id": saved_lineage.lineage_id,
+            "storage_backend": saved_artifact.storage_backend,
+            "provider_backend": saved_artifact.provider_backend,
+            "provider_model": saved_artifact.provider_model,
+            "provider_status": saved_artifact.provider_status,
+            "message": "Eidon scaffold orchestrated the request through a provider adapter and persisted artifact and lineage records.",
+        }
+    except ModelProviderError as exc:
+        failure_text = f"Provider failure recorded: {exc.error_code}"
+        artifact = build_artifact(
+            payload,
+            storage_backend=ARTIFACT_STORE.backend_name,
+            provider_backend=PROVIDER.backend_name,
+            provider_model=PROVIDER.model_name,
+            status="provider_failed",
+            response_text=failure_text,
+            provider_status="failed",
+            provider_error_code=exc.error_code,
+            provider_error_message=exc.message,
+        )
+        saved_artifact = ARTIFACT_STORE.upsert(artifact)
+        lineage = build_lineage_record(saved_artifact)
+        saved_lineage = LINEAGE_STORE.upsert(lineage)
 
-    lineage = build_lineage_record(saved_artifact)
-    saved_lineage = LINEAGE_STORE.upsert(lineage)
-
-    return {
-        "status": "orchestrated",
-        "service": "eidon-orchestrator",
-        "session_id": saved_artifact.session_id,
-        "signal_id": saved_artifact.signal_id,
-        "artifact_id": saved_artifact.artifact_id,
-        "lineage_id": saved_lineage.lineage_id,
-        "storage_backend": saved_artifact.storage_backend,
-        "message": "Eidon scaffold orchestrated the request, persisted provider provenance, and stored artifact and lineage records.",
-    }
+        return {
+            "status": "provider_failed",
+            "service": "eidon-orchestrator",
+            "session_id": saved_artifact.session_id,
+            "signal_id": saved_artifact.signal_id,
+            "artifact_id": saved_artifact.artifact_id,
+            "lineage_id": saved_lineage.lineage_id,
+            "storage_backend": saved_artifact.storage_backend,
+            "provider_backend": saved_artifact.provider_backend,
+            "provider_model": saved_artifact.provider_model,
+            "provider_status": saved_artifact.provider_status,
+            "provider_error_code": saved_artifact.provider_error_code,
+            "provider_error_message": saved_artifact.provider_error_message,
+            "message": "Eidon scaffold recorded a provider failure and persisted artifact and lineage failure provenance.",
+        }
