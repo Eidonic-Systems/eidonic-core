@@ -666,7 +666,46 @@ Assert-Equal -Name "provider model" `
   -Actual $eidonHealth.provider.model `
   -Expected "gemma3n:e4b"
 
-Write-Host "Full chain integration test with provider surface passed." -ForegroundColor Green
+$artifactWithProvenance = Invoke-RestMethod -Uri "$EidonBaseUrl/artifacts/$artifactId" `
+  -Method Get
+
+$artifactWithProvenanceJson = $artifactWithProvenance | ConvertTo-Json -Depth 12
+Write-Host ""
+Write-Host $artifactWithProvenanceJson
+
+if ($null -eq $artifactWithProvenance.artifact) {
+  throw "Missing artifact object in Orchestrator artifact retrieval response."
+}
+
+Assert-Equal -Name "artifact provider backend" `
+  -Actual $artifactWithProvenance.artifact.provider_backend `
+  -Expected "ollama"
+
+Assert-Equal -Name "artifact provider model" `
+  -Actual $artifactWithProvenance.artifact.provider_model `
+  -Expected "gemma3n:e4b"
+
+$lineageWithProvenance = Invoke-RestMethod -Uri "$EidonBaseUrl/lineage/$artifactId" `
+  -Method Get
+
+$lineageWithProvenanceJson = $lineageWithProvenance | ConvertTo-Json -Depth 12
+Write-Host ""
+Write-Host $lineageWithProvenanceJson
+
+if ($null -eq $lineageWithProvenance.lineage) {
+  throw "Missing lineage object in Orchestrator lineage retrieval response."
+}
+
+Assert-Equal -Name "lineage provider backend" `
+  -Actual $lineageWithProvenance.lineage.artifact_provider_backend `
+  -Expected "ollama"
+
+Assert-Equal -Name "lineage provider model" `
+  -Actual $lineageWithProvenance.lineage.artifact_provider_model `
+  -Expected "gemma3n:e4b"
+
+Write-Host "Full chain integration test with provider provenance surface passed." -ForegroundColor Green
+
 
 
 

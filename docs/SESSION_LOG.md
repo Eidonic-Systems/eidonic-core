@@ -408,3 +408,9 @@
 - Updated Orchestrator retrieval surfaces to expose persisted provider provenance
 - Added `docs/PHASE_2_PROVIDER_PROVENANCE_CONTRACT.md`
 - Next step: prove provider provenance appears in artifact and lineage retrieval
+
+## 2026-04-11
+- Created branch `phase-2/integration-test-provider-provenance-surface`
+- Extended the full integration test to verify persisted provider provenance in artifact and lineage retrieval
+- Added `docs/PHASE_2_INTEGRATION_TEST_PROVIDER_PROVENANCE_SURFACE.md`
+- Next step: open PR for provider provenance surface integration proof
