@@ -220,7 +220,7 @@ Assert-Equal -Name "persisted threshold status" `
 
 Assert-Equal -Name "persisted threshold storage backend" `
   -Actual $persistedThreshold.threshold.storage_backend `
-  -Expected "local_json"
+  -Expected "postgres"
 
 $thresholdList = Invoke-RestMethod -Uri "http://127.0.0.1:8001/thresholds" `
   -Method Get
@@ -406,7 +406,7 @@ Assert-Equal -Name "herald store status" `
 
 Assert-Equal -Name "herald store backend" `
   -Actual $heraldHealth.store.backend `
-  -Expected "local_json"
+  -Expected "postgres"
 
 $sessionEngineHealth = Invoke-RestMethod -Uri "$SessionEngineBaseUrl/health" `
   -Method Get
@@ -644,6 +644,7 @@ Assert-Equal -Name "lineage limited list first artifact id" `
   -Expected $artifactId
 
 Write-Host "Full chain integration test with list limit surfaces passed." -ForegroundColor Green
+
 
 
 

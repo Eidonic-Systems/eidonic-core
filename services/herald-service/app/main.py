@@ -1,14 +1,19 @@
 from datetime import datetime, timezone
 from pathlib import Path
 
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from eidonic_schemas import HeraldCheckInput, ThresholdRecord
 
-from app.store import LocalJsonThresholdStore, ThresholdStore
+from app.store import ThresholdStore, build_threshold_store
 
 
+REPO_ROOT = Path(__file__).resolve().parents[3]
 STORE_PATH = Path(__file__).resolve().parents[1] / "data" / "thresholds.json"
-STORE: ThresholdStore = LocalJsonThresholdStore(STORE_PATH)
+
+load_dotenv(REPO_ROOT / ".env")
+
+STORE: ThresholdStore = build_threshold_store(STORE_PATH)
 
 
 def build_threshold_record(payload: HeraldCheckInput, storage_backend: str) -> ThresholdRecord:
@@ -32,8 +37,8 @@ def build_threshold_record(payload: HeraldCheckInput, storage_backend: str) -> T
 
 app = FastAPI(
     title="Eidonic Core Herald Service",
-    version="0.2.3",
-    description="Threshold review scaffold for the Eidonic Core with a Postgres-ready store contract surface for threshold persistence.",
+    version="0.2.4",
+    description="Threshold review scaffold for the Eidonic Core with a Postgres backend pilot.",
 )
 
 
