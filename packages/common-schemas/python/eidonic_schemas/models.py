@@ -94,6 +94,8 @@ class EidonArtifactRecord(BaseModel):
     response_text: str
     created_at: str
     storage_backend: Literal["local_json", "postgres"]
+    provider_backend: str
+    provider_model: str
 
 
 class ArtifactLineageRecord(BaseModel):
@@ -106,5 +108,7 @@ class ArtifactLineageRecord(BaseModel):
     threshold_result: Literal["pass", "hold", "escalate"]
     artifact_status: Literal["orchestrated"]
     artifact_storage_backend: Literal["local_json", "postgres"]
+    artifact_provider_backend: str
+    artifact_provider_model: str
     artifact_kind: Literal["eidon_orchestration"]
     created_at: str
