@@ -48,7 +48,7 @@ if ($null -eq $response.session_result) {
 Assert-Equal -Name "session status" -Actual $response.session_result.status -Expected "started"
 Assert-Equal -Name "session service" -Actual $response.session_result.service -Expected "session-engine"
 Assert-Equal -Name "session id" -Actual $response.session_result.session_id -Expected "session-sig-001"
-Assert-Equal -Name "session storage backend" -Actual $response.session_result.storage_backend -Expected "local_json"
+Assert-Equal -Name "session storage backend" -Actual $response.session_result.storage_backend -Expected "postgres"
 
 if ($null -eq $response.eidon_result) {
     throw "Missing eidon_result in response."
@@ -76,7 +76,7 @@ if ($null -eq $persistedSession.session) {
 
 Assert-Equal -Name "persisted session id" -Actual $persistedSession.session.session_id -Expected "session-sig-001"
 Assert-Equal -Name "persisted signal id" -Actual $persistedSession.session.signal_id -Expected "sig-001"
-Assert-Equal -Name "persisted session storage backend" -Actual $persistedSession.session.storage_backend -Expected "local_json"
+Assert-Equal -Name "persisted session storage backend" -Actual $persistedSession.session.storage_backend -Expected "postgres"
 Assert-Equal -Name "persisted session status" -Actual $persistedSession.session.status -Expected "started"
 
 $persistedArtifact = Invoke-RestMethod -Uri "$EidonBaseUrl/artifacts/$artifactId" -Method Get
@@ -433,7 +433,7 @@ Assert-Equal -Name "session engine store status" `
 
 Assert-Equal -Name "session engine store backend" `
   -Actual $sessionEngineHealth.store.backend `
-  -Expected "local_json"
+  -Expected "postgres"
 
 $eidonHealth = Invoke-RestMethod -Uri "$EidonBaseUrl/health" `
   -Method Get
@@ -644,6 +644,7 @@ Assert-Equal -Name "lineage limited list first artifact id" `
   -Expected $artifactId
 
 Write-Host "Full chain integration test with list limit surfaces passed." -ForegroundColor Green
+
 
 
 

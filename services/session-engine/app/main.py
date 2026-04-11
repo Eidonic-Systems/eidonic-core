@@ -1,14 +1,20 @@
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from eidonic_schemas import SessionRecord, SessionStartInput
 
-from app.store import LocalJsonSessionStore, SessionStore
+from app.store import SessionStore, build_session_store
 
 
+REPO_ROOT = Path(__file__).resolve().parents[3]
 STORE_PATH = Path(__file__).resolve().parents[1] / "data" / "sessions.json"
-STORE: SessionStore = LocalJsonSessionStore(STORE_PATH)
+
+load_dotenv(REPO_ROOT / ".env")
+
+STORE: SessionStore = build_session_store(STORE_PATH)
 
 
 def build_session_record(payload: SessionStartInput, storage_backend: str) -> SessionRecord:
@@ -27,18 +33,17 @@ def build_session_record(payload: SessionStartInput, storage_backend: str) -> Se
 
 app = FastAPI(
     title="Eidonic Core Session Engine",
-    version="0.2.3",
-    description="Session binding service scaffold for the Eidonic Core with a Postgres-ready store contract surface.",
+    version="0.2.4",
+    description="Session binding service scaffold for the Eidonic Core with a Postgres backend pilot.",
 )
 
 
 @app.get("/health")
 def health() -> dict[str, object]:
-    store_health = STORE.ping()
     return {
         "status": "ok",
         "service": "session-engine",
-        "store": store_health,
+        "store": STORE.ping(),
     }
 
 
@@ -47,7 +52,6 @@ def get_session(session_id: str) -> dict[str, object]:
     record = STORE.get(session_id)
     if record is None:
         raise HTTPException(status_code=404, detail=f"Session not found: {session_id}")
-
     return {
         "status": "found",
         "service": "session-engine",
@@ -70,7 +74,6 @@ def list_sessions(limit: int = 50) -> dict[str, object]:
 def start_session(payload: SessionStartInput) -> dict[str, object]:
     record = build_session_record(payload, storage_backend=STORE.backend_name)
     saved = STORE.upsert(record)
-
     return {
         "status": "started",
         "service": "session-engine",
