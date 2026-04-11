@@ -462,3 +462,10 @@
 - Updated `README.md` to reflect the standard warmup startup sequence
 - Added `docs/PHASE_2_STACK_PROVIDER_WARMUP_SEQUENCE.md`
 - Next step: prove stack startup now warms the provider automatically
+
+## 2026-04-11
+- Created branch `phase-2/integration-test-provider-warmup-failure-surface`
+- Added focused integration coverage for the controlled provider warmup failure path
+- Added `tests/integration/test_provider_warmup_failure_surface.ps1`
+- Added `docs/PHASE_2_INTEGRATION_TEST_PROVIDER_WARMUP_FAILURE_SURFACE.md`
+- Next step: open PR for provider warmup failure surface integration proof
