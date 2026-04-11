@@ -25,6 +25,16 @@ HERALD_BASE_URL = os.getenv("HERALD_BASE_URL", "http://127.0.0.1:8001")
 SESSION_ENGINE_BASE_URL = os.getenv("SESSION_ENGINE_BASE_URL", "http://127.0.0.1:8002")
 EIDON_BASE_URL = os.getenv("EIDON_BASE_URL", "http://127.0.0.1:8003")
 
+SIGNAL_GATEWAY_HERALD_TIMEOUT_SECONDS = float(
+    os.getenv("SIGNAL_GATEWAY_HERALD_TIMEOUT_SECONDS", "10").strip() or "10"
+)
+SIGNAL_GATEWAY_SESSION_TIMEOUT_SECONDS = float(
+    os.getenv("SIGNAL_GATEWAY_SESSION_TIMEOUT_SECONDS", "10").strip() or "10"
+)
+SIGNAL_GATEWAY_EIDON_TIMEOUT_SECONDS = float(
+    os.getenv("SIGNAL_GATEWAY_EIDON_TIMEOUT_SECONDS", "60").strip() or "60"
+)
+
 STORE: SignalStore = build_signal_store(STORE_PATH)
 
 
@@ -44,12 +54,14 @@ def build_signal_record(signal: SignalEventInput, storage_backend: str) -> Signa
     )
 
 
-def post_json(url: str, payload: dict[str, Any]) -> dict[str, Any]:
+def post_json(url: str, payload: dict[str, Any], timeout_seconds: float) -> dict[str, Any]:
     try:
-        with httpx.Client(timeout=10.0) as client:
+        with httpx.Client(timeout=timeout_seconds) as client:
             response = client.post(url, json=payload)
             response.raise_for_status()
             return response.json()
+    except httpx.TimeoutException as exc:
+        raise HTTPException(status_code=502, detail=f"Downstream call timed out for {url}: {exc}") from exc
     except httpx.HTTPError as exc:
         raise HTTPException(status_code=502, detail=f"Downstream call failed for {url}: {exc}") from exc
 
@@ -75,8 +87,8 @@ def derive_intent(signal: SignalEventInput) -> str:
 
 app = FastAPI(
     title="Eidonic Core Signal Gateway",
-    version="0.2.6",
-    description="Ingress service scaffold for the Eidonic Core with a Postgres backend pilot.",
+    version="0.2.7",
+    description="Ingress service scaffold for the Eidonic Core with PostgreSQL-backed persistence and configurable downstream timeout hardening.",
 )
 
 
@@ -86,6 +98,11 @@ def health() -> dict[str, object]:
         "status": "ok",
         "service": "signal-gateway",
         "store": STORE.ping(),
+        "timeouts": {
+            "herald_seconds": SIGNAL_GATEWAY_HERALD_TIMEOUT_SECONDS,
+            "session_seconds": SIGNAL_GATEWAY_SESSION_TIMEOUT_SECONDS,
+            "eidon_seconds": SIGNAL_GATEWAY_EIDON_TIMEOUT_SECONDS,
+        },
     }
 
 
@@ -127,6 +144,7 @@ def ingest_signal(signal: SignalEventInput) -> dict[str, Any]:
     herald_result = post_json(
         f"{HERALD_BASE_URL}/threshold/check",
         herald_payload.model_dump(),
+        timeout_seconds=SIGNAL_GATEWAY_HERALD_TIMEOUT_SECONDS,
     )
 
     response: dict[str, Any] = {
@@ -155,6 +173,7 @@ def ingest_signal(signal: SignalEventInput) -> dict[str, Any]:
     session_result = post_json(
         f"{SESSION_ENGINE_BASE_URL}/sessions/start",
         session_payload.model_dump(),
+        timeout_seconds=SIGNAL_GATEWAY_SESSION_TIMEOUT_SECONDS,
     )
 
     response["session_result"] = session_result
@@ -179,6 +198,7 @@ def ingest_signal(signal: SignalEventInput) -> dict[str, Any]:
     eidon_result = post_json(
         f"{EIDON_BASE_URL}/orchestrate",
         eidon_payload.model_dump(),
+        timeout_seconds=SIGNAL_GATEWAY_EIDON_TIMEOUT_SECONDS,
     )
 
     response["derived_intent"] = derived_intent

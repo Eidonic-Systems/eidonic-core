@@ -9,9 +9,10 @@ The Signal Gateway is the ingress service for Eidonic Core.
 - forward accepted work into the current downstream chain
 - return the current chain results in one response
 - expose list and retrieval surfaces for persisted signal records
+- enforce configurable downstream timeout discipline
 
 ## Current phase
-Phase 2 PostgreSQL-backed ingress service
+Phase 2 PostgreSQL-backed ingress service with downstream timeout hardening
 
 ## Current endpoints
 - `GET /health`
@@ -22,25 +23,15 @@ Phase 2 PostgreSQL-backed ingress service
 ## Current downstream chain
 `signal-gateway` -> `herald-service` -> `session-engine` -> `eidon-orchestrator`
 
-## Signal store contract surface
-`signal-gateway` expects its storage backend to support:
-- `backend_name`
-- `upsert(record)`
-- `get(signal_id)`
-- `list_recent(limit)`
-- `ping()`
+## Downstream timeout policy
+- Herald stays on a tight timeout
+- Session Engine stays on a tight timeout
+- Orchestrator gets a longer timeout to tolerate local-model cold starts
 
-## Current adapter implementations
-- `PostgresSignalStore`
-- `LocalJsonSignalStore`
-
-## Current proven backend
-The current proven Phase 2 stack runs Signal Gateway on PostgreSQL.
-
-## Backend selection
-Choose the active backend through environment variables:
-- `SIGNAL_GATEWAY_STORE_BACKEND=postgres` or `local_json`
-- `SIGNAL_GATEWAY_POSTGRES_DSN=postgresql://...`
+## Timeout configuration
+- `SIGNAL_GATEWAY_HERALD_TIMEOUT_SECONDS=10`
+- `SIGNAL_GATEWAY_SESSION_TIMEOUT_SECONDS=10`
+- `SIGNAL_GATEWAY_EIDON_TIMEOUT_SECONDS=60`
 
 ## Notes
-Local JSON remains available as fallback.
+This branch hardens first-run local-model behavior without widening the provider surface or adding routing complexity.

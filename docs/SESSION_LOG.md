@@ -429,3 +429,12 @@
 - Added `tests/integration/test_provider_failure_surface.ps1`
 - Added `docs/PHASE_2_INTEGRATION_TEST_PROVIDER_FAILURE_SURFACE.md`
 - Next step: open PR for provider failure surface integration proof
+
+## 2026-04-11
+- Created branch `phase-2/provider-cold-start-timeout-hardening`
+- Added configurable per-downstream timeouts in Signal Gateway
+- Kept Herald and Session Engine on tight defaults
+- Increased default Orchestrator timeout to better tolerate local-model cold starts
+- Updated `services/signal-gateway/README.md`
+- Added `docs/PHASE_2_PROVIDER_COLD_START_TIMEOUT_HARDENING.md`
+- Next step: prove the chain remains healthy with hardened timeout defaults
