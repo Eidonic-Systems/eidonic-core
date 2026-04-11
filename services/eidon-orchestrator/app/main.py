@@ -83,8 +83,8 @@ def build_lineage_record(artifact: EidonArtifactRecord) -> ArtifactLineageRecord
 
 app = FastAPI(
     title="Eidonic Core Eidon Orchestrator",
-    version="0.2.9",
-    description="Orchestration service scaffold for the Eidonic Core with explicit provider failure semantics and persisted failure provenance.",
+    version="0.3.0",
+    description="Orchestration service scaffold for the Eidonic Core with provider warmup and readiness surfaces.",
 )
 
 
@@ -97,6 +97,29 @@ def health() -> dict[str, object]:
         "lineage_store": LINEAGE_STORE.ping(),
         "provider": PROVIDER.ping(),
     }
+
+
+@app.post("/provider/warm")
+def warm_provider() -> dict[str, object]:
+    try:
+        result = PROVIDER.warm()
+        return {
+            "status": "warmed",
+            "service": "eidon-orchestrator",
+            "provider": result,
+        }
+    except ModelProviderError as exc:
+        return {
+            "status": "warm_failed",
+            "service": "eidon-orchestrator",
+            "provider": {
+                "backend": PROVIDER.backend_name,
+                "model": PROVIDER.model_name,
+                "ready": False,
+            },
+            "provider_error_code": exc.error_code,
+            "provider_error_message": exc.message,
+        }
 
 
 @app.get("/artifacts")
@@ -175,7 +198,7 @@ def orchestrate(payload: EidonOrchestrationInput) -> dict[str, object]:
             "provider_backend": saved_artifact.provider_backend,
             "provider_model": saved_artifact.provider_model,
             "provider_status": saved_artifact.provider_status,
-            "message": "Eidon scaffold orchestrated the request through a provider adapter and persisted artifact and lineage records.",
+            "message": "Eidon scaffold orchestrated the request through a warmed provider adapter and persisted artifact and lineage records.",
         }
     except ModelProviderError as exc:
         failure_text = f"Provider failure recorded: {exc.error_code}"

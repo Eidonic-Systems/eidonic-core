@@ -8,45 +8,35 @@ The Eidon Orchestrator is the current orchestration service for Eidonic Core.
 - persist an orchestration artifact record
 - persist a simple artifact lineage record
 - record provider provenance and provider failure truth alongside orchestration output
+- expose provider warmup and readiness surfaces
 - return artifact and lineage identifiers
 - expose list and retrieval surfaces for persisted orchestrator records
 - route response generation through a provider adapter surface
 
 ## Current phase
-Phase 2 PostgreSQL-backed orchestration service with explicit provider failure semantics
+Phase 2 PostgreSQL-backed orchestration service with provider warmup and readiness surfaces
 
 ## Current endpoints
 - `GET /health`
+- `POST /provider/warm`
 - `POST /orchestrate`
 - `GET /artifacts`
 - `GET /artifacts/{artifact_id}`
 - `GET /lineage`
 - `GET /lineage/{artifact_id}`
 
-## Provider failure semantics
-The current provider layer distinguishes these failure classes:
-- `provider_unavailable`
-- `provider_timeout`
-- `provider_model_missing`
-- `provider_empty_response`
-- `provider_http_error`
+## Provider warmup surface
+- `POST /provider/warm` warms the currently selected provider
+- `GET /health` exposes provider readiness through `provider.ready`
+- `scripts/warm_eidon_provider.ps1` gives the repo a simple deterministic warmup entry point
 
-When provider generation fails, Orchestrator persists a `provider_failed` artifact and matching lineage record instead of collapsing the event into a vague server error.
+## Current provider readiness truth
+- before warmup, Ollama may be available but not yet ready in-process
+- after warmup, `provider.ready` should report `true`
+- successful orchestration also marks the provider as ready
 
-## Persisted provider failure truth
-Artifact records now persist:
-- `provider_backend`
-- `provider_model`
-- `provider_status`
-- `provider_error_code`
-- `provider_error_message`
-
-Lineage records now persist:
-- `artifact_provider_backend`
-- `artifact_provider_model`
-- `artifact_provider_status`
-- `artifact_provider_error_code`
-- `artifact_provider_error_message`
+## Warmup configuration
+- `EIDON_PROVIDER_WARM_KEEPALIVE=15m`
 
 ## Notes
-This branch hardens failure behavior and traceability. It does not add routing or training.
+This branch makes cold-start state visible and controllable. It does not add routing, training, or a second model.
