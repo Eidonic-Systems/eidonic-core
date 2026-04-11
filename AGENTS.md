@@ -23,11 +23,18 @@ Current live chain:
 - `eidon-orchestrator`
 
 Current verified persistence:
-- `SignalRecord` via local JSON
-- `ThresholdRecord` via local JSON
-- `SessionRecord` via local JSON
-- `EidonArtifactRecord` via local JSON
-- `ArtifactLineageRecord` via local JSON
+- `SignalRecord` via PostgreSQL
+- `ThresholdRecord` via PostgreSQL
+- `SessionRecord` via PostgreSQL
+- `EidonArtifactRecord` via PostgreSQL
+- `ArtifactLineageRecord` via PostgreSQL
+
+Fallback persistence still available:
+- `LocalJsonSignalStore`
+- `LocalJsonThresholdStore`
+- `LocalJsonSessionStore`
+- `LocalJsonArtifactStore`
+- `LocalJsonArtifactLineageStore`
 
 Current discipline:
 - terminal-only for local build and test steps
@@ -43,5 +50,7 @@ Current discipline:
 3. retrieval surface
 4. integration proof
 5. adapter boundary hardening
+6. real durable backend pilot
+7. repo truth sync
 
 Do not skip ahead to fake future systems.
