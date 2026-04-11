@@ -10,7 +10,7 @@ The Session Engine is the session binding service for Eidonic Core.
 - expose simple retrieval and listing from the current store
 
 ## Current phase
-Phase 2 Postgres-ready store contract scaffold
+Phase 2 PostgreSQL-backed session service
 
 ## Current endpoints
 - `GET /health`
@@ -18,25 +18,25 @@ Phase 2 Postgres-ready store contract scaffold
 - `GET /sessions/{session_id}`
 - `GET /sessions`
 
-## Session record contract
-The current implementation builds a shared `SessionRecord` contract before persistence.
-
 ## Session store contract surface
-`session-engine` now expects its storage backend to support:
+`session-engine` expects its storage backend to support:
 - `backend_name`
 - `upsert(record)`
 - `get(session_id)`
 - `list_recent(limit)`
 - `ping()`
 
-## Current adapter implementation
-`LocalJsonSessionStore`
+## Current adapter implementations
+- `PostgresSessionStore`
+- `LocalJsonSessionStore`
 
-## Why this matters
-This is the contract surface a future Postgres store will need to satisfy without forcing a service rewrite.
+## Current proven backend
+The current proven Phase 2 stack runs Session Engine on PostgreSQL.
 
-## Local persistence
-The current scaffold writes session records to:
-`services/session-engine/data/sessions.json`
+## Backend selection
+Choose the active backend through environment variables:
+- `SESSION_ENGINE_STORE_BACKEND=postgres` or `local_json`
+- `SESSION_ENGINE_POSTGRES_DSN=postgresql://...`
 
-This file is ignored by Git and remains a temporary local persistence layer.
+## Notes
+Local JSON remains available as fallback.

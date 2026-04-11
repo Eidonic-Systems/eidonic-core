@@ -10,7 +10,7 @@ The Herald Service is the current threshold review service for Eidonic Core.
 - expose list and retrieval surfaces for persisted threshold records
 
 ## Current phase
-Phase 2 Postgres backend pilot
+Phase 2 PostgreSQL-backed threshold service
 
 ## Current endpoints
 - `GET /health`
@@ -27,16 +27,16 @@ Phase 2 Postgres backend pilot
 - `ping()`
 
 ## Current adapter implementations
-- `LocalJsonThresholdStore`
 - `PostgresThresholdStore`
+- `LocalJsonThresholdStore`
+
+## Current proven backend
+The current proven Phase 2 stack runs Herald on PostgreSQL.
 
 ## Backend selection
 Choose the active backend through environment variables:
-- `HERALD_STORE_BACKEND=local_json` or `postgres`
+- `HERALD_STORE_BACKEND=postgres` or `local_json`
 - `HERALD_POSTGRES_DSN=postgresql://...`
 
-## Why this matters
-This is the second real durable-backend pilot for the Phase 2 scaffold. The goal is to prove a database-backed threshold store without changing HTTP behavior.
-
 ## Notes
-Local JSON remains available as fallback during the pilot.
+Local JSON remains available as fallback.
