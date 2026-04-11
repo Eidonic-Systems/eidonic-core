@@ -13,7 +13,7 @@ from eidonic_schemas import (
     SignalRecord,
 )
 
-from app.store import LocalJsonSignalStore, SignalStore
+from app.store import SignalStore, build_signal_store
 
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -25,7 +25,7 @@ HERALD_BASE_URL = os.getenv("HERALD_BASE_URL", "http://127.0.0.1:8001")
 SESSION_ENGINE_BASE_URL = os.getenv("SESSION_ENGINE_BASE_URL", "http://127.0.0.1:8002")
 EIDON_BASE_URL = os.getenv("EIDON_BASE_URL", "http://127.0.0.1:8003")
 
-STORE: SignalStore = LocalJsonSignalStore(STORE_PATH)
+STORE: SignalStore = build_signal_store(STORE_PATH)
 
 
 def build_signal_record(signal: SignalEventInput, storage_backend: str) -> SignalRecord:
@@ -75,8 +75,8 @@ def derive_intent(signal: SignalEventInput) -> str:
 
 app = FastAPI(
     title="Eidonic Core Signal Gateway",
-    version="0.2.5",
-    description="Ingress service scaffold for the Eidonic Core with a Postgres-ready store contract surface for signal persistence and full downstream chaining.",
+    version="0.2.6",
+    description="Ingress service scaffold for the Eidonic Core with a Postgres backend pilot.",
 )
 
 
@@ -105,7 +105,6 @@ def get_signal_by_id(signal_id: str) -> dict[str, object]:
     record = STORE.get(signal_id)
     if record is None:
         raise HTTPException(status_code=404, detail=f"Signal not found: {signal_id}")
-
     return {
         "status": "found",
         "service": "signal-gateway",

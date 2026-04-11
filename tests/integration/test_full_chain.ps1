@@ -290,7 +290,7 @@ Assert-Equal -Name "persisted signal status" `
 
 Assert-Equal -Name "persisted signal storage backend" `
   -Actual $persistedSignal.signal.storage_backend `
-  -Expected "local_json"
+  -Expected "postgres"
 
 $signalId = $response.received_signal_id
 
@@ -379,7 +379,7 @@ Assert-Equal -Name "signal gateway store status" `
 
 Assert-Equal -Name "signal gateway store backend" `
   -Actual $signalGatewayHealth.store.backend `
-  -Expected "local_json"
+  -Expected "postgres"
 
 $heraldHealth = Invoke-RestMethod -Uri "http://127.0.0.1:8001/health" `
   -Method Get
@@ -644,6 +644,7 @@ Assert-Equal -Name "lineage limited list first artifact id" `
   -Expected $artifactId
 
 Write-Host "Full chain integration test with list limit surfaces passed." -ForegroundColor Green
+
 
 
 
