@@ -11,7 +11,7 @@ The Signal Gateway is the ingress service for Eidonic Core.
 - expose list and retrieval surfaces for persisted signal records
 
 ## Current phase
-Phase 2 Postgres backend pilot
+Phase 2 PostgreSQL-backed ingress service
 
 ## Current endpoints
 - `GET /health`
@@ -31,16 +31,16 @@ Phase 2 Postgres backend pilot
 - `ping()`
 
 ## Current adapter implementations
-- `LocalJsonSignalStore`
 - `PostgresSignalStore`
+- `LocalJsonSignalStore`
+
+## Current proven backend
+The current proven Phase 2 stack runs Signal Gateway on PostgreSQL.
 
 ## Backend selection
 Choose the active backend through environment variables:
-- `SIGNAL_GATEWAY_STORE_BACKEND=local_json` or `postgres`
+- `SIGNAL_GATEWAY_STORE_BACKEND=postgres` or `local_json`
 - `SIGNAL_GATEWAY_POSTGRES_DSN=postgresql://...`
 
-## Why this matters
-This is the third real durable-backend pilot for the Phase 2 scaffold. The goal is to prove a database-backed ingress store without changing HTTP behavior.
-
 ## Notes
-Local JSON remains available as fallback during the pilot.
+Local JSON remains available as fallback.

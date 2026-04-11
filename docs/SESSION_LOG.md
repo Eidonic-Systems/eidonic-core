@@ -359,3 +359,11 @@
 - Updated `services/eidon-orchestrator/README.md`
 - Added `docs/PHASE_2_ORCHESTRATOR_POSTGRES_BACKEND_PILOT.md`
 - Next step: prove Orchestrator against local PostgreSQL
+
+## 2026-04-10
+- Created branch `phase-2/postgres-state-spine-truth-sync`
+- Updated top-level repo docs to reflect the PostgreSQL-backed Phase 2 state spine
+- Updated `.env.example` to reflect current proven backend defaults
+- Updated service READMEs to reflect PostgreSQL-backed primary persistence with local JSON fallback
+- Added `docs/PHASE_2_POSTGRES_STATE_SPINE_TRUTH_SYNC.md`
+- Next step: open PR for PostgreSQL state spine truth sync

@@ -5,17 +5,21 @@ Implementation repository for the Eidonic Core.
 This repo contains the executable runtime, services, shared schemas, scripts, tests, and docs for the current living core scaffold.
 
 ## Current phase
-Phase 2 scaffold with chained services, local persistence surfaces, and integrated proof coverage.
+Phase 2 scaffold with chained services, PostgreSQL-backed state spine, and integrated proof coverage.
 
 ## Current live chain
 `signal-gateway` -> `herald-service` -> `session-engine` -> `eidon-orchestrator`
 
 ## Current verified persistence
-- `SignalRecord` via local JSON
-- `ThresholdRecord` via local JSON
-- `SessionRecord` via local JSON
-- `EidonArtifactRecord` via local JSON
-- `ArtifactLineageRecord` via local JSON
+- `SignalRecord` via PostgreSQL
+- `ThresholdRecord` via PostgreSQL
+- `SessionRecord` via PostgreSQL
+- `EidonArtifactRecord` via PostgreSQL
+- `ArtifactLineageRecord` via PostgreSQL
+
+## Fallback persistence still available
+- local JSON store adapters remain available as fallback
+- the current proven local stack uses PostgreSQL-backed services
 
 ## Current verified retrieval surfaces
 - Signal Gateway
@@ -54,10 +58,8 @@ The standard integration test now verifies:
 - lineage retrieval
 - artifact list retrieval
 - lineage list retrieval
-- service health on `signal-gateway`
-- service health on `herald-service`
-- service health on `session-engine`
-- service health on `eidon-orchestrator`
+- service health on all four services
+- list-limit behavior across current list surfaces
 
 ## Working rules
 - terminal-first local workflow
@@ -75,6 +77,8 @@ Run integration test from repo root:
 `powershell -ExecutionPolicy Bypass -File .\tests\integration\test_full_chain.ps1`
 
 ## Notes
-The current JSON stores are temporary scaffolds, not final databases.
+PostgreSQL now backs the current proven Phase 2 state spine.
 
-The next architectural steps should stay narrow and continue hardening durable surfaces, contracts, and truthful repo documentation before any larger runtime expansion.
+Local JSON adapters remain in the repo as fallback implementations, not as the current proven primary backend.
+
+The next architectural steps should stay narrow and continue hardening durable surfaces, truthful repo documentation, and provider boundaries before larger runtime expansion.
