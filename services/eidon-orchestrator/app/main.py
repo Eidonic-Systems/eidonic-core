@@ -26,7 +26,13 @@ LINEAGE_STORE: ArtifactLineageStore = build_lineage_store(LINEAGE_STORE_PATH)
 PROVIDER: ModelProvider = build_model_provider()
 
 
-def build_artifact(payload: EidonOrchestrationInput, storage_backend: str, response_text: str) -> EidonArtifactRecord:
+def build_artifact(
+    payload: EidonOrchestrationInput,
+    storage_backend: str,
+    provider_backend: str,
+    provider_model: str,
+    response_text: str,
+) -> EidonArtifactRecord:
     artifact_id = f"artifact-{payload.session_id}"
 
     return EidonArtifactRecord(
@@ -42,6 +48,8 @@ def build_artifact(payload: EidonOrchestrationInput, storage_backend: str, respo
         response_text=response_text,
         created_at=datetime.now(timezone.utc).isoformat(),
         storage_backend=storage_backend,
+        provider_backend=provider_backend,
+        provider_model=provider_model,
     )
 
 
@@ -56,6 +64,8 @@ def build_lineage_record(artifact: EidonArtifactRecord) -> ArtifactLineageRecord
         threshold_result=artifact.threshold_result,
         artifact_status=artifact.status,
         artifact_storage_backend=artifact.storage_backend,
+        artifact_provider_backend=artifact.provider_backend,
+        artifact_provider_model=artifact.provider_model,
         artifact_kind="eidon_orchestration",
         created_at=datetime.now(timezone.utc).isoformat(),
     )
@@ -63,8 +73,8 @@ def build_lineage_record(artifact: EidonArtifactRecord) -> ArtifactLineageRecord
 
 app = FastAPI(
     title="Eidonic Core Eidon Orchestrator",
-    version="0.2.7",
-    description="Orchestration service scaffold for the Eidonic Core with PostgreSQL-backed persistence and an Ollama provider adapter pilot.",
+    version="0.2.8",
+    description="Orchestration service scaffold for the Eidonic Core with provider provenance persisted in artifact and lineage records.",
 )
 
 
@@ -134,6 +144,8 @@ def orchestrate(payload: EidonOrchestrationInput) -> dict[str, object]:
     artifact = build_artifact(
         payload,
         storage_backend=ARTIFACT_STORE.backend_name,
+        provider_backend=PROVIDER.backend_name,
+        provider_model=PROVIDER.model_name,
         response_text=response_text,
     )
     saved_artifact = ARTIFACT_STORE.upsert(artifact)
@@ -149,5 +161,5 @@ def orchestrate(payload: EidonOrchestrationInput) -> dict[str, object]:
         "artifact_id": saved_artifact.artifact_id,
         "lineage_id": saved_lineage.lineage_id,
         "storage_backend": saved_artifact.storage_backend,
-        "message": "Eidon scaffold orchestrated the request through a provider adapter and persisted artifact and lineage records.",
+        "message": "Eidon scaffold orchestrated the request, persisted provider provenance, and stored artifact and lineage records.",
     }

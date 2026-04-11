@@ -400,3 +400,11 @@
 - Updated `services/eidon-orchestrator/README.md`
 - Added `docs/PHASE_2_OLLAMA_PROVIDER_ADAPTER_PILOT.md`
 - Next step: prove the full chain with Ollama-backed generation
+
+## 2026-04-11
+- Created branch `phase-2/provider-provenance-contract`
+- Added provider provenance fields to artifact and lineage contracts
+- Updated Orchestrator persistence to store provider backend and provider model
+- Updated Orchestrator retrieval surfaces to expose persisted provider provenance
+- Added `docs/PHASE_2_PROVIDER_PROVENANCE_CONTRACT.md`
+- Next step: prove provider provenance appears in artifact and lineage retrieval

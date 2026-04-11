@@ -7,12 +7,13 @@ The Eidon Orchestrator is the current orchestration service for Eidonic Core.
 - produce the current orchestration outcome
 - persist an orchestration artifact record
 - persist a simple artifact lineage record
+- record provider provenance alongside orchestration output
 - return artifact and lineage identifiers
 - expose list and retrieval surfaces for persisted orchestrator records
 - route response generation through a provider adapter surface
 
 ## Current phase
-Phase 2 PostgreSQL-backed orchestration service with an Ollama provider adapter pilot
+Phase 2 PostgreSQL-backed orchestration service with persisted provider provenance
 
 ## Current endpoints
 - `GET /health`
@@ -34,26 +35,16 @@ Phase 2 PostgreSQL-backed orchestration service with an Ollama provider adapter 
 - `generate_response(intent, content)`
 - `ping()`
 
-## Current adapter implementations
-- `OllamaModelProvider`
-- `StubModelProvider`
-- `PostgresArtifactStore`
-- `PostgresArtifactLineageStore`
-- `LocalJsonArtifactStore`
-- `LocalJsonArtifactLineageStore`
+## Current persisted provenance
+Artifact records now persist:
+- `storage_backend`
+- `provider_backend`
+- `provider_model`
 
-## Current proven backends
-- persistence: PostgreSQL
-- provider: Ollama
-- model: `gemma3n:e4b`
-
-## Backend selection
-Choose the active backends through environment variables:
-- `ORCHESTRATOR_STORE_BACKEND=postgres` or `local_json`
-- `ORCHESTRATOR_POSTGRES_DSN=postgresql://...`
-- `EIDON_PROVIDER_BACKEND=ollama` or `stub`
-- `EIDON_PROVIDER_MODEL=gemma3n:e4b`
-- `OLLAMA_BASE_URL=http://127.0.0.1:11434/api`
+Lineage records now persist:
+- `artifact_storage_backend`
+- `artifact_provider_backend`
+- `artifact_provider_model`
 
 ## Notes
-The Ollama adapter is the first real local model runtime path. Training and routing are not part of this branch.
+This branch hardens traceability. It does not add routing or training.
