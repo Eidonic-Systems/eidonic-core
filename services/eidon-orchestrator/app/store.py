@@ -1,7 +1,10 @@
 import json
+import os
+from datetime import datetime
 from pathlib import Path
 from typing import Protocol
 
+import psycopg
 from fastapi import HTTPException
 from eidonic_schemas import ArtifactLineageRecord, EidonArtifactRecord
 
@@ -52,15 +55,12 @@ class LocalJsonArtifactStore:
         raw = self.store_path.read_text(encoding="utf-8").strip()
         if not raw:
             return []
-
         try:
             data = json.loads(raw)
         except json.JSONDecodeError as exc:
             raise HTTPException(status_code=500, detail=f"Artifact store is invalid JSON: {exc}") from exc
-
         if not isinstance(data, list):
             raise HTTPException(status_code=500, detail="Artifact store must contain a JSON list.")
-
         return [EidonArtifactRecord.model_validate(item) for item in data]
 
     def _save_records(self, records: list[EidonArtifactRecord]) -> None:
@@ -122,15 +122,12 @@ class LocalJsonArtifactLineageStore:
         raw = self.store_path.read_text(encoding="utf-8").strip()
         if not raw:
             return []
-
         try:
             data = json.loads(raw)
         except json.JSONDecodeError as exc:
             raise HTTPException(status_code=500, detail=f"Lineage store is invalid JSON: {exc}") from exc
-
         if not isinstance(data, list):
             raise HTTPException(status_code=500, detail="Lineage store must contain a JSON list.")
-
         return [ArtifactLineageRecord.model_validate(item) for item in data]
 
     def _save_records(self, records: list[ArtifactLineageRecord]) -> None:
@@ -170,3 +167,279 @@ class LocalJsonArtifactLineageStore:
             "backend": self.backend_name,
             "store_path": str(self.store_path),
         }
+
+
+class PostgresArtifactStore:
+    def __init__(self, dsn: str):
+        self.dsn = dsn
+        self._ensure_schema()
+
+    @property
+    def backend_name(self) -> str:
+        return "postgres"
+
+    def _connect(self):
+        return psycopg.connect(self.dsn)
+
+    def _row_to_record(self, row: dict) -> EidonArtifactRecord:
+        data = dict(row)
+
+        created_at = data.get("created_at")
+        if isinstance(created_at, datetime):
+            data["created_at"] = created_at.isoformat()
+
+        content = data.get("content")
+        if isinstance(content, str):
+            try:
+                data["content"] = json.loads(content)
+            except json.JSONDecodeError:
+                pass
+
+        return EidonArtifactRecord.model_validate(data)
+
+    def _ensure_schema(self) -> None:
+        ddl = """
+        create table if not exists artifact_records (
+            artifact_id text primary key,
+            session_id text not null,
+            signal_id text not null,
+            signal_type text not null,
+            source text not null,
+            threshold_result text not null,
+            intent text not null,
+            content jsonb not null,
+            status text not null,
+            response_text text not null,
+            created_at timestamptz not null,
+            storage_backend text not null
+        );
+        create index if not exists idx_artifact_records_created_at on artifact_records (created_at desc);
+        """
+        try:
+            with self._connect() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(ddl)
+                conn.commit()
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=f"Failed to initialize Postgres artifact store: {exc}") from exc
+
+    def upsert(self, record: EidonArtifactRecord) -> EidonArtifactRecord:
+        sql = """
+        insert into artifact_records (
+            artifact_id, session_id, signal_id, signal_type, source, threshold_result, intent, content, status, response_text, created_at, storage_backend
+        ) values (
+            %(artifact_id)s, %(session_id)s, %(signal_id)s, %(signal_type)s, %(source)s, %(threshold_result)s, %(intent)s, %(content)s::jsonb, %(status)s, %(response_text)s, %(created_at)s::timestamptz, %(storage_backend)s
+        )
+        on conflict (artifact_id) do update set
+            session_id = excluded.session_id,
+            signal_id = excluded.signal_id,
+            signal_type = excluded.signal_type,
+            source = excluded.source,
+            threshold_result = excluded.threshold_result,
+            intent = excluded.intent,
+            content = excluded.content,
+            status = excluded.status,
+            response_text = excluded.response_text,
+            created_at = excluded.created_at,
+            storage_backend = excluded.storage_backend;
+        """
+        data = record.model_dump(mode="json")
+        data["content"] = json.dumps(data["content"])
+        try:
+            with self._connect() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(sql, data)
+                conn.commit()
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=f"Failed to upsert artifact record in Postgres: {exc}") from exc
+        return record
+
+    def get(self, artifact_id: str) -> EidonArtifactRecord | None:
+        sql = """
+        select artifact_id, session_id, signal_id, signal_type, source, threshold_result, intent, content, status, response_text, created_at, storage_backend
+        from artifact_records
+        where artifact_id = %(artifact_id)s
+        limit 1;
+        """
+        try:
+            with self._connect() as conn:
+                with conn.cursor(row_factory=psycopg.rows.dict_row) as cur:
+                    cur.execute(sql, {"artifact_id": artifact_id})
+                    row = cur.fetchone()
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=f"Failed to fetch artifact record from Postgres: {exc}") from exc
+        if row is None:
+            return None
+        return self._row_to_record(row)
+
+    def list_recent(self, limit: int = 50) -> list[EidonArtifactRecord]:
+        sql = """
+        select artifact_id, session_id, signal_id, signal_type, source, threshold_result, intent, content, status, response_text, created_at, storage_backend
+        from artifact_records
+        order by created_at desc
+        limit %(limit)s;
+        """
+        try:
+            with self._connect() as conn:
+                with conn.cursor(row_factory=psycopg.rows.dict_row) as cur:
+                    cur.execute(sql, {"limit": limit})
+                    rows = cur.fetchall()
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=f"Failed to list artifact records from Postgres: {exc}") from exc
+        return [self._row_to_record(row) for row in rows]
+
+    def ping(self) -> dict[str, str]:
+        try:
+            with self._connect() as conn:
+                with conn.cursor() as cur:
+                    cur.execute("select 1;")
+                    cur.fetchone()
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=f"Postgres artifact store health check failed: {exc}") from exc
+        return {
+            "status": "ok",
+            "backend": self.backend_name,
+            "dsn": self.dsn,
+        }
+
+
+class PostgresArtifactLineageStore:
+    def __init__(self, dsn: str):
+        self.dsn = dsn
+        self._ensure_schema()
+
+    @property
+    def backend_name(self) -> str:
+        return "postgres"
+
+    def _connect(self):
+        return psycopg.connect(self.dsn)
+
+    def _row_to_record(self, row: dict) -> ArtifactLineageRecord:
+        data = dict(row)
+        created_at = data.get("created_at")
+        if isinstance(created_at, datetime):
+            data["created_at"] = created_at.isoformat()
+        return ArtifactLineageRecord.model_validate(data)
+
+    def _ensure_schema(self) -> None:
+        ddl = """
+        create table if not exists artifact_lineage_records (
+            lineage_id text primary key,
+            artifact_id text not null unique,
+            session_id text not null,
+            signal_id text not null,
+            signal_type text not null,
+            source text not null,
+            threshold_result text not null,
+            artifact_status text not null,
+            artifact_storage_backend text not null,
+            artifact_kind text not null,
+            created_at timestamptz not null
+        );
+        create index if not exists idx_artifact_lineage_records_created_at on artifact_lineage_records (created_at desc);
+        """
+        try:
+            with self._connect() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(ddl)
+                conn.commit()
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=f"Failed to initialize Postgres lineage store: {exc}") from exc
+
+    def upsert(self, record: ArtifactLineageRecord) -> ArtifactLineageRecord:
+        sql = """
+        insert into artifact_lineage_records (
+            lineage_id, artifact_id, session_id, signal_id, signal_type, source, threshold_result, artifact_status, artifact_storage_backend, artifact_kind, created_at
+        ) values (
+            %(lineage_id)s, %(artifact_id)s, %(session_id)s, %(signal_id)s, %(signal_type)s, %(source)s, %(threshold_result)s, %(artifact_status)s, %(artifact_storage_backend)s, %(artifact_kind)s, %(created_at)s::timestamptz
+        )
+        on conflict (lineage_id) do update set
+            artifact_id = excluded.artifact_id,
+            session_id = excluded.session_id,
+            signal_id = excluded.signal_id,
+            signal_type = excluded.signal_type,
+            source = excluded.source,
+            threshold_result = excluded.threshold_result,
+            artifact_status = excluded.artifact_status,
+            artifact_storage_backend = excluded.artifact_storage_backend,
+            artifact_kind = excluded.artifact_kind,
+            created_at = excluded.created_at;
+        """
+        data = record.model_dump(mode="json")
+        try:
+            with self._connect() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(sql, data)
+                conn.commit()
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=f"Failed to upsert lineage record in Postgres: {exc}") from exc
+        return record
+
+    def get_by_artifact_id(self, artifact_id: str) -> ArtifactLineageRecord | None:
+        sql = """
+        select lineage_id, artifact_id, session_id, signal_id, signal_type, source, threshold_result, artifact_status, artifact_storage_backend, artifact_kind, created_at
+        from artifact_lineage_records
+        where artifact_id = %(artifact_id)s
+        limit 1;
+        """
+        try:
+            with self._connect() as conn:
+                with conn.cursor(row_factory=psycopg.rows.dict_row) as cur:
+                    cur.execute(sql, {"artifact_id": artifact_id})
+                    row = cur.fetchone()
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=f"Failed to fetch lineage record from Postgres: {exc}") from exc
+        if row is None:
+            return None
+        return self._row_to_record(row)
+
+    def list_recent(self, limit: int = 50) -> list[ArtifactLineageRecord]:
+        sql = """
+        select lineage_id, artifact_id, session_id, signal_id, signal_type, source, threshold_result, artifact_status, artifact_storage_backend, artifact_kind, created_at
+        from artifact_lineage_records
+        order by created_at desc
+        limit %(limit)s;
+        """
+        try:
+            with self._connect() as conn:
+                with conn.cursor(row_factory=psycopg.rows.dict_row) as cur:
+                    cur.execute(sql, {"limit": limit})
+                    rows = cur.fetchall()
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=f"Failed to list lineage records from Postgres: {exc}") from exc
+        return [self._row_to_record(row) for row in rows]
+
+    def ping(self) -> dict[str, str]:
+        try:
+            with self._connect() as conn:
+                with conn.cursor() as cur:
+                    cur.execute("select 1;")
+                    cur.fetchone()
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=f"Postgres lineage store health check failed: {exc}") from exc
+        return {
+            "status": "ok",
+            "backend": self.backend_name,
+            "dsn": self.dsn,
+        }
+
+
+def build_artifact_store(store_path: Path) -> ArtifactStore:
+    backend = os.getenv("ORCHESTRATOR_STORE_BACKEND", "local_json").strip().lower()
+    if backend == "postgres":
+        dsn = os.getenv("ORCHESTRATOR_POSTGRES_DSN", "").strip()
+        if not dsn:
+            raise RuntimeError("ORCHESTRATOR_POSTGRES_DSN is required when ORCHESTRATOR_STORE_BACKEND=postgres")
+        return PostgresArtifactStore(dsn)
+    return LocalJsonArtifactStore(store_path)
+
+
+def build_lineage_store(store_path: Path) -> ArtifactLineageStore:
+    backend = os.getenv("ORCHESTRATOR_STORE_BACKEND", "local_json").strip().lower()
+    if backend == "postgres":
+        dsn = os.getenv("ORCHESTRATOR_POSTGRES_DSN", "").strip()
+        if not dsn:
+            raise RuntimeError("ORCHESTRATOR_POSTGRES_DSN is required when ORCHESTRATOR_STORE_BACKEND=postgres")
+        return PostgresArtifactLineageStore(dsn)
+    return LocalJsonArtifactLineageStore(store_path)

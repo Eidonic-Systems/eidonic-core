@@ -11,7 +11,7 @@ The Eidon Orchestrator is the current orchestration service for Eidonic Core.
 - expose list and retrieval surfaces for persisted orchestrator records
 
 ## Current phase
-Phase 2 Postgres-ready orchestrator store contract scaffold
+Phase 2 Postgres backend pilot
 
 ## Current endpoints
 - `GET /health`
@@ -22,16 +22,23 @@ Phase 2 Postgres-ready orchestrator store contract scaffold
 - `GET /lineage/{artifact_id}`
 
 ## Store contract surface
-The current implementation uses explicit artifact and lineage store contracts with `upsert`, retrieval, `list_recent(limit)`, and `ping()` semantics.
+`eidon-orchestrator` expects its storage backends to support:
+- artifact store: `backend_name`, `upsert(record)`, `get(artifact_id)`, `list_recent(limit)`, `ping()`
+- lineage store: `backend_name`, `upsert(record)`, `get_by_artifact_id(artifact_id)`, `list_recent(limit)`, `ping()`
 
-The active implementations are still local JSON stores, but the contract surface is now shaped for a future durable backend without changing current runtime behavior.
+## Current adapter implementations
+- `LocalJsonArtifactStore`
+- `LocalJsonArtifactLineageStore`
+- `PostgresArtifactStore`
+- `PostgresArtifactLineageStore`
 
-## Local persistence
-The current scaffold writes records to:
-- `services/eidon-orchestrator/data/artifacts.json`
-- `services/eidon-orchestrator/data/lineage.json`
+## Backend selection
+Choose the active backend through environment variables:
+- `ORCHESTRATOR_STORE_BACKEND=local_json` or `postgres`
+- `ORCHESTRATOR_POSTGRES_DSN=postgresql://...`
 
-Both files are ignored by Git and act as temporary local persistence layers.
+## Why this matters
+This is the fourth real durable-backend pilot for the Phase 2 scaffold. The goal is to prove database-backed artifact and lineage stores without changing HTTP behavior.
 
 ## Notes
-This is still not a final witness, review, or database-backed system.
+Local JSON remains available as fallback during the pilot.
