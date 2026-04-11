@@ -447,3 +447,10 @@
 - Updated `services/eidon-orchestrator/README.md`
 - Added `docs/PHASE_2_PROVIDER_WARMUP_SURFACE.md`
 - Next step: prove readiness transitions from false to true through the warmup surface
+
+## 2026-04-11
+- Created branch `phase-2/integration-test-provider-warmup-surface`
+- Added focused integration coverage for the Orchestrator provider warmup and readiness surface
+- Added `tests/integration/test_provider_warmup_surface.ps1`
+- Added `docs/PHASE_2_INTEGRATION_TEST_PROVIDER_WARMUP_SURFACE.md`
+- Next step: open PR for provider warmup surface integration proof
