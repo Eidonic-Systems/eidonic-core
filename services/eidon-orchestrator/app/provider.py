@@ -3,7 +3,38 @@ import os
 from typing import Any, Protocol
 
 import httpx
-from fastapi import HTTPException
+
+
+class ModelProviderError(Exception):
+    def __init__(self, error_code: str, message: str):
+        super().__init__(message)
+        self.error_code = error_code
+        self.message = message
+
+
+class ProviderUnavailableError(ModelProviderError):
+    def __init__(self, message: str = "Provider is unavailable."):
+        super().__init__("provider_unavailable", message)
+
+
+class ProviderTimeoutError(ModelProviderError):
+    def __init__(self, message: str = "Provider request timed out."):
+        super().__init__("provider_timeout", message)
+
+
+class ProviderModelMissingError(ModelProviderError):
+    def __init__(self, model_name: str):
+        super().__init__("provider_model_missing", f"Provider model is not available locally: {model_name}")
+
+
+class ProviderEmptyResponseError(ModelProviderError):
+    def __init__(self):
+        super().__init__("provider_empty_response", "Provider returned an empty response.")
+
+
+class ProviderHttpError(ModelProviderError):
+    def __init__(self, message: str):
+        super().__init__("provider_http_error", message)
 
 
 class ModelProvider(Protocol):
@@ -45,10 +76,11 @@ class StubModelProvider:
 
 
 class OllamaModelProvider:
-    def __init__(self, base_url: str, model_name: str):
+    def __init__(self, base_url: str, model_name: str, timeout_seconds: float = 30.0):
         self.base_url = base_url.rstrip("/")
         self._model_name = model_name
-        self.timeout = httpx.Timeout(120.0, connect=10.0)
+        self.timeout_seconds = timeout_seconds
+        self.timeout = httpx.Timeout(timeout_seconds, connect=min(timeout_seconds, 10.0))
 
     @property
     def backend_name(self) -> str:
@@ -58,18 +90,30 @@ class OllamaModelProvider:
     def model_name(self) -> str:
         return self._model_name
 
-    def _list_models(self) -> list[dict[str, Any]]:
+    def _request(self, method: str, path: str, *, json_body: dict[str, Any] | None = None) -> dict[str, Any]:
         try:
             with httpx.Client(timeout=self.timeout) as client:
-                response = client.get(f"{self.base_url}/tags")
+                response = client.request(method, f"{self.base_url}{path}", json=json_body)
                 response.raise_for_status()
-                payload = response.json()
+                return response.json()
+        except httpx.ConnectTimeout as exc:
+            raise ProviderTimeoutError("Provider connection timed out.") from exc
+        except httpx.ReadTimeout as exc:
+            raise ProviderTimeoutError("Provider response timed out.") from exc
+        except httpx.TimeoutException as exc:
+            raise ProviderTimeoutError() from exc
+        except httpx.ConnectError as exc:
+            raise ProviderUnavailableError("Could not connect to the provider.") from exc
+        except httpx.HTTPStatusError as exc:
+            raise ProviderHttpError(f"Provider returned HTTP {exc.response.status_code}.") from exc
         except httpx.HTTPError as exc:
-            raise HTTPException(status_code=500, detail=f"Ollama provider health check failed: {exc}") from exc
+            raise ProviderUnavailableError(str(exc)) from exc
 
+    def _list_models(self) -> list[dict[str, Any]]:
+        payload = self._request("GET", "/tags")
         models = payload.get("models")
         if not isinstance(models, list):
-            raise HTTPException(status_code=500, detail="Ollama tags response is missing a models list.")
+            raise ProviderHttpError("Provider tags response did not include a models list.")
         return models
 
     def _ensure_model_available(self) -> None:
@@ -80,9 +124,8 @@ class OllamaModelProvider:
                 name = item.get("name") or item.get("model")
                 if isinstance(name, str) and name.strip():
                     names.add(name.strip())
-
         if self.model_name not in names:
-            raise HTTPException(status_code=500, detail=f"Ollama model is not available locally: {self.model_name}")
+            raise ProviderModelMissingError(self.model_name)
 
     def generate_response(self, *, intent: str, content: dict[str, Any]) -> str:
         self._ensure_model_available()
@@ -94,23 +137,15 @@ class OllamaModelProvider:
             f"Content: {json.dumps(content, ensure_ascii=False, sort_keys=True)}",
         ])
 
-        body = {
+        payload = self._request("POST", "/generate", json_body={
             "model": self.model_name,
             "prompt": prompt,
             "stream": False,
-        }
-
-        try:
-            with httpx.Client(timeout=self.timeout) as client:
-                response = client.post(f"{self.base_url}/generate", json=body)
-                response.raise_for_status()
-                payload = response.json()
-        except httpx.HTTPError as exc:
-            raise HTTPException(status_code=500, detail=f"Ollama generation failed: {exc}") from exc
+        })
 
         generated = payload.get("response")
         if not isinstance(generated, str) or not generated.strip():
-            raise HTTPException(status_code=500, detail="Ollama returned an empty response.")
+            raise ProviderEmptyResponseError()
 
         return generated.strip()
 
@@ -133,6 +168,8 @@ def build_model_provider() -> ModelProvider:
 
     if backend == "ollama":
         base_url = os.getenv("OLLAMA_BASE_URL", "http://127.0.0.1:11434/api").strip() or "http://127.0.0.1:11434/api"
-        return OllamaModelProvider(base_url=base_url, model_name=model_name)
+        timeout_raw = os.getenv("EIDON_PROVIDER_TIMEOUT_SECONDS", "30").strip() or "30"
+        timeout_seconds = float(timeout_raw)
+        return OllamaModelProvider(base_url=base_url, model_name=model_name, timeout_seconds=timeout_seconds)
 
     raise RuntimeError(f"Unsupported EIDON_PROVIDER_BACKEND: {backend}")

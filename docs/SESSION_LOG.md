@@ -414,3 +414,11 @@
 - Extended the full integration test to verify persisted provider provenance in artifact and lineage retrieval
 - Added `docs/PHASE_2_INTEGRATION_TEST_PROVIDER_PROVENANCE_SURFACE.md`
 - Next step: open PR for provider provenance surface integration proof
+
+## 2026-04-11
+- Created branch `phase-2/provider-failure-semantics`
+- Added explicit provider failure classes in the Orchestrator provider layer
+- Persisted provider failure truth in artifact and lineage records
+- Updated Orchestrator to return structured `provider_failed` responses instead of vague generic failures
+- Added `docs/PHASE_2_PROVIDER_FAILURE_SEMANTICS.md`
+- Next step: prove happy-path stability and one controlled provider failure path

@@ -7,13 +7,13 @@ The Eidon Orchestrator is the current orchestration service for Eidonic Core.
 - produce the current orchestration outcome
 - persist an orchestration artifact record
 - persist a simple artifact lineage record
-- record provider provenance alongside orchestration output
+- record provider provenance and provider failure truth alongside orchestration output
 - return artifact and lineage identifiers
 - expose list and retrieval surfaces for persisted orchestrator records
 - route response generation through a provider adapter surface
 
 ## Current phase
-Phase 2 PostgreSQL-backed orchestration service with persisted provider provenance
+Phase 2 PostgreSQL-backed orchestration service with explicit provider failure semantics
 
 ## Current endpoints
 - `GET /health`
@@ -23,28 +23,30 @@ Phase 2 PostgreSQL-backed orchestration service with persisted provider provenan
 - `GET /lineage`
 - `GET /lineage/{artifact_id}`
 
-## Store contract surface
-`eidon-orchestrator` expects its storage backends to support:
-- artifact store: `backend_name`, `upsert(record)`, `get(artifact_id)`, `list_recent(limit)`, `ping()`
-- lineage store: `backend_name`, `upsert(record)`, `get_by_artifact_id(artifact_id)`, `list_recent(limit)`, `ping()`
+## Provider failure semantics
+The current provider layer distinguishes these failure classes:
+- `provider_unavailable`
+- `provider_timeout`
+- `provider_model_missing`
+- `provider_empty_response`
+- `provider_http_error`
 
-## Provider contract surface
-`eidon-orchestrator` expects its response provider to support:
-- `backend_name`
-- `model_name`
-- `generate_response(intent, content)`
-- `ping()`
+When provider generation fails, Orchestrator persists a `provider_failed` artifact and matching lineage record instead of collapsing the event into a vague server error.
 
-## Current persisted provenance
+## Persisted provider failure truth
 Artifact records now persist:
-- `storage_backend`
 - `provider_backend`
 - `provider_model`
+- `provider_status`
+- `provider_error_code`
+- `provider_error_message`
 
 Lineage records now persist:
-- `artifact_storage_backend`
 - `artifact_provider_backend`
 - `artifact_provider_model`
+- `artifact_provider_status`
+- `artifact_provider_error_code`
+- `artifact_provider_error_message`
 
 ## Notes
-This branch hardens traceability. It does not add routing or training.
+This branch hardens failure behavior and traceability. It does not add routing or training.
