@@ -9,10 +9,10 @@ The Eidon Orchestrator is the current orchestration service for Eidonic Core.
 - persist a simple artifact lineage record
 - return artifact and lineage identifiers
 - expose list and retrieval surfaces for persisted orchestrator records
-- route response generation through a provider contract surface
+- route response generation through a provider adapter surface
 
 ## Current phase
-Phase 2 PostgreSQL-backed orchestration service with a model provider contract surface
+Phase 2 PostgreSQL-backed orchestration service with an Ollama provider adapter pilot
 
 ## Current endpoints
 - `GET /health`
@@ -35,22 +35,25 @@ Phase 2 PostgreSQL-backed orchestration service with a model provider contract s
 - `ping()`
 
 ## Current adapter implementations
+- `OllamaModelProvider`
+- `StubModelProvider`
 - `PostgresArtifactStore`
 - `PostgresArtifactLineageStore`
 - `LocalJsonArtifactStore`
 - `LocalJsonArtifactLineageStore`
-- `StubModelProvider`
 
 ## Current proven backends
 - persistence: PostgreSQL
-- provider: local stub provider
+- provider: Ollama
+- model: `gemma3n:e4b`
 
 ## Backend selection
 Choose the active backends through environment variables:
 - `ORCHESTRATOR_STORE_BACKEND=postgres` or `local_json`
 - `ORCHESTRATOR_POSTGRES_DSN=postgresql://...`
-- `EIDON_PROVIDER_BACKEND=stub`
-- `EIDON_PROVIDER_MODEL=stub-eidon-v1`
+- `EIDON_PROVIDER_BACKEND=ollama` or `stub`
+- `EIDON_PROVIDER_MODEL=gemma3n:e4b`
+- `OLLAMA_BASE_URL=http://127.0.0.1:11434/api`
 
 ## Notes
-The stub provider exists to establish the adapter seam before any real local model is introduced.
+The Ollama adapter is the first real local model runtime path. Training and routing are not part of this branch.

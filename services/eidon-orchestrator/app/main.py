@@ -63,8 +63,8 @@ def build_lineage_record(artifact: EidonArtifactRecord) -> ArtifactLineageRecord
 
 app = FastAPI(
     title="Eidonic Core Eidon Orchestrator",
-    version="0.2.6",
-    description="Orchestration service scaffold for the Eidonic Core with PostgreSQL-backed persistence and a model provider contract surface.",
+    version="0.2.7",
+    description="Orchestration service scaffold for the Eidonic Core with PostgreSQL-backed persistence and an Ollama provider adapter pilot.",
 )
 
 
@@ -149,5 +149,5 @@ def orchestrate(payload: EidonOrchestrationInput) -> dict[str, object]:
         "artifact_id": saved_artifact.artifact_id,
         "lineage_id": saved_lineage.lineage_id,
         "storage_backend": saved_artifact.storage_backend,
-        "message": "Eidon scaffold orchestrated the request through a provider contract surface and persisted artifact and lineage records.",
+        "message": "Eidon scaffold orchestrated the request through a provider adapter and persisted artifact and lineage records.",
     }

@@ -390,3 +390,13 @@
 - Extended the full integration test to verify the Orchestrator provider health surface
 - Added `docs/PHASE_2_INTEGRATION_TEST_PROVIDER_SURFACE.md`
 - Next step: open PR for provider surface integration proof
+
+## 2026-04-11
+- Created branch `phase-2/ollama-provider-adapter-pilot`
+- Added `OllamaModelProvider` for the first real local model adapter
+- Kept `StubModelProvider` as fallback
+- Updated Orchestrator to route response generation through Ollama when selected
+- Updated `.env.example` with Ollama provider settings
+- Updated `services/eidon-orchestrator/README.md`
+- Added `docs/PHASE_2_OLLAMA_PROVIDER_ADAPTER_PILOT.md`
+- Next step: prove the full chain with Ollama-backed generation
