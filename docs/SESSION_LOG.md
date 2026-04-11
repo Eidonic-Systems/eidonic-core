@@ -422,3 +422,10 @@
 - Updated Orchestrator to return structured `provider_failed` responses instead of vague generic failures
 - Added `docs/PHASE_2_PROVIDER_FAILURE_SEMANTICS.md`
 - Next step: prove happy-path stability and one controlled provider failure path
+
+## 2026-04-11
+- Created branch `phase-2/integration-test-provider-failure-surface`
+- Added focused integration coverage for the controlled provider-failure path
+- Added `tests/integration/test_provider_failure_surface.ps1`
+- Added `docs/PHASE_2_INTEGRATION_TEST_PROVIDER_FAILURE_SURFACE.md`
+- Next step: open PR for provider failure surface integration proof
