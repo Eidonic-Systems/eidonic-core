@@ -643,7 +643,31 @@ Assert-Equal -Name "lineage limited list first artifact id" `
   -Actual $lineageFromLimitedList.artifact_id `
   -Expected $artifactId
 
-Write-Host "Full chain integration test with list limit surfaces passed." -ForegroundColor Green
+$eidonHealth = Invoke-RestMethod -Uri "$EidonBaseUrl/health" `
+  -Method Get
+
+$eidonHealthJson = $eidonHealth | ConvertTo-Json -Depth 12
+Write-Host ""
+Write-Host $eidonHealthJson
+
+if ($null -eq $eidonHealth.provider) {
+  throw "Missing provider object in Orchestrator health response."
+}
+
+Assert-Equal -Name "provider status" `
+  -Actual $eidonHealth.provider.status `
+  -Expected "ok"
+
+Assert-Equal -Name "provider backend" `
+  -Actual $eidonHealth.provider.backend `
+  -Expected "stub"
+
+Assert-Equal -Name "provider model" `
+  -Actual $eidonHealth.provider.model `
+  -Expected "stub-eidon-v1"
+
+Write-Host "Full chain integration test with provider surface passed." -ForegroundColor Green
+
 
 
 

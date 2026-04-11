@@ -384,3 +384,9 @@
 - Updated `services/eidon-orchestrator/README.md`
 - Added `docs/PHASE_2_MODEL_PROVIDER_CONTRACT_SURFACE.md`
 - Next step: prove Orchestrator still passes with the stub provider contract in place
+
+## 2026-04-10
+- Created branch `phase-2/integration-test-provider-surface`
+- Extended the full integration test to verify the Orchestrator provider health surface
+- Added `docs/PHASE_2_INTEGRATION_TEST_PROVIDER_SURFACE.md`
+- Next step: open PR for provider surface integration proof
