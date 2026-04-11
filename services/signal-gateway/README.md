@@ -11,7 +11,7 @@ The Signal Gateway is the ingress service for Eidonic Core.
 - expose list and retrieval surfaces for persisted signal records
 
 ## Current phase
-Phase 2 Postgres-ready signal store contract scaffold
+Phase 2 Postgres backend pilot
 
 ## Current endpoints
 - `GET /health`
@@ -22,22 +22,25 @@ Phase 2 Postgres-ready signal store contract scaffold
 ## Current downstream chain
 `signal-gateway` -> `herald-service` -> `session-engine` -> `eidon-orchestrator`
 
-## Store contract surface
-The current implementation uses an explicit signal store contract with `upsert`, `get`, `list_recent(limit)`, and `ping()` semantics.
+## Signal store contract surface
+`signal-gateway` expects its storage backend to support:
+- `backend_name`
+- `upsert(record)`
+- `get(signal_id)`
+- `list_recent(limit)`
+- `ping()`
 
-The active implementation is still `LocalJsonSignalStore`, but the contract surface is now shaped for a future durable backend without changing the current runtime behavior.
+## Current adapter implementations
+- `LocalJsonSignalStore`
+- `PostgresSignalStore`
 
-## Local persistence
-The current scaffold writes signal records to:
-`services/signal-gateway/data/signals.json`
+## Backend selection
+Choose the active backend through environment variables:
+- `SIGNAL_GATEWAY_STORE_BACKEND=local_json` or `postgres`
+- `SIGNAL_GATEWAY_POSTGRES_DSN=postgresql://...`
 
-This file is ignored by Git and acts as a temporary local persistence layer until a real durable backend is introduced.
-
-## Environment configuration
-If a repo root `.env` file is present, `signal-gateway` loads these values:
-- `HERALD_BASE_URL`
-- `SESSION_ENGINE_BASE_URL`
-- `EIDON_BASE_URL`
+## Why this matters
+This is the third real durable-backend pilot for the Phase 2 scaffold. The goal is to prove a database-backed ingress store without changing HTTP behavior.
 
 ## Notes
-This is still not a queueing, governance, or durable transport layer.
+Local JSON remains available as fallback during the pilot.

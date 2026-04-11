@@ -341,3 +341,12 @@
 - Updated `services/herald-service/README.md`
 - Added `docs/PHASE_2_HERALD_POSTGRES_BACKEND_PILOT.md`
 - Next step: prove Herald against local PostgreSQL
+
+## 2026-04-10
+- Created branch `phase-2/signal-gateway-postgres-backend-pilot`
+- Added `PostgresSignalStore` for the third real durable-backend pilot
+- Kept `LocalJsonSignalStore` as fallback
+- Added backend selection through environment variables
+- Updated `services/signal-gateway/README.md`
+- Added `docs/PHASE_2_SIGNAL_GATEWAY_POSTGRES_BACKEND_PILOT.md`
+- Next step: prove Signal Gateway against local PostgreSQL
