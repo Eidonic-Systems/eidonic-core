@@ -438,3 +438,12 @@
 - Updated `services/signal-gateway/README.md`
 - Added `docs/PHASE_2_PROVIDER_COLD_START_TIMEOUT_HARDENING.md`
 - Next step: prove the chain remains healthy with hardened timeout defaults
+
+## 2026-04-11
+- Created branch `phase-2/provider-warmup-surface`
+- Added provider warmup capability and readiness reporting in Orchestrator
+- Added `POST /provider/warm`
+- Added `scripts/warm_eidon_provider.ps1`
+- Updated `services/eidon-orchestrator/README.md`
+- Added `docs/PHASE_2_PROVIDER_WARMUP_SURFACE.md`
+- Next step: prove readiness transitions from false to true through the warmup surface

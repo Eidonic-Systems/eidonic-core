@@ -46,12 +46,15 @@ class ModelProvider(Protocol):
 
     def generate_response(self, *, intent: str, content: dict[str, Any]) -> str: ...
 
-    def ping(self) -> dict[str, str]: ...
+    def ping(self) -> dict[str, object]: ...
+
+    def warm(self) -> dict[str, object]: ...
 
 
 class StubModelProvider:
     def __init__(self, model_name: str = "stub-eidon-v1"):
         self._model_name = model_name
+        self._ready = True
 
     @property
     def backend_name(self) -> str:
@@ -62,25 +65,38 @@ class StubModelProvider:
         return self._model_name
 
     def generate_response(self, *, intent: str, content: dict[str, Any]) -> str:
+        self._ready = True
         user_text = content.get("text")
         if isinstance(user_text, str) and user_text.strip():
             return f"Eidon received the intent: {intent}"
         return f"Eidon is prepared to act on the intent: {intent}"
 
-    def ping(self) -> dict[str, str]:
+    def ping(self) -> dict[str, object]:
         return {
             "status": "ok",
             "backend": self.backend_name,
             "model": self.model_name,
+            "ready": self._ready,
+        }
+
+    def warm(self) -> dict[str, object]:
+        self._ready = True
+        return {
+            "status": "ok",
+            "backend": self.backend_name,
+            "model": self.model_name,
+            "ready": self._ready,
         }
 
 
 class OllamaModelProvider:
-    def __init__(self, base_url: str, model_name: str, timeout_seconds: float = 30.0):
+    def __init__(self, base_url: str, model_name: str, timeout_seconds: float = 30.0, warm_keepalive: str = "15m"):
         self.base_url = base_url.rstrip("/")
         self._model_name = model_name
         self.timeout_seconds = timeout_seconds
+        self.warm_keepalive = warm_keepalive
         self.timeout = httpx.Timeout(timeout_seconds, connect=min(timeout_seconds, 10.0))
+        self._ready = False
 
     @property
     def backend_name(self) -> str:
@@ -141,21 +157,41 @@ class OllamaModelProvider:
             "model": self.model_name,
             "prompt": prompt,
             "stream": False,
+            "keep_alive": self.warm_keepalive,
         })
 
         generated = payload.get("response")
         if not isinstance(generated, str) or not generated.strip():
             raise ProviderEmptyResponseError()
 
+        self._ready = True
         return generated.strip()
 
-    def ping(self) -> dict[str, str]:
+    def ping(self) -> dict[str, object]:
         self._ensure_model_available()
         return {
             "status": "ok",
             "backend": self.backend_name,
             "model": self.model_name,
             "base_url": self.base_url,
+            "ready": self._ready,
+        }
+
+    def warm(self) -> dict[str, object]:
+        self._ensure_model_available()
+        self._request("POST", "/generate", json_body={
+            "model": self.model_name,
+            "prompt": "Warm the model and reply with ok.",
+            "stream": False,
+            "keep_alive": self.warm_keepalive,
+        })
+        self._ready = True
+        return {
+            "status": "ok",
+            "backend": self.backend_name,
+            "model": self.model_name,
+            "base_url": self.base_url,
+            "ready": self._ready,
         }
 
 
@@ -169,7 +205,13 @@ def build_model_provider() -> ModelProvider:
     if backend == "ollama":
         base_url = os.getenv("OLLAMA_BASE_URL", "http://127.0.0.1:11434/api").strip() or "http://127.0.0.1:11434/api"
         timeout_raw = os.getenv("EIDON_PROVIDER_TIMEOUT_SECONDS", "30").strip() or "30"
+        warm_keepalive = os.getenv("EIDON_PROVIDER_WARM_KEEPALIVE", "15m").strip() or "15m"
         timeout_seconds = float(timeout_raw)
-        return OllamaModelProvider(base_url=base_url, model_name=model_name, timeout_seconds=timeout_seconds)
+        return OllamaModelProvider(
+            base_url=base_url,
+            model_name=model_name,
+            timeout_seconds=timeout_seconds,
+            warm_keepalive=warm_keepalive,
+        )
 
     raise RuntimeError(f"Unsupported EIDON_PROVIDER_BACKEND: {backend}")
