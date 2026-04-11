@@ -1,7 +1,10 @@
 import json
+import os
+from datetime import datetime
 from pathlib import Path
 from typing import Protocol
 
+import psycopg
 from fastapi import HTTPException
 from eidonic_schemas import ThresholdRecord
 
@@ -39,15 +42,12 @@ class LocalJsonThresholdStore:
         raw = self.store_path.read_text(encoding="utf-8").strip()
         if not raw:
             return []
-
         try:
             data = json.loads(raw)
         except json.JSONDecodeError as exc:
             raise HTTPException(status_code=500, detail=f"Threshold store is invalid JSON: {exc}") from exc
-
         if not isinstance(data, list):
             raise HTTPException(status_code=500, detail="Threshold store must contain a JSON list.")
-
         return [ThresholdRecord.model_validate(item) for item in data]
 
     def _save_records(self, records: list[ThresholdRecord]) -> None:
@@ -57,17 +57,14 @@ class LocalJsonThresholdStore:
 
     def upsert(self, record: ThresholdRecord) -> ThresholdRecord:
         records = self._load_records()
-
         updated = False
         for index, existing in enumerate(records):
             if existing.signal_id == record.signal_id:
                 records[index] = record
                 updated = True
                 break
-
         if not updated:
             records.append(record)
-
         self._save_records(records)
         return record
 
@@ -90,3 +87,145 @@ class LocalJsonThresholdStore:
             "backend": self.backend_name,
             "store_path": str(self.store_path),
         }
+
+
+class PostgresThresholdStore:
+    def __init__(self, dsn: str):
+        self.dsn = dsn
+        self._ensure_schema()
+
+    @property
+    def backend_name(self) -> str:
+        return "postgres"
+
+    def _connect(self):
+        return psycopg.connect(self.dsn)
+
+    def _row_to_record(self, row: dict) -> ThresholdRecord:
+        data = dict(row)
+
+        created_at = data.get("created_at")
+        if isinstance(created_at, datetime):
+            data["created_at"] = created_at.isoformat()
+
+        content = data.get("content")
+        if isinstance(content, str):
+            try:
+                data["content"] = json.loads(content)
+            except json.JSONDecodeError:
+                pass
+
+        return ThresholdRecord.model_validate(data)
+
+    def _ensure_schema(self) -> None:
+        ddl = """
+        create table if not exists threshold_records (
+            threshold_id text primary key,
+            signal_id text not null unique,
+            signal_type text not null,
+            source text not null,
+            sensitivity_hint text null,
+            content jsonb not null,
+            threshold_result text not null,
+            status text not null,
+            message text not null,
+            created_at timestamptz not null,
+            storage_backend text not null
+        );
+        create index if not exists idx_threshold_records_created_at on threshold_records (created_at desc);
+        """
+        try:
+            with self._connect() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(ddl)
+                conn.commit()
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=f"Failed to initialize Postgres threshold store: {exc}") from exc
+
+    def upsert(self, record: ThresholdRecord) -> ThresholdRecord:
+        sql = """
+        insert into threshold_records (
+            threshold_id, signal_id, signal_type, source, sensitivity_hint, content, threshold_result, status, message, created_at, storage_backend
+        ) values (
+            %(threshold_id)s, %(signal_id)s, %(signal_type)s, %(source)s, %(sensitivity_hint)s, %(content)s::jsonb, %(threshold_result)s, %(status)s, %(message)s, %(created_at)s::timestamptz, %(storage_backend)s
+        )
+        on conflict (threshold_id) do update set
+            signal_id = excluded.signal_id,
+            signal_type = excluded.signal_type,
+            source = excluded.source,
+            sensitivity_hint = excluded.sensitivity_hint,
+            content = excluded.content,
+            threshold_result = excluded.threshold_result,
+            status = excluded.status,
+            message = excluded.message,
+            created_at = excluded.created_at,
+            storage_backend = excluded.storage_backend;
+        """
+        data = record.model_dump(mode="json")
+        data["content"] = json.dumps(data["content"])
+        try:
+            with self._connect() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(sql, data)
+                conn.commit()
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=f"Failed to upsert threshold record in Postgres: {exc}") from exc
+        return record
+
+    def get(self, signal_id: str) -> ThresholdRecord | None:
+        sql = """
+        select threshold_id, signal_id, signal_type, source, sensitivity_hint, content, threshold_result, status, message, created_at, storage_backend
+        from threshold_records
+        where signal_id = %(signal_id)s
+        limit 1;
+        """
+        try:
+            with self._connect() as conn:
+                with conn.cursor(row_factory=psycopg.rows.dict_row) as cur:
+                    cur.execute(sql, {"signal_id": signal_id})
+                    row = cur.fetchone()
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=f"Failed to fetch threshold record from Postgres: {exc}") from exc
+        if row is None:
+            return None
+        return self._row_to_record(row)
+
+    def list_recent(self, limit: int = 50) -> list[ThresholdRecord]:
+        sql = """
+        select threshold_id, signal_id, signal_type, source, sensitivity_hint, content, threshold_result, status, message, created_at, storage_backend
+        from threshold_records
+        order by created_at desc
+        limit %(limit)s;
+        """
+        try:
+            with self._connect() as conn:
+                with conn.cursor(row_factory=psycopg.rows.dict_row) as cur:
+                    cur.execute(sql, {"limit": limit})
+                    rows = cur.fetchall()
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=f"Failed to list threshold records from Postgres: {exc}") from exc
+        return [self._row_to_record(row) for row in rows]
+
+    def ping(self) -> dict[str, str]:
+        try:
+            with self._connect() as conn:
+                with conn.cursor() as cur:
+                    cur.execute("select 1;")
+                    cur.fetchone()
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=f"Postgres threshold store health check failed: {exc}") from exc
+        return {
+            "status": "ok",
+            "backend": self.backend_name,
+            "dsn": self.dsn,
+        }
+
+
+def build_threshold_store(store_path: Path) -> ThresholdStore:
+    backend = os.getenv("HERALD_STORE_BACKEND", "local_json").strip().lower()
+    if backend == "postgres":
+        dsn = os.getenv("HERALD_POSTGRES_DSN", "").strip()
+        if not dsn:
+            raise RuntimeError("HERALD_POSTGRES_DSN is required when HERALD_STORE_BACKEND=postgres")
+        return PostgresThresholdStore(dsn)
+    return LocalJsonThresholdStore(store_path)

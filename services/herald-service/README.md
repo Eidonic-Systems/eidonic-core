@@ -10,7 +10,7 @@ The Herald Service is the current threshold review service for Eidonic Core.
 - expose list and retrieval surfaces for persisted threshold records
 
 ## Current phase
-Phase 2 Postgres-ready threshold store contract scaffold
+Phase 2 Postgres backend pilot
 
 ## Current endpoints
 - `GET /health`
@@ -18,16 +18,25 @@ Phase 2 Postgres-ready threshold store contract scaffold
 - `GET /thresholds`
 - `GET /thresholds/{signal_id}`
 
-## Store contract surface
-The current implementation uses an explicit threshold store contract with `upsert`, `get`, `list_recent(limit)`, and `ping()` semantics.
+## Threshold store contract surface
+`herald-service` expects its storage backend to support:
+- `backend_name`
+- `upsert(record)`
+- `get(signal_id)`
+- `list_recent(limit)`
+- `ping()`
 
-The active implementation is still `LocalJsonThresholdStore`, but the contract surface is now shaped for a future durable backend without changing the current runtime behavior.
+## Current adapter implementations
+- `LocalJsonThresholdStore`
+- `PostgresThresholdStore`
 
-## Local persistence
-The current scaffold writes threshold records to:
-`services/herald-service/data/thresholds.json`
+## Backend selection
+Choose the active backend through environment variables:
+- `HERALD_STORE_BACKEND=local_json` or `postgres`
+- `HERALD_POSTGRES_DSN=postgresql://...`
 
-This file is ignored by Git and acts as a temporary local persistence layer until a real durable backend is introduced.
+## Why this matters
+This is the second real durable-backend pilot for the Phase 2 scaffold. The goal is to prove a database-backed threshold store without changing HTTP behavior.
 
 ## Notes
-This is still not a database-backed review, provenance, or witness layer.
+Local JSON remains available as fallback during the pilot.

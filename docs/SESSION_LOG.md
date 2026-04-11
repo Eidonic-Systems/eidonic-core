@@ -332,3 +332,12 @@
 - Extended the full integration test to verify `limit=1` behavior across current list surfaces
 - Added `docs/PHASE_2_INTEGRATION_TEST_LIST_LIMIT_SURFACES.md`
 - Next step: open PR for list limit surface integration proof
+
+## 2026-04-10
+- Created branch `phase-2/herald-postgres-backend-pilot`
+- Added `PostgresThresholdStore` for the second real durable-backend pilot
+- Kept `LocalJsonThresholdStore` as fallback
+- Added backend selection through environment variables
+- Updated `services/herald-service/README.md`
+- Added `docs/PHASE_2_HERALD_POSTGRES_BACKEND_PILOT.md`
+- Next step: prove Herald against local PostgreSQL
