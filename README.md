@@ -76,25 +76,22 @@ The standard integration coverage now verifies:
 - after every merge, update local first
 - prove changes from `main` after merge
 - no live hosted model in runtime
-- persistence, provenance, failure semantics, readiness, and preflight before model complexity
+- persistence, provenance, failure semantics, readiness, preflight, and startup discipline before model complexity
 
 ## Local workflow
-Run preflight from repo root before startup:
+Optional standalone preflight from repo root:
 
 `powershell -ExecutionPolicy Bypass -File .\scripts\check_phase_2_runtime_prereqs.ps1`
 
-This verifies:
-- required `.env` keys
-- PostgreSQL reachability
-- Ollama reachability when selected
-- configured local model presence
-- Orchestrator Python environment presence
-
-Start stack from repo root:
+Standard stack startup from repo root:
 
 `powershell -ExecutionPolicy Bypass -File .\scripts\start_phase_2_stack.ps1`
 
-This starts the four service windows, waits for health, and warms the Eidon provider before handing control back.
+The standard startup sequence now does this automatically:
+1. runtime preflight
+2. service boot
+3. health wait
+4. provider warmup
 
 Run happy-path integration proof from repo root:
 
@@ -117,6 +114,6 @@ PostgreSQL now backs the current proven Phase 2 state spine.
 
 Local JSON adapters remain in the repo as fallback implementations, not as the current proven primary backend.
 
-The stack startup sequence now includes provider warmup so the local system enters a ready state instead of relying on a manual warmup ritual.
+Preflight exists to catch missing local prerequisites before startup.
 
-Preflight exists to catch missing local prerequisites before startup instead of discovering them only after boot attempts.
+The stack launcher now enforces that preflight before boot instead of relying on memory or ritual.

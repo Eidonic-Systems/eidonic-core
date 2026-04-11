@@ -51,6 +51,14 @@ function Wait-For-Health {
 }
 
 Write-Host ""
+Write-Host "Running Phase 2 startup preflight..." -ForegroundColor Yellow
+
+& powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\check_phase_2_runtime_prereqs.ps1')
+if ($LASTEXITCODE -ne 0) {
+    throw "Phase 2 runtime preflight failed. Stop and fix the environment before starting the stack."
+}
+
+Write-Host ""
 Write-Host "Starting Phase 2 local stack..." -ForegroundColor Yellow
 Write-Host ""
 
@@ -89,14 +97,10 @@ Wait-For-Health -Name 'signal-gateway' -Url 'http://127.0.0.1:8000/health'
 Write-Host ""
 Write-Host "Warming Eidon provider..." -ForegroundColor Yellow
 
-try {
-    powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\warm_eidon_provider.ps1')
-    Write-Host "Eidon provider warmup completed during stack startup." -ForegroundColor Green
-}
-catch {
-    Write-Error "Eidon provider warmup failed during stack startup. Stop and inspect the provider before continuing."
-    throw
+& powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\warm_eidon_provider.ps1')
+if ($LASTEXITCODE -ne 0) {
+    throw "Eidon provider warmup failed during stack startup. Stop and inspect the provider before continuing."
 }
 
 Write-Host ""
-Write-Host "Phase 2 local stack launcher started four PowerShell windows and completed provider warmup." -ForegroundColor Green
+Write-Host "Phase 2 startup sequence completed: preflight passed, services started, health checks passed, provider warmed." -ForegroundColor Green
