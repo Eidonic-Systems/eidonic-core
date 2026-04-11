@@ -367,3 +367,11 @@
 - Updated service READMEs to reflect PostgreSQL-backed primary persistence with local JSON fallback
 - Added `docs/PHASE_2_POSTGRES_STATE_SPINE_TRUTH_SYNC.md`
 - Next step: open PR for PostgreSQL state spine truth sync
+
+## 2026-04-10
+- Created branch `phase-2/postgres-state-spine-truth-surface-finish`
+- Updated `AGENTS.md` to reflect PostgreSQL-backed verified persistence
+- Updated `.env.example` to set PostgreSQL-backed defaults across the full Phase 2 chain
+- Updated Session Engine, Herald, and Signal Gateway READMEs to reflect PostgreSQL-backed current truth
+- Added `docs/PHASE_2_POSTGRES_STATE_SPINE_TRUTH_SURFACE_FINISH.md`
+- Next step: open PR for PostgreSQL state spine truth surface finish
