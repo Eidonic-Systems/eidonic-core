@@ -375,3 +375,12 @@
 - Updated Session Engine, Herald, and Signal Gateway READMEs to reflect PostgreSQL-backed current truth
 - Added `docs/PHASE_2_POSTGRES_STATE_SPINE_TRUTH_SURFACE_FINISH.md`
 - Next step: open PR for PostgreSQL state spine truth surface finish
+
+## 2026-04-10
+- Created branch `phase-2/model-provider-contract-surface`
+- Added `services/eidon-orchestrator/app/provider.py`
+- Routed Orchestrator response generation through a provider contract surface
+- Added stub provider selection through environment variables
+- Updated `services/eidon-orchestrator/README.md`
+- Added `docs/PHASE_2_MODEL_PROVIDER_CONTRACT_SURFACE.md`
+- Next step: prove Orchestrator still passes with the stub provider contract in place

@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from eidonic_schemas import ArtifactLineageRecord, EidonArtifactRecord, EidonOrchestrationInput
 
+from app.provider import ModelProvider, build_model_provider
 from app.store import (
     ArtifactLineageStore,
     ArtifactStore,
@@ -22,16 +23,11 @@ load_dotenv(REPO_ROOT / ".env")
 
 ARTIFACT_STORE: ArtifactStore = build_artifact_store(ARTIFACT_STORE_PATH)
 LINEAGE_STORE: ArtifactLineageStore = build_lineage_store(LINEAGE_STORE_PATH)
+PROVIDER: ModelProvider = build_model_provider()
 
 
-def build_artifact(payload: EidonOrchestrationInput, storage_backend: str) -> EidonArtifactRecord:
+def build_artifact(payload: EidonOrchestrationInput, storage_backend: str, response_text: str) -> EidonArtifactRecord:
     artifact_id = f"artifact-{payload.session_id}"
-
-    user_text = payload.content.get("text")
-    if isinstance(user_text, str) and user_text.strip():
-        response_text = f"Eidon received the intent: {payload.intent}"
-    else:
-        response_text = f"Eidon is prepared to act on the intent: {payload.intent}"
 
     return EidonArtifactRecord(
         artifact_id=artifact_id,
@@ -67,8 +63,8 @@ def build_lineage_record(artifact: EidonArtifactRecord) -> ArtifactLineageRecord
 
 app = FastAPI(
     title="Eidonic Core Eidon Orchestrator",
-    version="0.2.5",
-    description="Orchestration service scaffold for the Eidonic Core with a Postgres backend pilot.",
+    version="0.2.6",
+    description="Orchestration service scaffold for the Eidonic Core with PostgreSQL-backed persistence and a model provider contract surface.",
 )
 
 
@@ -79,6 +75,7 @@ def health() -> dict[str, object]:
         "service": "eidon-orchestrator",
         "artifact_store": ARTIFACT_STORE.ping(),
         "lineage_store": LINEAGE_STORE.ping(),
+        "provider": PROVIDER.ping(),
     }
 
 
@@ -132,7 +129,13 @@ def get_lineage(artifact_id: str) -> dict[str, object]:
 
 @app.post("/orchestrate")
 def orchestrate(payload: EidonOrchestrationInput) -> dict[str, object]:
-    artifact = build_artifact(payload, storage_backend=ARTIFACT_STORE.backend_name)
+    response_text = PROVIDER.generate_response(intent=payload.intent, content=payload.content)
+
+    artifact = build_artifact(
+        payload,
+        storage_backend=ARTIFACT_STORE.backend_name,
+        response_text=response_text,
+    )
     saved_artifact = ARTIFACT_STORE.upsert(artifact)
 
     lineage = build_lineage_record(saved_artifact)
@@ -146,5 +149,5 @@ def orchestrate(payload: EidonOrchestrationInput) -> dict[str, object]:
         "artifact_id": saved_artifact.artifact_id,
         "lineage_id": saved_lineage.lineage_id,
         "storage_backend": saved_artifact.storage_backend,
-        "message": "Eidon scaffold orchestrated the request and persisted artifact and lineage records through store contract surfaces.",
+        "message": "Eidon scaffold orchestrated the request through a provider contract surface and persisted artifact and lineage records.",
     }
