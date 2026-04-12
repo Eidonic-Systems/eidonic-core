@@ -604,3 +604,10 @@
 - Added `docs/PHASE_2_MODEL_DECISION_INDEX_SURFACE.md`
 - Added a single top-level index for current control-model and candidate decisions
 - Next step: open PR for model decision index surface
+
+## 2026-04-12
+- Created branch `phase-2/domain-task-candidate-runtime-profile-surface`
+- Added `scripts/profile_domain_task_candidate_runtime.ps1`
+- Added domain-task runtime profiling for Gemma control-vs-candidate comparison
+- Added `docs/PHASE_2_DOMAIN_TASK_CANDIDATE_RUNTIME_PROFILE_SURFACE.md`
+- Next step: prove whether `gemma3n:e2b` shows a real runtime advantage over `gemma3n:e4b` on the domain-task eval surface

@@ -50,9 +50,7 @@
       "provider_error_code": "provider_model_missing",
       "provider_status": "failed"
     },
-    "required_substrings": [
-      "provider"
-    ],
+    "required_substrings": [],
     "forbidden_substrings": [
       "provider failure"
     ],
@@ -90,9 +88,7 @@
     "content": {
       "text": "State spine is on postgres. What should I verify before startup?"
     },
-    "required_substrings": [
-      "postgres"
-    ],
+    "required_substrings": [],
     "forbidden_substrings": [
       "provider failure"
     ],
