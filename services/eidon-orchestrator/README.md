@@ -37,6 +37,7 @@ Phase 2 PostgreSQL-backed orchestration service with local provider runtime hard
 - persisted provider failure semantics
 - explicit warmup surface
 - explicit readiness truth
+- plain-text response guard in the Ollama provider path
 
 ## Persisted provider provenance
 Artifact records persist:
@@ -68,6 +69,12 @@ The current provider layer distinguishes:
 - `provider_http_error`
 
 When provider generation fails, Orchestrator persists a `provider_failed` artifact and matching lineage record instead of collapsing the event into a vague server error.
+
+## Plain-text response guard
+The Ollama provider path now:
+- explicitly instructs the model to return plain text only
+- rejects wrapper-style JSON behavior by normalizing common response wrappers
+- strips fenced Markdown code blocks when the model leaks wrapper formatting
 
 ## Current proven local provider
 - backend: `ollama`

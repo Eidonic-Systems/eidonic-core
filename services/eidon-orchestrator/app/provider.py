@@ -143,12 +143,56 @@ class OllamaModelProvider:
         if self.model_name not in names:
             raise ProviderModelMissingError(self.model_name)
 
+    def _strip_code_fence(self, text: str) -> str:
+        trimmed = text.strip()
+        if not trimmed.startswith("```"):
+            return trimmed
+
+        lines = trimmed.splitlines()
+        if len(lines) < 3:
+            return trimmed
+
+        if not lines[-1].strip().startswith("```"):
+            return trimmed
+
+        body_lines = lines[1:-1]
+        return "\n".join(body_lines).strip()
+
+    def _unwrap_json_response(self, text: str) -> str:
+        trimmed = text.strip()
+        if not (trimmed.startswith("{") and trimmed.endswith("}")):
+            return trimmed
+
+        try:
+            payload = json.loads(trimmed)
+        except json.JSONDecodeError:
+            return trimmed
+
+        if isinstance(payload, dict):
+            for key in ("response", "text", "message"):
+                value = payload.get(key)
+                if isinstance(value, str) and value.strip():
+                    return value.strip()
+
+        return trimmed
+
+    def _normalize_plain_text(self, text: str) -> str:
+        normalized = text.strip()
+        normalized = self._strip_code_fence(normalized)
+        normalized = self._unwrap_json_response(normalized)
+        normalized = normalized.strip()
+        return normalized
+
     def generate_response(self, *, intent: str, content: dict[str, Any]) -> str:
         self._ensure_model_available()
 
         prompt = "\n".join([
             "You are Eidon, a disciplined orchestration model inside Eidonic Core.",
             "Respond plainly and usefully in 1 to 3 sentences.",
+            "Return plain text only.",
+            "Do not use JSON.",
+            "Do not use Markdown code fences.",
+            "Do not wrap the answer in keys like response, text, or message.",
             f"Intent: {intent}",
             f"Content: {json.dumps(content, ensure_ascii=False, sort_keys=True)}",
         ])
@@ -164,8 +208,12 @@ class OllamaModelProvider:
         if not isinstance(generated, str) or not generated.strip():
             raise ProviderEmptyResponseError()
 
+        normalized = self._normalize_plain_text(generated)
+        if not normalized:
+            raise ProviderEmptyResponseError()
+
         self._ready = True
-        return generated.strip()
+        return normalized
 
     def ping(self) -> dict[str, object]:
         self._ensure_model_available()
