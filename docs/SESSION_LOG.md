@@ -611,3 +611,10 @@
 - Added domain-task runtime profiling for Gemma control-vs-candidate comparison
 - Added `docs/PHASE_2_DOMAIN_TASK_CANDIDATE_RUNTIME_PROFILE_SURFACE.md`
 - Next step: prove whether `gemma3n:e2b` shows a real runtime advantage over `gemma3n:e4b` on the domain-task eval surface
+
+## 2026-04-12
+- Created branch `phase-2/domain-task-candidate-runtime-decision-update`
+- Updated the `gemma3n:e2b` candidate decision record with domain-task runtime evidence
+- Updated `docs/MODEL_DECISION_INDEX.md` to reflect `gemma3n:e2b` as a conditional domain-task routing candidate
+- Added `docs/PHASE_2_DOMAIN_TASK_CANDIDATE_RUNTIME_DECISION_UPDATE.md`
+- Next step: open PR for domain-task candidate runtime decision update
