@@ -529,3 +529,10 @@
 - Kept eval cases and pinned baselines as tracked source artifacts
 - Added `docs/PHASE_2_RUNTIME_ARTIFACT_GITIGNORE_HYGIENE.md`
 - Next step: open PR for runtime artifact gitignore hygiene
+
+## 2026-04-11
+- Created branch `phase-2/provider-plain-text-response-guard`
+- Updated the Ollama provider path to require and normalize plain-text responses
+- Added `docs/PHASE_2_PROVIDER_PLAIN_TEXT_RESPONSE_GUARD.md`
+- Updated `services/eidon-orchestrator/README.md`
+- Next step: prove the default model no longer leaks wrapper-style formatting in the command response path
