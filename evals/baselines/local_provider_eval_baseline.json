@@ -1,0 +1,64 @@
+{
+    "status":  "passed",
+    "total_cases":  4,
+    "passed_cases":  4,
+    "failed_cases":  0,
+    "results":  [
+                    {
+                        "case_id":  "greeting-basic",
+                        "passed":  true,
+                        "artifact_id":  "artifact-eval-session-001",
+                        "provider_backend":  "ollama",
+                        "provider_model":  "gemma3n:e4b",
+                        "artifact_status":  "orchestrated",
+                        "response_text":  "Greetings. I am Eidon, an orchestration model within Eidonic Core. How may I assist you today?",
+                        "missing_required":  {
+
+                                             },
+                        "has_forbidden":  false,
+                        "meets_min_length":  true
+                    },
+                    {
+                        "case_id":  "clarify-file-review",
+                        "passed":  true,
+                        "artifact_id":  "artifact-eval-session-002",
+                        "provider_backend":  "ollama",
+                        "provider_model":  "gemma3n:e4b",
+                        "artifact_status":  "orchestrated",
+                        "response_text":  "I have reviewed the file \"notes.txt,\" which contains a project plan summary.  To be most helpful, I can now assist with tasks like summarizing the plan, identifying key milestones, or suggesting potential next steps based on the information provided. Please specify your request.",
+                        "missing_required":  {
+
+                                             },
+                        "has_forbidden":  false,
+                        "meets_min_length":  true
+                    },
+                    {
+                        "case_id":  "command-response",
+                        "passed":  true,
+                        "artifact_id":  "artifact-eval-session-003",
+                        "provider_backend":  "ollama",
+                        "provider_model":  "gemma3n:e4b",
+                        "artifact_status":  "orchestrated",
+                        "response_text":  "```json\n{\n  \"response\": \"Current system state: I am Eidon, an orchestration model within Eidonic Core. I am ready to execute commands and provide information based on the current session context. Please specify your request.\"\n}\n```",
+                        "missing_required":  {
+
+                                             },
+                        "has_forbidden":  false,
+                        "meets_min_length":  true
+                    },
+                    {
+                        "case_id":  "system-event-response",
+                        "passed":  true,
+                        "artifact_id":  "artifact-eval-session-004",
+                        "provider_backend":  "ollama",
+                        "provider_model":  "gemma3n:e4b",
+                        "artifact_status":  "orchestrated",
+                        "response_text":  "Okay, the cache refresh has completed successfully. I will now resume normal operations and be ready for the next request. Please proceed with your query.",
+                        "missing_required":  {
+
+                                             },
+                        "has_forbidden":  false,
+                        "meets_min_length":  true
+                    }
+                ]
+}

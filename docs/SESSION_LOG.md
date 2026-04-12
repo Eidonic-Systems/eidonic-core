@@ -493,3 +493,11 @@
 - Added `docs/CANONICAL_EXTERNAL_REFERENCES.md` as a bridge to the larger external canon
 - Added `docs/PHASE_2_PROVIDER_RUNTIME_TRUTH_SYNC.md`
 - Next step: open PR for narrow provider/runtime truth sync
+
+## 2026-04-11
+- Created branch `phase-2/local-provider-eval-baseline`
+- Added `evals/baselines/local_provider_eval_baseline.json`
+- Added `scripts/compare_local_provider_eval_to_baseline.ps1`
+- Added the first pinned baseline for the local provider eval surface
+- Added `docs/PHASE_2_LOCAL_PROVIDER_EVAL_BASELINE.md`
+- Next step: prove current eval output matches the pinned baseline
