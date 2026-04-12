@@ -501,3 +501,11 @@
 - Added the first pinned baseline for the local provider eval surface
 - Added `docs/PHASE_2_LOCAL_PROVIDER_EVAL_BASELINE.md`
 - Next step: prove current eval output matches the pinned baseline
+
+## 2026-04-11
+- Created branch `phase-2/local-provider-candidate-comparison`
+- Added `scripts/run_local_provider_candidate_eval.ps1`
+- Added isolated candidate comparison workflow for alternate local provider models
+- Candidate comparison now writes results under `evals/candidates` and compares them to the pinned baseline
+- Added `docs/PHASE_2_LOCAL_PROVIDER_CANDIDATE_COMPARISON.md`
+- Next step: prove one candidate comparison run without changing the live default model
