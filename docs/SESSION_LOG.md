@@ -678,3 +678,11 @@
 - Added `tests/integration/test_governance_enforcement_pilot_surface.ps1`
 - Added `docs/PHASE_2_GOVERNANCE_ENFORCEMENT_PILOT_SURFACE.md`
 - Next step: prove allow, refuse, and hold outcomes are enforced and persisted cleanly
+
+## 2026-04-12
+- Created branch `phase-2/governance-eval-baseline`
+- Added `evals/baselines\governance_eval_baseline.json`
+- Added `scripts/compare_governance_eval_to_baseline.ps1`
+- Added the first pinned baseline for the governance eval surface
+- Added `docs/PHASE_2_GOVERNANCE_EVAL_BASELINE.md`
+- Next step: prove current governance eval output matches the pinned baseline
