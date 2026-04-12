@@ -649,3 +649,11 @@
 - Added `docs/PHASE_2_GUARDIAN_PROTOCOL_POLICY_SURFACE.md`
 - Defined the Guardian Protocol as an explicit governance policy surface grounded in the upstream universe source
 - Next step: open PR for Guardian Protocol policy surface
+
+## 2026-04-12
+- Created branch `phase-2/governance-eval-surface`
+- Added `evals/governance_eval_cases.json`
+- Added `scripts/run_governance_eval.ps1`
+- Updated `.gitignore` to ignore generated governance eval results
+- Added `docs/PHASE_2_GOVERNANCE_EVAL_SURFACE.md`
+- Next step: prove the current control model can answer named governance outcome cases in plain text
