@@ -597,3 +597,10 @@
 - Added isolated candidate comparison for the domain-task eval surface
 - Added `docs/PHASE_2_DOMAIN_TASK_CANDIDATE_COMPARISON_SURFACE.md`
 - Next step: prove one Gemma-family candidate against the pinned domain-task baseline
+
+## 2026-04-12
+- Created branch `phase-2/model-decision-index-surface`
+- Added `docs/MODEL_DECISION_INDEX.md`
+- Added `docs/PHASE_2_MODEL_DECISION_INDEX_SURFACE.md`
+- Added a single top-level index for current control-model and candidate decisions
+- Next step: open PR for model decision index surface
