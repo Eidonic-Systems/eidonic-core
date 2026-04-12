@@ -618,3 +618,12 @@
 - Updated `docs/MODEL_DECISION_INDEX.md` to reflect `gemma3n:e2b` as a conditional domain-task routing candidate
 - Added `docs/PHASE_2_DOMAIN_TASK_CANDIDATE_RUNTIME_DECISION_UPDATE.md`
 - Next step: open PR for domain-task candidate runtime decision update
+
+## 2026-04-12
+- Created branch `phase-2/domain-task-routing-pilot-surface`
+- Added a narrow optional domain-task routing pilot in the Orchestrator provider layer
+- Added `tests/integration/test_domain_task_routing_pilot_surface.ps1`
+- Updated `.env.example` with domain-task routing pilot flags
+- Updated `services/eidon-orchestrator/README.md`
+- Added `docs/PHASE_2_DOMAIN_TASK_ROUTING_PILOT_SURFACE.md`
+- Next step: prove route eligibility uses `gemma3n:e2b` and non-eligible traffic stays on `gemma3n:e4b`, with control fallback available on candidate failure
