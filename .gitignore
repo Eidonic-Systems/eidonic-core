@@ -55,3 +55,6 @@ services/signal-gateway/data/signals.json
 
 # Phase 2 runtime profile artifacts
 /evals/profiles/
+
+# Phase 2 domain task eval artifacts
+/evals/domain_task_eval_results.json

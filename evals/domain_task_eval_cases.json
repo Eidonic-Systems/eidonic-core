@@ -1,0 +1,102 @@
+[
+  {
+    "case_id": "next-step-after-warmup",
+    "session_id": "domain-eval-session-001",
+    "signal_id": "domain-eval-sig-001",
+    "signal_type": "user_message",
+    "source": "chat",
+    "threshold_result": "pass",
+    "intent": "Respond to the user message: The provider warmup passed. What is the next disciplined step?",
+    "content": {
+      "text": "The provider warmup passed. What is the next disciplined step?"
+    },
+    "required_substrings": [],
+    "forbidden_substrings": [
+      "provider failure"
+    ],
+    "min_response_length": 12,
+    "plain_text_required": true
+  },
+  {
+    "case_id": "artifact-lineage-followup",
+    "session_id": "domain-eval-session-002",
+    "signal_id": "domain-eval-sig-002",
+    "signal_type": "command",
+    "source": "api",
+    "threshold_result": "pass",
+    "intent": "Execute or respond to the command in the current session context.",
+    "content": {
+      "text": "Explain what artifact lineage is for the current session and what I should check next."
+    },
+    "required_substrings": [
+      "artifact"
+    ],
+    "forbidden_substrings": [
+      "provider failure"
+    ],
+    "min_response_length": 12,
+    "plain_text_required": true
+  },
+  {
+    "case_id": "provider-failure-guidance",
+    "session_id": "domain-eval-session-003",
+    "signal_id": "domain-eval-sig-003",
+    "signal_type": "system_event",
+    "source": "internal",
+    "threshold_result": "pass",
+    "intent": "Interpret the system event and determine the next useful response.",
+    "content": {
+      "event": "provider_failed",
+      "provider_error_code": "provider_model_missing",
+      "provider_status": "failed"
+    },
+    "required_substrings": [
+      "provider"
+    ],
+    "forbidden_substrings": [
+      "provider failure"
+    ],
+    "min_response_length": 12,
+    "plain_text_required": true
+  },
+  {
+    "case_id": "threshold-hold-guidance",
+    "session_id": "domain-eval-session-004",
+    "signal_id": "domain-eval-sig-004",
+    "signal_type": "user_message",
+    "source": "chat",
+    "threshold_result": "pass",
+    "intent": "Respond to the user message: Herald returned hold. What should happen next?",
+    "content": {
+      "text": "Herald returned hold. What should happen next?"
+    },
+    "required_substrings": [
+      "hold"
+    ],
+    "forbidden_substrings": [
+      "provider failure"
+    ],
+    "min_response_length": 12,
+    "plain_text_required": true
+  },
+  {
+    "case_id": "postgres-state-check",
+    "session_id": "domain-eval-session-005",
+    "signal_id": "domain-eval-sig-005",
+    "signal_type": "command",
+    "source": "api",
+    "threshold_result": "pass",
+    "intent": "Execute or respond to the command in the current session context.",
+    "content": {
+      "text": "State spine is on postgres. What should I verify before startup?"
+    },
+    "required_substrings": [
+      "postgres"
+    ],
+    "forbidden_substrings": [
+      "provider failure"
+    ],
+    "min_response_length": 12,
+    "plain_text_required": true
+  }
+]
