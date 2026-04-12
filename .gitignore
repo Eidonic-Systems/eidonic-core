@@ -48,3 +48,7 @@ services/herald-service/data/thresholds.json
 
 # Signal Gateway local signal persistence
 services/signal-gateway/data/signals.json
+
+# Phase 2 runtime artifact hygiene
+/evals/local_provider_eval_results.json
+/evals/candidates/
