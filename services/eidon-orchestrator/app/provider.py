@@ -89,7 +89,7 @@ class StubModelProvider:
         }
 
 
-class OllamaModelProvider:
+class OllamaSingleModelProvider:
     def __init__(self, base_url: str, model_name: str, timeout_seconds: float = 30.0, warm_keepalive: str = "15m"):
         self.base_url = base_url.rstrip("/")
         self._model_name = model_name
@@ -243,6 +243,135 @@ class OllamaModelProvider:
         }
 
 
+class OllamaDomainRoutingPilotProvider:
+    def __init__(
+        self,
+        *,
+        control_provider: OllamaSingleModelProvider,
+        candidate_provider: OllamaSingleModelProvider,
+        routing_enabled: bool,
+    ):
+        self.control_provider = control_provider
+        self.candidate_provider = candidate_provider
+        self.routing_enabled = routing_enabled
+        self._last_selected_model = control_provider.model_name
+        self._last_route_reason = "control_default"
+        self._route_markers = (
+            "artifact lineage",
+            "provider warmup passed",
+            "provider_failed",
+            "provider_model_missing",
+            "herald returned hold",
+            "state spine",
+            "postgres",
+        )
+
+    @property
+    def backend_name(self) -> str:
+        return "ollama"
+
+    @property
+    def model_name(self) -> str:
+        return self._last_selected_model
+
+    def _is_route_eligible(self, *, intent: str, content: dict[str, Any]) -> bool:
+        if not self.routing_enabled:
+            return False
+
+        serialized = json.dumps(content, ensure_ascii=False, sort_keys=True).lower()
+        combined = f"{intent.lower()} {serialized}"
+
+        for marker in self._route_markers:
+            if marker in combined:
+                return True
+
+        return False
+
+    def _record_route(self, *, model_name: str, route_reason: str) -> None:
+        self._last_selected_model = model_name
+        self._last_route_reason = route_reason
+        print(f"[routing] selected_model={model_name} route_reason={route_reason}")
+
+    def generate_response(self, *, intent: str, content: dict[str, Any]) -> str:
+        if not self._is_route_eligible(intent=intent, content=content):
+            response = self.control_provider.generate_response(intent=intent, content=content)
+            self._record_route(model_name=self.control_provider.model_name, route_reason="control_non_routeable")
+            return response
+
+        try:
+            response = self.candidate_provider.generate_response(intent=intent, content=content)
+            self._record_route(model_name=self.candidate_provider.model_name, route_reason="candidate_domain_route")
+            return response
+        except ModelProviderError as exc:
+            print(
+                "[routing] candidate_failed "
+                f"candidate_model={self.candidate_provider.model_name} "
+                f"error_code={exc.error_code} "
+                f"falling_back_to={self.control_provider.model_name}"
+            )
+            response = self.control_provider.generate_response(intent=intent, content=content)
+            self._record_route(model_name=self.control_provider.model_name, route_reason="control_fallback_after_candidate_failure")
+            return response
+
+    def ping(self) -> dict[str, object]:
+        control_health = self.control_provider.ping()
+        candidate_ready = False
+        candidate_status = "unknown"
+
+        try:
+            candidate_health = self.candidate_provider.ping()
+            candidate_ready = bool(candidate_health.get("ready", False))
+            candidate_status = "ok"
+        except ModelProviderError as exc:
+            candidate_status = exc.error_code
+
+        return {
+            "status": control_health["status"],
+            "backend": self.backend_name,
+            "model": self.control_provider.model_name,
+            "base_url": self.control_provider.base_url,
+            "ready": control_health["ready"],
+            "routing_enabled": self.routing_enabled,
+            "route_candidate_model": self.candidate_provider.model_name,
+            "route_candidate_status": candidate_status,
+            "route_candidate_ready": candidate_ready,
+            "last_selected_model": self._last_selected_model,
+            "last_route_reason": self._last_route_reason,
+        }
+
+    def warm(self) -> dict[str, object]:
+        control_warm = self.control_provider.warm()
+        candidate_status = "not_attempted"
+
+        if self.routing_enabled:
+            try:
+                self.candidate_provider.warm()
+                candidate_status = "warmed"
+            except ModelProviderError as exc:
+                candidate_status = exc.error_code
+                print(
+                    "[routing] candidate_warm_failed "
+                    f"candidate_model={self.candidate_provider.model_name} "
+                    f"error_code={exc.error_code} "
+                    f"control_model={self.control_provider.model_name}"
+                )
+
+        self._record_route(model_name=self.control_provider.model_name, route_reason="control_warm")
+
+        return {
+            "status": control_warm["status"],
+            "backend": self.backend_name,
+            "model": self.control_provider.model_name,
+            "base_url": self.control_provider.base_url,
+            "ready": control_warm["ready"],
+            "routing_enabled": self.routing_enabled,
+            "route_candidate_model": self.candidate_provider.model_name,
+            "route_candidate_status": candidate_status,
+            "last_selected_model": self._last_selected_model,
+            "last_route_reason": self._last_route_reason,
+        }
+
+
 def build_model_provider() -> ModelProvider:
     backend = os.getenv("EIDON_PROVIDER_BACKEND", "stub").strip().lower()
     model_name = os.getenv("EIDON_PROVIDER_MODEL", "stub-eidon-v1").strip() or "stub-eidon-v1"
@@ -255,11 +384,31 @@ def build_model_provider() -> ModelProvider:
         timeout_raw = os.getenv("EIDON_PROVIDER_TIMEOUT_SECONDS", "30").strip() or "30"
         warm_keepalive = os.getenv("EIDON_PROVIDER_WARM_KEEPALIVE", "15m").strip() or "15m"
         timeout_seconds = float(timeout_raw)
-        return OllamaModelProvider(
+
+        control_provider = OllamaSingleModelProvider(
             base_url=base_url,
             model_name=model_name,
             timeout_seconds=timeout_seconds,
             warm_keepalive=warm_keepalive,
         )
+
+        routing_enabled_raw = os.getenv("EIDON_DOMAIN_ROUTING_ENABLED", "false").strip().lower()
+        routing_enabled = routing_enabled_raw in ("1", "true", "yes", "on")
+        candidate_model = os.getenv("EIDON_DOMAIN_ROUTE_CANDIDATE_MODEL", "").strip()
+
+        if routing_enabled and candidate_model and candidate_model != model_name:
+            candidate_provider = OllamaSingleModelProvider(
+                base_url=base_url,
+                model_name=candidate_model,
+                timeout_seconds=timeout_seconds,
+                warm_keepalive=warm_keepalive,
+            )
+            return OllamaDomainRoutingPilotProvider(
+                control_provider=control_provider,
+                candidate_provider=candidate_provider,
+                routing_enabled=True,
+            )
+
+        return control_provider
 
     raise RuntimeError(f"Unsupported EIDON_PROVIDER_BACKEND: {backend}")

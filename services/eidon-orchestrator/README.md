@@ -38,6 +38,7 @@ Phase 2 PostgreSQL-backed orchestration service with local provider runtime hard
 - explicit warmup surface
 - explicit readiness truth
 - plain-text response guard in the Ollama provider path
+- narrow domain-task routing pilot surface with control fallback
 
 ## Persisted provider provenance
 Artifact records persist:
@@ -76,9 +77,23 @@ The Ollama provider path now:
 - rejects wrapper-style JSON behavior by normalizing common response wrappers
 - strips fenced Markdown code blocks when the model leaks wrapper formatting
 
+## Domain-task routing pilot
+The current pilot is narrow and optional.
+
+Environment flags:
+- `EIDON_DOMAIN_ROUTING_ENABLED`
+- `EIDON_DOMAIN_ROUTE_CANDIDATE_MODEL`
+
+Pilot rules:
+- control model remains `EIDON_PROVIDER_MODEL`
+- only a small allowlist of domain-task patterns is route-eligible
+- candidate failure falls back to the control model
+- the chosen model is reflected in persisted provenance
+- runtime routing beyond this pilot is not yet live
+
 ## Current proven local provider
 - backend: `ollama`
-- model: `gemma3n:e4b`
+- control model: `gemma3n:e4b`
 
 ## Notes
 This service is now beyond simple persistence scaffolding. The next layers should stay focused on reliability, operational discipline, and measured runtime evolution rather than premature model complexity.
