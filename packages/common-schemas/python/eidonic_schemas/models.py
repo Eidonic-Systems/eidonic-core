@@ -97,6 +97,8 @@ class EidonArtifactRecord(BaseModel):
     provider_backend: str
     provider_model: str
     provider_status: Literal["succeeded", "failed"]
+    provider_route_mode: str = ""
+    provider_route_reason: str = ""
     provider_error_code: str | None = None
     provider_error_message: str | None = None
 
@@ -114,7 +116,10 @@ class ArtifactLineageRecord(BaseModel):
     artifact_provider_backend: str
     artifact_provider_model: str
     artifact_provider_status: Literal["succeeded", "failed"]
+    artifact_provider_route_mode: str = ""
+    artifact_provider_route_reason: str = ""
     artifact_provider_error_code: str | None = None
     artifact_provider_error_message: str | None = None
     artifact_kind: Literal["eidon_orchestration"]
     created_at: str
+
