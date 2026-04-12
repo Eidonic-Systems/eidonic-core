@@ -6,15 +6,15 @@ The Eidon Orchestrator is the current orchestration service for Eidonic Core.
 - receive a session-bound orchestration request
 - produce the current orchestration outcome
 - persist an orchestration artifact record
-- persist a simple artifact lineage record
-- record provider provenance and provider failure truth alongside orchestration output
+- persist a matching artifact lineage record
+- record provider provenance and provider failure truth
+- record governance provenance
 - expose provider warmup and readiness surfaces
-- return artifact and lineage identifiers
-- expose list and retrieval surfaces for persisted orchestrator records
-- route response generation through a provider adapter surface
+- expose retrieval surfaces for persisted records
+- route response generation through the current provider and governance layers
 
 ## Current phase
-Phase 2 PostgreSQL-backed orchestration service with local provider runtime hardening
+Phase 2 PostgreSQL-backed orchestration service with local provider discipline, narrow routing, and narrow governance enforcement.
 
 ## Current endpoints
 - `GET /health`
@@ -37,14 +37,27 @@ Phase 2 PostgreSQL-backed orchestration service with local provider runtime hard
 - persisted provider failure semantics
 - explicit warmup surface
 - explicit readiness truth
-- plain-text response guard in the Ollama provider path
-- narrow domain-task routing pilot surface with control fallback
+- plain-text response guard
+- narrow domain-task routing pilot
+- persisted routing provenance
+
+## Current governance surface
+- Mirror Laws policy surface
+- Guardian Protocol policy surface
+- governance eval surface
+- persisted governance provenance
+- narrow governance enforcement pilot
+- pinned governance baseline
+- manifest-backed governance rules
+- persisted governance rule provenance
 
 ## Persisted provider provenance
 Artifact records persist:
 - `provider_backend`
 - `provider_model`
 - `provider_status`
+- `provider_route_mode`
+- `provider_route_reason`
 - `provider_error_code`
 - `provider_error_message`
 
@@ -52,14 +65,29 @@ Lineage records persist:
 - `artifact_provider_backend`
 - `artifact_provider_model`
 - `artifact_provider_status`
+- `artifact_provider_route_mode`
+- `artifact_provider_route_reason`
 - `artifact_provider_error_code`
 - `artifact_provider_error_message`
 
+## Persisted governance provenance
+Artifact records persist:
+- `governance_outcome`
+- `governance_reason`
+- `governance_rule_id`
+- `governance_manifest_version`
+
+Lineage records persist:
+- `artifact_governance_outcome`
+- `artifact_governance_reason`
+- `artifact_governance_rule_id`
+- `artifact_governance_manifest_version`
+
 ## Warmup and readiness
 - `POST /provider/warm` warms the selected provider
-- `GET /health` exposes `provider.ready`
+- `GET /health` exposes provider readiness truth
 - `scripts/warm_eidon_provider.ps1` provides a direct warmup entry point
-- `scripts/start_phase_2_stack.ps1` now runs warmup automatically after service health passes
+- `scripts/start_phase_2_stack.ps1` runs warmup after health passes
 
 ## Failure semantics
 The current provider layer distinguishes:
@@ -69,16 +97,10 @@ The current provider layer distinguishes:
 - `provider_empty_response`
 - `provider_http_error`
 
-When provider generation fails, Orchestrator persists a `provider_failed` artifact and matching lineage record instead of collapsing the event into a vague server error.
-
-## Plain-text response guard
-The Ollama provider path now:
-- explicitly instructs the model to return plain text only
-- rejects wrapper-style JSON behavior by normalizing common response wrappers
-- strips fenced Markdown code blocks when the model leaks wrapper formatting
+When provider generation fails, Orchestrator persists a `provider_failed` artifact and matching lineage record instead of collapsing the event into vague server failure.
 
 ## Domain-task routing pilot
-The current pilot is narrow and optional.
+The current routing pilot remains narrow and optional.
 
 Environment flags:
 - `EIDON_DOMAIN_ROUTING_ENABLED`
@@ -89,11 +111,44 @@ Pilot rules:
 - only a small allowlist of domain-task patterns is route-eligible
 - candidate failure falls back to the control model
 - the chosen model is reflected in persisted provenance
-- runtime routing beyond this pilot is not yet live
 
-## Current proven local provider
+## Governance enforcement pilot
+The current governance enforcement pilot remains narrow and explicit.
+
+Current enforced outcomes:
+- `allow`
+- `fallback`
+- `refuse`
+- `hold`
+
+Current truth:
+- normal safe orchestration persists `allow`
+- provider failure persists `fallback`
+- explicit impersonation-style requests persist `refuse`
+- explicit materially ambiguous command input persists `hold`
+
+## Governance rules manifest
+The narrow governance pilot rules are loaded from:
+- `config/governance_rules_manifest.json`
+
+The manifest currently defines:
+- manifest version
+- default success behavior
+- explicit rule ids
+- match patterns
+- governance outcomes
+- governance reasons
+- response text
+
+## Current proven local provider position
 - backend: `ollama`
 - control model: `gemma3n:e4b`
+- narrow route candidate: `gemma3n:e2b`
 
 ## Notes
-This service is now beyond simple persistence scaffolding. The next layers should stay focused on reliability, operational discipline, and measured runtime evolution rather than premature model complexity.
+This service now has a real operational spine.
+The next layers should remain disciplined:
+- visible rules before hidden behavior
+- provenance before opacity
+- baselines before widening scope
+- narrow enforcement before full governance expansion
