@@ -52,3 +52,6 @@ services/signal-gateway/data/signals.json
 # Phase 2 runtime artifact hygiene
 /evals/local_provider_eval_results.json
 /evals/candidates/
+
+# Phase 2 runtime profile artifacts
+/evals/profiles/
