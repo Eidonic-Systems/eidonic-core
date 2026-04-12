@@ -2,7 +2,8 @@
   "manifest_version": "phase-2-governance-pilot-v1",
   "default_success": {
     "governance_outcome": "allow",
-    "governance_reason": "normal_orchestration_path"
+    "governance_reason": "normal_orchestration_path",
+    "rule_id": "default_success_allow"
   },
   "rules": [
     {

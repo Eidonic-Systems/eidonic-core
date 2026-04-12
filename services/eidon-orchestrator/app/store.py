@@ -72,6 +72,8 @@ class LocalJsonArtifactStore:
                 item.setdefault("provider_route_reason", "")
                 item.setdefault("governance_outcome", "")
                 item.setdefault("governance_reason", "")
+                item.setdefault("governance_rule_id", "")
+                item.setdefault("governance_manifest_version", "")
                 item.setdefault("provider_error_code", None)
                 item.setdefault("provider_error_message", None)
             records.append(EidonArtifactRecord.model_validate(item))
@@ -153,6 +155,8 @@ class LocalJsonArtifactLineageStore:
                 item.setdefault("artifact_provider_route_reason", "")
                 item.setdefault("artifact_governance_outcome", "")
                 item.setdefault("artifact_governance_reason", "")
+                item.setdefault("artifact_governance_rule_id", "")
+                item.setdefault("artifact_governance_manifest_version", "")
                 item.setdefault("artifact_provider_error_code", None)
                 item.setdefault("artifact_provider_error_message", None)
             records.append(ArtifactLineageRecord.model_validate(item))
@@ -246,6 +250,8 @@ class PostgresArtifactStore:
             provider_route_reason text not null default '',
             governance_outcome text not null default '',
             governance_reason text not null default '',
+            governance_rule_id text not null default '',
+            governance_manifest_version text not null default '',
             provider_error_code text null,
             provider_error_message text null
         );
@@ -257,6 +263,8 @@ class PostgresArtifactStore:
         alter table artifact_records add column if not exists provider_route_reason text not null default '';
         alter table artifact_records add column if not exists governance_outcome text not null default '';
         alter table artifact_records add column if not exists governance_reason text not null default '';
+        alter table artifact_records add column if not exists governance_rule_id text not null default '';
+        alter table artifact_records add column if not exists governance_manifest_version text not null default '';
         alter table artifact_records add column if not exists provider_error_code text null;
         alter table artifact_records add column if not exists provider_error_message text null;
         """
@@ -271,9 +279,9 @@ class PostgresArtifactStore:
     def upsert(self, record: EidonArtifactRecord) -> EidonArtifactRecord:
         sql = """
         insert into artifact_records (
-            artifact_id, session_id, signal_id, signal_type, source, threshold_result, intent, content, status, response_text, created_at, storage_backend, provider_backend, provider_model, provider_status, provider_route_mode, provider_route_reason, provider_error_code, provider_error_message, governance_outcome, governance_reason
+            artifact_id, session_id, signal_id, signal_type, source, threshold_result, intent, content, status, response_text, created_at, storage_backend, provider_backend, provider_model, provider_status, provider_route_mode, provider_route_reason, provider_error_code, provider_error_message, governance_outcome, governance_reason, governance_rule_id, governance_manifest_version
         ) values (
-            %(artifact_id)s, %(session_id)s, %(signal_id)s, %(signal_type)s, %(source)s, %(threshold_result)s, %(intent)s, %(content)s::jsonb, %(status)s, %(response_text)s, %(created_at)s::timestamptz, %(storage_backend)s, %(provider_backend)s, %(provider_model)s, %(provider_status)s, %(provider_route_mode)s, %(provider_route_reason)s, %(provider_error_code)s, %(provider_error_message)s, %(governance_outcome)s, %(governance_reason)s
+            %(artifact_id)s, %(session_id)s, %(signal_id)s, %(signal_type)s, %(source)s, %(threshold_result)s, %(intent)s, %(content)s::jsonb, %(status)s, %(response_text)s, %(created_at)s::timestamptz, %(storage_backend)s, %(provider_backend)s, %(provider_model)s, %(provider_status)s, %(provider_route_mode)s, %(provider_route_reason)s, %(provider_error_code)s, %(provider_error_message)s, %(governance_outcome)s, %(governance_reason)s, %(governance_rule_id)s, %(governance_manifest_version)s
         )
         on conflict (artifact_id) do update set
             session_id = excluded.session_id,
@@ -295,7 +303,9 @@ class PostgresArtifactStore:
             provider_error_code = excluded.provider_error_code,
             provider_error_message = excluded.provider_error_message,
             governance_outcome = excluded.governance_outcome,
-            governance_reason = excluded.governance_reason;
+            governance_reason = excluded.governance_reason,
+            governance_rule_id = excluded.governance_rule_id,
+            governance_manifest_version = excluded.governance_manifest_version;
         """
         data = record.model_dump(mode="json")
         data["content"] = json.dumps(data["content"])
@@ -310,7 +320,7 @@ class PostgresArtifactStore:
 
     def get(self, artifact_id: str) -> EidonArtifactRecord | None:
         sql = """
-        select artifact_id, session_id, signal_id, signal_type, source, threshold_result, intent, content, status, response_text, created_at, storage_backend, provider_backend, provider_model, provider_status, provider_route_mode, provider_route_reason, provider_error_code, provider_error_message, governance_outcome, governance_reason
+        select artifact_id, session_id, signal_id, signal_type, source, threshold_result, intent, content, status, response_text, created_at, storage_backend, provider_backend, provider_model, provider_status, provider_route_mode, provider_route_reason, provider_error_code, provider_error_message, governance_outcome, governance_reason, governance_rule_id, governance_manifest_version
         from artifact_records
         where artifact_id = %(artifact_id)s
         limit 1;
@@ -328,7 +338,7 @@ class PostgresArtifactStore:
 
     def list_recent(self, limit: int = 50) -> list[EidonArtifactRecord]:
         sql = """
-        select artifact_id, session_id, signal_id, signal_type, source, threshold_result, intent, content, status, response_text, created_at, storage_backend, provider_backend, provider_model, provider_status, provider_route_mode, provider_route_reason, provider_error_code, provider_error_message, governance_outcome, governance_reason
+        select artifact_id, session_id, signal_id, signal_type, source, threshold_result, intent, content, status, response_text, created_at, storage_backend, provider_backend, provider_model, provider_status, provider_route_mode, provider_route_reason, provider_error_code, provider_error_message, governance_outcome, governance_reason, governance_rule_id, governance_manifest_version
         from artifact_records
         order by created_at desc
         limit %(limit)s;
@@ -395,6 +405,8 @@ class PostgresArtifactLineageStore:
             artifact_provider_route_reason text not null default '',
             artifact_governance_outcome text not null default '',
             artifact_governance_reason text not null default '',
+            artifact_governance_rule_id text not null default '',
+            artifact_governance_manifest_version text not null default '',
             artifact_provider_error_code text null,
             artifact_provider_error_message text null,
             artifact_kind text not null,
@@ -408,6 +420,8 @@ class PostgresArtifactLineageStore:
         alter table artifact_lineage_records add column if not exists artifact_provider_route_reason text not null default '';
         alter table artifact_lineage_records add column if not exists artifact_governance_outcome text not null default '';
         alter table artifact_lineage_records add column if not exists artifact_governance_reason text not null default '';
+        alter table artifact_lineage_records add column if not exists artifact_governance_rule_id text not null default '';
+        alter table artifact_lineage_records add column if not exists artifact_governance_manifest_version text not null default '';
         alter table artifact_lineage_records add column if not exists artifact_provider_error_code text null;
         alter table artifact_lineage_records add column if not exists artifact_provider_error_message text null;
         """
@@ -422,9 +436,9 @@ class PostgresArtifactLineageStore:
     def upsert(self, record: ArtifactLineageRecord) -> ArtifactLineageRecord:
         sql = """
         insert into artifact_lineage_records (
-            lineage_id, artifact_id, session_id, signal_id, signal_type, source, threshold_result, artifact_status, artifact_storage_backend, artifact_provider_backend, artifact_provider_model, artifact_provider_status, artifact_provider_route_mode, artifact_provider_route_reason, artifact_provider_error_code, artifact_provider_error_message, artifact_governance_outcome, artifact_governance_reason, artifact_kind, created_at
+            lineage_id, artifact_id, session_id, signal_id, signal_type, source, threshold_result, artifact_status, artifact_storage_backend, artifact_provider_backend, artifact_provider_model, artifact_provider_status, artifact_provider_route_mode, artifact_provider_route_reason, artifact_provider_error_code, artifact_provider_error_message, artifact_governance_outcome, artifact_governance_reason, artifact_governance_rule_id, artifact_governance_manifest_version, artifact_kind, created_at
         ) values (
-            %(lineage_id)s, %(artifact_id)s, %(session_id)s, %(signal_id)s, %(signal_type)s, %(source)s, %(threshold_result)s, %(artifact_status)s, %(artifact_storage_backend)s, %(artifact_provider_backend)s, %(artifact_provider_model)s, %(artifact_provider_status)s, %(artifact_provider_route_mode)s, %(artifact_provider_route_reason)s, %(artifact_provider_error_code)s, %(artifact_provider_error_message)s, %(artifact_governance_outcome)s, %(artifact_governance_reason)s, %(artifact_kind)s, %(created_at)s::timestamptz
+            %(lineage_id)s, %(artifact_id)s, %(session_id)s, %(signal_id)s, %(signal_type)s, %(source)s, %(threshold_result)s, %(artifact_status)s, %(artifact_storage_backend)s, %(artifact_provider_backend)s, %(artifact_provider_model)s, %(artifact_provider_status)s, %(artifact_provider_route_mode)s, %(artifact_provider_route_reason)s, %(artifact_provider_error_code)s, %(artifact_provider_error_message)s, %(artifact_governance_outcome)s, %(artifact_governance_reason)s, %(artifact_governance_rule_id)s, %(artifact_governance_manifest_version)s, %(artifact_kind)s, %(created_at)s::timestamptz
         )
         on conflict (lineage_id) do update set
             artifact_id = excluded.artifact_id,
@@ -444,6 +458,8 @@ class PostgresArtifactLineageStore:
             artifact_provider_error_message = excluded.artifact_provider_error_message,
             artifact_governance_outcome = excluded.artifact_governance_outcome,
             artifact_governance_reason = excluded.artifact_governance_reason,
+            artifact_governance_rule_id = excluded.artifact_governance_rule_id,
+            artifact_governance_manifest_version = excluded.artifact_governance_manifest_version,
             artifact_kind = excluded.artifact_kind,
             created_at = excluded.created_at;
         """
@@ -459,7 +475,7 @@ class PostgresArtifactLineageStore:
 
     def get_by_artifact_id(self, artifact_id: str) -> ArtifactLineageRecord | None:
         sql = """
-        select lineage_id, artifact_id, session_id, signal_id, signal_type, source, threshold_result, artifact_status, artifact_storage_backend, artifact_provider_backend, artifact_provider_model, artifact_provider_status, artifact_provider_route_mode, artifact_provider_route_reason, artifact_provider_error_code, artifact_provider_error_message, artifact_governance_outcome, artifact_governance_reason, artifact_kind, created_at
+        select lineage_id, artifact_id, session_id, signal_id, signal_type, source, threshold_result, artifact_status, artifact_storage_backend, artifact_provider_backend, artifact_provider_model, artifact_provider_status, artifact_provider_route_mode, artifact_provider_route_reason, artifact_provider_error_code, artifact_provider_error_message, artifact_governance_outcome, artifact_governance_reason, artifact_governance_rule_id, artifact_governance_manifest_version, artifact_kind, created_at
         from artifact_lineage_records
         where artifact_id = %(artifact_id)s
         limit 1;
@@ -477,7 +493,7 @@ class PostgresArtifactLineageStore:
 
     def list_recent(self, limit: int = 50) -> list[ArtifactLineageRecord]:
         sql = """
-        select lineage_id, artifact_id, session_id, signal_id, signal_type, source, threshold_result, artifact_status, artifact_storage_backend, artifact_provider_backend, artifact_provider_model, artifact_provider_status, artifact_provider_route_mode, artifact_provider_route_reason, artifact_provider_error_code, artifact_provider_error_message, artifact_governance_outcome, artifact_governance_reason, artifact_kind, created_at
+        select lineage_id, artifact_id, session_id, signal_id, signal_type, source, threshold_result, artifact_status, artifact_storage_backend, artifact_provider_backend, artifact_provider_model, artifact_provider_status, artifact_provider_route_mode, artifact_provider_route_reason, artifact_provider_error_code, artifact_provider_error_message, artifact_governance_outcome, artifact_governance_reason, artifact_governance_rule_id, artifact_governance_manifest_version, artifact_kind, created_at
         from artifact_lineage_records
         order by created_at desc
         limit %(limit)s;

@@ -694,3 +694,10 @@
 - Updated `services/eidon-orchestrator/app/main.py` to load the manifest
 - Added `docs/PHASE_2_GOVERNANCE_RULES_MANIFEST_SURFACE.md`
 - Next step: prove the manifest-backed pilot still matches the pinned governance baseline and enforcement behavior
+
+## 2026-04-12
+- Created branch `phase-2/governance-rule-provenance-surface`
+- Added governance rule id and governance manifest version to artifact and lineage provenance
+- Added `tests/integration/test_governance_rule_provenance_surface.ps1`
+- Added `docs/PHASE_2_GOVERNANCE_RULE_PROVENANCE_SURFACE.md`
+- Next step: prove manifest rule identity is persisted for allow, refuse, and hold outcomes
