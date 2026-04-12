@@ -590,3 +590,10 @@
 - Added the first pinned baseline for the domain-task eval surface
 - Added `docs/PHASE_2_DOMAIN_TASK_EVAL_BASELINE.md`
 - Next step: prove current domain-task eval output matches the pinned baseline
+
+## 2026-04-12
+- Created branch `phase-2/domain-task-candidate-comparison-surface`
+- Added `scripts/run_domain_task_candidate_eval.ps1`
+- Added isolated candidate comparison for the domain-task eval surface
+- Added `docs/PHASE_2_DOMAIN_TASK_CANDIDATE_COMPARISON_SURFACE.md`
+- Next step: prove one Gemma-family candidate against the pinned domain-task baseline
