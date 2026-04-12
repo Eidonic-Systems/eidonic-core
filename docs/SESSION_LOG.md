@@ -552,3 +552,10 @@
 - Added `docs/PHASE_2_GEMMA_ROUTING_POLICY_SURFACE.md`
 - Defined future Gemma-family routing rules without introducing runtime routing behavior
 - Next step: open PR for Gemma routing policy surface
+
+## 2026-04-12
+- Created branch `phase-2/gemma-candidate-decision-records`
+- Added written decision records for Gemma-family candidates `gemma3n:e2b` and `gemma3:4b`
+- Recorded both candidates as `hold` rather than promote
+- Added `docs/PHASE_2_GEMMA_CANDIDATE_DECISION_RECORDS.md`
+- Next step: open PR for Gemma candidate decision records
