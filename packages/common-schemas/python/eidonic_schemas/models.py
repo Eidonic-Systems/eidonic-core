@@ -96,7 +96,7 @@ class EidonArtifactRecord(BaseModel):
     storage_backend: Literal["local_json", "postgres"]
     provider_backend: str
     provider_model: str
-    provider_status: Literal["succeeded", "failed"]
+    provider_status: Literal["succeeded", "failed", "not_invoked"]
     provider_route_mode: str = ""
     provider_route_reason: str = ""
     provider_error_code: str | None = None
@@ -117,7 +117,7 @@ class ArtifactLineageRecord(BaseModel):
     artifact_storage_backend: Literal["local_json", "postgres"]
     artifact_provider_backend: str
     artifact_provider_model: str
-    artifact_provider_status: Literal["succeeded", "failed"]
+    artifact_provider_status: Literal["succeeded", "failed", "not_invoked"]
     artifact_provider_route_mode: str = ""
     artifact_provider_route_reason: str = ""
     artifact_provider_error_code: str | None = None
