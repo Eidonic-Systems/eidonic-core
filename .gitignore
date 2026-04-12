@@ -58,3 +58,6 @@ services/signal-gateway/data/signals.json
 
 # Phase 2 domain task eval artifacts
 /evals/domain_task_eval_results.json
+
+# Phase 2 governance eval artifacts
+/evals/governance_eval_results.json
