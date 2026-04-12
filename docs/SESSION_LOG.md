@@ -635,3 +635,10 @@
 - Added `docs/PHASE_2_DOMAIN_TASK_ROUTING_PROVENANCE_SURFACE.md`
 - Proved candidate routing provenance and full-chain integration behavior
 - Next step: open PR for domain-task routing provenance surface
+
+## 2026-04-12
+- Created branch `phase-2/mirror-laws-policy-surface`
+- Added `docs/MIRROR_LAWS_POLICY.md`
+- Added `docs/PHASE_2_MIRROR_LAWS_POLICY_SURFACE.md`
+- Defined the Mirror Laws as an explicit governance policy surface
+- Next step: open PR for Mirror Laws policy surface
