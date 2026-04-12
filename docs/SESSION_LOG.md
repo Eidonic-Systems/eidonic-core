@@ -516,3 +516,9 @@
 - Added `docs/GEMMA_FAMILY_MODEL_POLICY.md`
 - Added `docs/PHASE_2_GEMMA_FAMILY_MODEL_POLICY.md`
 - Next step: open PR for Gemma-family-centered model policy
+
+## 2026-04-11
+- Created branch `phase-2/measurement-and-policy-truth-sync`
+- Updated `README.md` to reflect local measurement surfaces and Gemma-family model policy
+- Added `docs/PHASE_2_MEASUREMENT_AND_POLICY_TRUTH_SYNC.md`
+- Next step: open PR for measurement and policy truth sync

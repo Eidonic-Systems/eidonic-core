@@ -5,7 +5,7 @@ Implementation repository for the Eidonic Core.
 This repo contains the executable runtime, services, shared schemas, scripts, tests, and docs for the current living core scaffold.
 
 ## Current phase
-Phase 2 scaffold with chained services, PostgreSQL-backed state spine, real local provider integration, and integrated proof coverage.
+Phase 2 scaffold with chained services, PostgreSQL-backed state spine, real local provider integration, integrated proof coverage, and local measurement surfaces.
 
 ## Current live chain
 `signal-gateway` -> `herald-service` -> `session-engine` -> `eidon-orchestrator`
@@ -23,6 +23,20 @@ Phase 2 scaffold with chained services, PostgreSQL-backed state spine, real loca
 - persisted provider provenance
 - persisted provider failure semantics
 - explicit provider warmup and readiness surface
+- startup-enforced provider warmup
+- startup-enforced runtime preflight
+
+## Current model policy
+- primary local model family: `Gemma`
+- current default live model: `gemma3n:e4b`
+- Gemma-family variants are the normal future candidates
+- non-Gemma models are tooling probes unless explicitly elevated by evidence
+
+## Current measurement surface
+- local provider eval surface
+- pinned local provider eval baseline
+- isolated candidate comparison workflow
+- written model-family policy
 
 ## Current verified retrieval surfaces
 - Signal Gateway
@@ -70,13 +84,26 @@ The standard integration coverage now verifies:
 - provider warmup surface
 - provider warmup failure surface
 
+## Current local measurement workflow
+Run the local provider eval surface from repo root:
+
+`powershell -ExecutionPolicy Bypass -File .\scripts\run_local_provider_eval.ps1`
+
+Compare the current eval output to the pinned baseline:
+
+`powershell -ExecutionPolicy Bypass -File .\scripts\compare_local_provider_eval_to_baseline.ps1`
+
+Run an isolated alternate-model comparison without changing the live default:
+
+`powershell -ExecutionPolicy Bypass -File .\scripts\run_local_provider_candidate_eval.ps1 -CandidateModel "<installed-model-name>"`
+
 ## Working rules
 - terminal-first local workflow
 - one narrow branch at a time
 - after every merge, update local first
 - prove changes from `main` after merge
 - no live hosted model in runtime
-- persistence, provenance, failure semantics, readiness, preflight, and startup discipline before model complexity
+- persistence, provenance, failure semantics, readiness, preflight, startup discipline, and measurement before model complexity
 
 ## Local workflow
 Optional standalone preflight from repo root:
@@ -117,3 +144,5 @@ Local JSON adapters remain in the repo as fallback implementations, not as the c
 Preflight exists to catch missing local prerequisites before startup.
 
 The stack launcher now enforces that preflight before boot instead of relying on memory or ritual.
+
+Gemma is the current primary local model family, and `gemma3n:e4b` remains the proven default live model until evidence justifies a future pilot.
