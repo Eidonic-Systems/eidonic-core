@@ -14,7 +14,7 @@ The Eidon Orchestrator is the current orchestration service for Eidonic Core.
 - route response generation through a provider adapter surface
 
 ## Current phase
-Phase 2 PostgreSQL-backed orchestration service with provider warmup and readiness surfaces
+Phase 2 PostgreSQL-backed orchestration service with local provider runtime hardening
 
 ## Current endpoints
 - `GET /health`
@@ -25,18 +25,53 @@ Phase 2 PostgreSQL-backed orchestration service with provider warmup and readine
 - `GET /lineage`
 - `GET /lineage/{artifact_id}`
 
-## Provider warmup surface
-- `POST /provider/warm` warms the currently selected provider
-- `GET /health` exposes provider readiness through `provider.ready`
-- `scripts/warm_eidon_provider.ps1` gives the repo a simple deterministic warmup entry point
+## Current persistence
+- artifact records persisted in PostgreSQL
+- lineage records persisted in PostgreSQL
+- local JSON stores remain available as fallback only
 
-## Current provider readiness truth
-- before warmup, Ollama may be available but not yet ready in-process
-- after warmup, `provider.ready` should report `true`
-- successful orchestration also marks the provider as ready
+## Current provider/runtime surface
+- provider adapter contract
+- local Ollama-backed provider
+- persisted provider provenance
+- persisted provider failure semantics
+- explicit warmup surface
+- explicit readiness truth
 
-## Warmup configuration
-- `EIDON_PROVIDER_WARM_KEEPALIVE=15m`
+## Persisted provider provenance
+Artifact records persist:
+- `provider_backend`
+- `provider_model`
+- `provider_status`
+- `provider_error_code`
+- `provider_error_message`
+
+Lineage records persist:
+- `artifact_provider_backend`
+- `artifact_provider_model`
+- `artifact_provider_status`
+- `artifact_provider_error_code`
+- `artifact_provider_error_message`
+
+## Warmup and readiness
+- `POST /provider/warm` warms the selected provider
+- `GET /health` exposes `provider.ready`
+- `scripts/warm_eidon_provider.ps1` provides a direct warmup entry point
+- `scripts/start_phase_2_stack.ps1` now runs warmup automatically after service health passes
+
+## Failure semantics
+The current provider layer distinguishes:
+- `provider_unavailable`
+- `provider_timeout`
+- `provider_model_missing`
+- `provider_empty_response`
+- `provider_http_error`
+
+When provider generation fails, Orchestrator persists a `provider_failed` artifact and matching lineage record instead of collapsing the event into a vague server error.
+
+## Current proven local provider
+- backend: `ollama`
+- model: `gemma3n:e4b`
 
 ## Notes
-This branch makes cold-start state visible and controllable. It does not add routing, training, or a second model.
+This service is now beyond simple persistence scaffolding. The next layers should stay focused on reliability, operational discipline, and measured runtime evolution rather than premature model complexity.

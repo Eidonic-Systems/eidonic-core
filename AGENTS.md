@@ -7,7 +7,7 @@ This repository is built in narrow, proven phases.
 - Prefer small pull requests.
 - Do not add dependencies casually.
 - Preserve typed schemas and version fields.
-- Keep persistence and retrieval surfaces explicit.
+- Keep persistence, provenance, readiness, and failure surfaces explicit.
 - Add tests for behavior changes and new retrieval surfaces.
 - After every merge, update local first.
 - Prove changes from `main`, not only from the feature branch.
@@ -29,6 +29,14 @@ Current verified persistence:
 - `EidonArtifactRecord` via PostgreSQL
 - `ArtifactLineageRecord` via PostgreSQL
 
+Current verified provider/runtime surface:
+- local Ollama-backed provider adapter
+- persisted provider provenance
+- persisted provider failure semantics
+- explicit provider warmup and readiness
+- startup-enforced provider warmup
+- startup-enforced runtime preflight
+
 Fallback persistence still available:
 - `LocalJsonSignalStore`
 - `LocalJsonThresholdStore`
@@ -41,16 +49,19 @@ Current discipline:
 - GitHub web UI for PR creation and merge
 - one real change per branch
 - update local after every merge
-- no live model in runtime yet
-- persistence and lineage architecture before model runtime integration
+- local model in runtime is allowed and now proven
+- routing, second-model support, and training come after reliability surfaces are hardened
 
 ## Current working sequence
 1. contract surface
-2. local persistence surface
+2. persistence surface
 3. retrieval surface
 4. integration proof
-5. adapter boundary hardening
-6. real durable backend pilot
-7. repo truth sync
+5. provider boundary
+6. provider provenance
+7. provider failure semantics
+8. provider warmup and readiness
+9. startup and preflight discipline
+10. truth sync
 
 Do not skip ahead to fake future systems.

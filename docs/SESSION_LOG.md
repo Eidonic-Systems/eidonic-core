@@ -485,3 +485,11 @@
 - Updated `README.md` to reflect enforced startup preflight
 - Added `docs/PHASE_2_STACK_RUNTIME_PREFLIGHT_SEQUENCE.md`
 - Next step: prove stack startup now enforces runtime preflight before boot
+
+## 2026-04-11
+- Created branch `phase-2/provider-runtime-truth-sync`
+- Updated `AGENTS.md` to reflect the current proven provider/runtime state
+- Updated `services/eidon-orchestrator/README.md` to reflect provenance, failure semantics, warmup, and readiness
+- Added `docs/CANONICAL_EXTERNAL_REFERENCES.md` as a bridge to the larger external canon
+- Added `docs/PHASE_2_PROVIDER_RUNTIME_TRUTH_SYNC.md`
+- Next step: open PR for narrow provider/runtime truth sync
