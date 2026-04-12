@@ -686,3 +686,11 @@
 - Added the first pinned baseline for the governance eval surface
 - Added `docs/PHASE_2_GOVERNANCE_EVAL_BASELINE.md`
 - Next step: prove current governance eval output matches the pinned baseline
+
+## 2026-04-12
+- Created branch `phase-2/governance-rules-manifest-surface`
+- Added `config/governance_rules_manifest.json`
+- Moved the narrow governance enforcement pilot rules into a visible manifest
+- Updated `services/eidon-orchestrator/app/main.py` to load the manifest
+- Added `docs/PHASE_2_GOVERNANCE_RULES_MANIFEST_SURFACE.md`
+- Next step: prove the manifest-backed pilot still matches the pinned governance baseline and enforcement behavior

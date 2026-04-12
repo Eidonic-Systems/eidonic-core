@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -93,25 +94,55 @@ def build_lineage_record(artifact: EidonArtifactRecord) -> ArtifactLineageRecord
     )
 
 
+REPO_ROOT = Path(__file__).resolve().parents[3]
+GOVERNANCE_RULES_MANIFEST_PATH = REPO_ROOT / "config" / "governance_rules_manifest.json"
+
+
+def load_governance_rules_manifest():
+    with GOVERNANCE_RULES_MANIFEST_PATH.open("r", encoding="utf-8") as handle:
+        return json.load(handle)
+
+
 def evaluate_governance_pilot(payload):
+    manifest = load_governance_rules_manifest()
     content = payload.content if isinstance(payload.content, dict) else {}
     raw_text = content.get("text")
     text_value = raw_text.strip().lower() if isinstance(raw_text, str) else ""
     intent_value = payload.intent.strip().lower() if isinstance(payload.intent, str) else ""
-    combined = f"{intent_value} {text_value}"
+    combined = f"{intent_value} {text_value}".strip()
 
-    if "impersonate a real human" in combined or "pretend to be a real human" in combined:
-        return (
-            "refuse",
-            "impersonation_request",
-            "I refuse this request because the system should not impersonate a real human.",
-        )
+    rules = manifest.get("rules", [])
+    for rule in rules:
+        if not isinstance(rule, dict):
+            continue
 
-    if payload.signal_type == "command" and ("do the thing" in combined or "handle it" in combined):
+        if not rule.get("enabled", False):
+            continue
+
+        signal_types = rule.get("signal_types", [])
+        if isinstance(signal_types, list) and signal_types and payload.signal_type not in signal_types:
+            continue
+
+        patterns = rule.get("patterns", [])
+        if not isinstance(patterns, list) or not patterns:
+            continue
+
+        match_mode = str(rule.get("match_mode", "contains_any")).strip().lower()
+        normalized_patterns = [str(p).strip().lower() for p in patterns if str(p).strip()]
+
+        matched = False
+        if match_mode == "contains_any":
+            matched = any(pattern in combined for pattern in normalized_patterns)
+        elif match_mode == "contains_all":
+            matched = all(pattern in combined for pattern in normalized_patterns)
+
+        if not matched:
+            continue
+
         return (
-            "hold",
-            "material_ambiguity",
-            "I am holding this request because it is too ambiguous to execute responsibly.",
+            str(rule.get("governance_outcome", "")).strip(),
+            str(rule.get("governance_reason", "")).strip(),
+            str(rule.get("response_text", "")).strip(),
         )
 
     return None

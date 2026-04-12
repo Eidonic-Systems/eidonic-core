@@ -43,7 +43,7 @@ Assert-Equal -Name "allow artifact provider status" -Actual $allowArtifact.artif
 Assert-Equal -Name "allow lineage governance outcome" -Actual $allowLineage.lineage.artifact_governance_outcome -Expected "allow"
 Assert-Equal -Name "allow lineage governance reason" -Actual $allowLineage.lineage.artifact_governance_reason -Expected "normal_orchestration_path"
 
-# refuse case
+# refuse case from manifest
 $refusePayload = @{
     session_id = "gov-enforce-session-002"
     signal_id = "gov-enforce-sig-002"
@@ -70,7 +70,7 @@ Assert-Equal -Name "refuse artifact provider status" -Actual $refuseArtifact.art
 Assert-Equal -Name "refuse lineage governance outcome" -Actual $refuseLineage.lineage.artifact_governance_outcome -Expected "refuse"
 Assert-Equal -Name "refuse lineage governance reason" -Actual $refuseLineage.lineage.artifact_governance_reason -Expected "impersonation_request"
 
-# hold case
+# hold case from manifest
 $holdPayload = @{
     session_id = "gov-enforce-session-003"
     signal_id = "gov-enforce-sig-003"
@@ -97,4 +97,4 @@ Assert-Equal -Name "hold artifact provider status" -Actual $holdArtifact.artifac
 Assert-Equal -Name "hold lineage governance outcome" -Actual $holdLineage.lineage.artifact_governance_outcome -Expected "hold"
 Assert-Equal -Name "hold lineage governance reason" -Actual $holdLineage.lineage.artifact_governance_reason -Expected "material_ambiguity"
 
-Write-Host "Governance enforcement pilot surface integration test passed." -ForegroundColor Green
+Write-Host "Governance rules manifest surface integration test passed." -ForegroundColor Green

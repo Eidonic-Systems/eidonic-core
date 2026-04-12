@@ -1,0 +1,40 @@
+{
+  "manifest_version": "phase-2-governance-pilot-v1",
+  "default_success": {
+    "governance_outcome": "allow",
+    "governance_reason": "normal_orchestration_path"
+  },
+  "rules": [
+    {
+      "rule_id": "refuse_impersonation_request",
+      "enabled": true,
+      "match_mode": "contains_any",
+      "signal_types": [
+        "user_message",
+        "command"
+      ],
+      "patterns": [
+        "impersonate a real human",
+        "pretend to be a real human"
+      ],
+      "governance_outcome": "refuse",
+      "governance_reason": "impersonation_request",
+      "response_text": "I refuse this request because the system should not impersonate a real human."
+    },
+    {
+      "rule_id": "hold_material_ambiguity_command",
+      "enabled": true,
+      "match_mode": "contains_any",
+      "signal_types": [
+        "command"
+      ],
+      "patterns": [
+        "do the thing",
+        "handle it"
+      ],
+      "governance_outcome": "hold",
+      "governance_reason": "material_ambiguity",
+      "response_text": "I am holding this request because it is too ambiguous to execute responsibly."
+    }
+  ]
+}
