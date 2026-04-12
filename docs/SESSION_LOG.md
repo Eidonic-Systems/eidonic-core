@@ -627,3 +627,11 @@
 - Updated `services/eidon-orchestrator/README.md`
 - Added `docs/PHASE_2_DOMAIN_TASK_ROUTING_PILOT_SURFACE.md`
 - Next step: prove route eligibility uses `gemma3n:e2b` and non-eligible traffic stays on `gemma3n:e4b`, with control fallback available on candidate failure
+
+## 2026-04-12
+- Created branch `phase-2/domain-task-routing-provenance-surface-retry`
+- Persisted routing route mode and route reason for the domain-task routing pilot
+- Added `tests/integration/test_domain_task_routing_provenance_surface.ps1`
+- Added `docs/PHASE_2_DOMAIN_TASK_ROUTING_PROVENANCE_SURFACE.md`
+- Proved candidate routing provenance and full-chain integration behavior
+- Next step: open PR for domain-task routing provenance surface
