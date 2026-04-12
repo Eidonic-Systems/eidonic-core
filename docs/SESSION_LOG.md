@@ -522,3 +522,10 @@
 - Updated `README.md` to reflect local measurement surfaces and Gemma-family model policy
 - Added `docs/PHASE_2_MEASUREMENT_AND_POLICY_TRUTH_SYNC.md`
 - Next step: open PR for measurement and policy truth sync
+
+## 2026-04-11
+- Created branch `phase-2/runtime-artifact-gitignore-hygiene`
+- Updated `.gitignore` to ignore generated local eval outputs
+- Kept eval cases and pinned baselines as tracked source artifacts
+- Added `docs/PHASE_2_RUNTIME_ARTIFACT_GITIGNORE_HYGIENE.md`
+- Next step: open PR for runtime artifact gitignore hygiene
