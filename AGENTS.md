@@ -7,7 +7,7 @@ This repository is built in narrow, proven phases.
 - Prefer small pull requests.
 - Do not add dependencies casually.
 - Preserve typed schemas and version fields.
-- Keep persistence, provenance, readiness, and failure surfaces explicit.
+- Keep persistence, provenance, readiness, failure surfaces, and eval surfaces explicit.
 - Add tests for behavior changes and new retrieval surfaces.
 - After every merge, update local first.
 - Prove changes from `main`, not only from the feature branch.
@@ -36,6 +36,27 @@ Current verified provider/runtime surface:
 - explicit provider warmup and readiness
 - startup-enforced provider warmup
 - startup-enforced runtime preflight
+- local provider eval surface
+- pinned local provider eval baseline
+- isolated candidate comparison workflow
+
+## Model-family policy
+Primary local model family:
+- `Gemma`
+
+Current default live model:
+- `gemma3n:e4b`
+
+Model classes:
+- default live model
+- Gemma-family candidates
+- non-Gemma tooling probes
+
+Policy:
+- the system is Gemma-family-centered unless evidence forces a change
+- Gemma-family variants are the normal candidates for future comparison
+- non-Gemma models may be used to validate eval or comparison tooling, but they are not the default architectural direction
+- no default-model change happens without a written decision and evidence from the eval and comparison surfaces
 
 Fallback persistence still available:
 - `LocalJsonSignalStore`
@@ -50,7 +71,7 @@ Current discipline:
 - one real change per branch
 - update local after every merge
 - local model in runtime is allowed and now proven
-- routing, second-model support, and training come after reliability surfaces are hardened
+- routing, second-model support, and training come after reliability and measurement surfaces are hardened
 
 ## Current working sequence
 1. contract surface
@@ -62,6 +83,10 @@ Current discipline:
 7. provider failure semantics
 8. provider warmup and readiness
 9. startup and preflight discipline
-10. truth sync
+10. eval surface
+11. eval baseline
+12. candidate comparison
+13. written decision
+14. truth sync
 
 Do not skip ahead to fake future systems.

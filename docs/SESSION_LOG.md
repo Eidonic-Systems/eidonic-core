@@ -509,3 +509,10 @@
 - Candidate comparison now writes results under `evals/candidates` and compares them to the pinned baseline
 - Added `docs/PHASE_2_LOCAL_PROVIDER_CANDIDATE_COMPARISON.md`
 - Next step: prove one candidate comparison run without changing the live default model
+
+## 2026-04-11
+- Created branch `phase-2/gemma-family-model-policy`
+- Updated `AGENTS.md` to define Gemma as the primary local model family
+- Added `docs/GEMMA_FAMILY_MODEL_POLICY.md`
+- Added `docs/PHASE_2_GEMMA_FAMILY_MODEL_POLICY.md`
+- Next step: open PR for Gemma-family-centered model policy
