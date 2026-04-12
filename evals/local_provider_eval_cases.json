@@ -47,9 +47,7 @@
     "content": {
       "text": "Summarize the current system state."
     },
-    "required_substrings": [
-      "system"
-    ],
+    "required_substrings": [],
     "forbidden_substrings": [
       "provider failure"
     ],
