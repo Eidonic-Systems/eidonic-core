@@ -101,6 +101,8 @@ class EidonArtifactRecord(BaseModel):
     provider_route_reason: str = ""
     provider_error_code: str | None = None
     provider_error_message: str | None = None
+    governance_outcome: str = ""
+    governance_reason: str = ""
 
 
 class ArtifactLineageRecord(BaseModel):
@@ -120,6 +122,8 @@ class ArtifactLineageRecord(BaseModel):
     artifact_provider_route_reason: str = ""
     artifact_provider_error_code: str | None = None
     artifact_provider_error_message: str | None = None
+    artifact_governance_outcome: str = ""
+    artifact_governance_reason: str = ""
     artifact_kind: Literal["eidon_orchestration"]
     created_at: str
 
