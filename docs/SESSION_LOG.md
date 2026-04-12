@@ -545,3 +545,10 @@
 - Added `docs/PHASE_2_LOCAL_PROVIDER_EVAL_DRIFT_GUARDS.md`
 - Next step: prove the current default model still passes the strengthened eval surface or expose the specific drift that must be corrected
 >>>>>>> Stashed changes
+
+## 2026-04-11
+- Created branch `phase-2/gemma-routing-policy-surface`
+- Added `docs/GEMMA_ROUTING_POLICY.md`
+- Added `docs/PHASE_2_GEMMA_ROUTING_POLICY_SURFACE.md`
+- Defined future Gemma-family routing rules without introducing runtime routing behavior
+- Next step: open PR for Gemma routing policy surface
