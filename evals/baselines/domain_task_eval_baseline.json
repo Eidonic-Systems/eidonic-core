@@ -1,0 +1,113 @@
+{
+    "status":  "passed",
+    "total_cases":  5,
+    "passed_cases":  5,
+    "failed_cases":  0,
+    "results":  [
+                    {
+                        "case_id":  "next-step-after-warmup",
+                        "passed":  true,
+                        "artifact_id":  "artifact-domain-eval-session-001",
+                        "provider_backend":  "ollama",
+                        "provider_model":  "gemma3n:e4b",
+                        "artifact_status":  "orchestrated",
+                        "response_text":  "The next disciplined step is to begin the main orchestration process. This involves executing the defined workflow and managing the resources according to the established plan. Ensure monitoring is active to track performance and identify any potential issues.",
+                        "missing_required":  {
+
+                                             },
+                        "has_forbidden":  false,
+                        "meets_min_length":  true,
+                        "plain_text_required":  true,
+                        "has_identity_drift":  false,
+                        "has_encoding_drift":  false,
+                        "has_formatting_drift":  false,
+                        "drift_reasons":  [
+
+                                          ]
+                    },
+                    {
+                        "case_id":  "artifact-lineage-followup",
+                        "passed":  true,
+                        "artifact_id":  "artifact-domain-eval-session-002",
+                        "provider_backend":  "ollama",
+                        "provider_model":  "gemma3n:e4b",
+                        "artifact_status":  "orchestrated",
+                        "response_text":  "Artifact lineage traces the history of an artifact, showing its origins, transformations, and dependencies. To understand the current state, examine the artifact\u0027s history and associated changesets for recent modifications or potential issues.",
+                        "missing_required":  {
+
+                                             },
+                        "has_forbidden":  false,
+                        "meets_min_length":  true,
+                        "plain_text_required":  true,
+                        "has_identity_drift":  false,
+                        "has_encoding_drift":  false,
+                        "has_formatting_drift":  false,
+                        "drift_reasons":  [
+
+                                          ]
+                    },
+                    {
+                        "case_id":  "provider-failure-guidance",
+                        "passed":  true,
+                        "artifact_id":  "artifact-domain-eval-session-003",
+                        "provider_backend":  "ollama",
+                        "provider_model":  "gemma3n:e4b",
+                        "artifact_status":  "orchestrated",
+                        "response_text":  "The provider model is missing, indicating a failure in the orchestration process. I will attempt to re-establish the connection to the provider model or flag the issue for system administrators. This failure prevents me from fulfilling the current request.",
+                        "missing_required":  {
+
+                                             },
+                        "has_forbidden":  false,
+                        "meets_min_length":  true,
+                        "plain_text_required":  true,
+                        "has_identity_drift":  false,
+                        "has_encoding_drift":  false,
+                        "has_formatting_drift":  false,
+                        "drift_reasons":  [
+
+                                          ]
+                    },
+                    {
+                        "case_id":  "threshold-hold-guidance",
+                        "passed":  true,
+                        "artifact_id":  "artifact-domain-eval-session-004",
+                        "provider_backend":  "ollama",
+                        "provider_model":  "gemma3n:e4b",
+                        "artifact_status":  "orchestrated",
+                        "response_text":  "Acknowledge the hold and investigate the reason for the return. Determine if further action is required from the user or if the process can proceed automatically. Document the event and any subsequent actions taken.",
+                        "missing_required":  {
+
+                                             },
+                        "has_forbidden":  false,
+                        "meets_min_length":  true,
+                        "plain_text_required":  true,
+                        "has_identity_drift":  false,
+                        "has_encoding_drift":  false,
+                        "has_formatting_drift":  false,
+                        "drift_reasons":  [
+
+                                          ]
+                    },
+                    {
+                        "case_id":  "postgres-state-check",
+                        "passed":  true,
+                        "artifact_id":  "artifact-domain-eval-session-005",
+                        "provider_backend":  "ollama",
+                        "provider_model":  "gemma3n:e4b",
+                        "artifact_status":  "orchestrated",
+                        "response_text":  "Before startup, verify the PostgreSQL service is running and accessible. Ensure the database user has the necessary permissions to access the database, and that the database is properly initialized. Also, confirm the connection parameters in your application configuration are correct.",
+                        "missing_required":  {
+
+                                             },
+                        "has_forbidden":  false,
+                        "meets_min_length":  true,
+                        "plain_text_required":  true,
+                        "has_identity_drift":  false,
+                        "has_encoding_drift":  false,
+                        "has_formatting_drift":  false,
+                        "drift_reasons":  [
+
+                                          ]
+                    }
+                ]
+}

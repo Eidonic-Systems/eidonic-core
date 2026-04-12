@@ -582,3 +582,11 @@
 - Updated `.gitignore` to ignore generated domain task eval results
 - Added `docs/PHASE_2_DOMAIN_TASK_EVAL_SURFACE.md`
 - Next step: prove the current default model against domain-specific eval cases
+
+## 2026-04-12
+- Created branch `phase-2/domain-task-eval-baseline`
+- Added `evals/baselines/domain_task_eval_baseline.json`
+- Added `scripts/compare_domain_task_eval_to_baseline.ps1`
+- Added the first pinned baseline for the domain-task eval surface
+- Added `docs/PHASE_2_DOMAIN_TASK_EVAL_BASELINE.md`
+- Next step: prove current domain-task eval output matches the pinned baseline
