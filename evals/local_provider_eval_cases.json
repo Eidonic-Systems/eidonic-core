@@ -14,7 +14,8 @@
     "forbidden_substrings": [
       "provider failure"
     ],
-    "min_response_length": 8
+    "min_response_length": 8,
+    "plain_text_required": true
   },
   {
     "case_id": "clarify-file-review",
@@ -34,7 +35,8 @@
     "forbidden_substrings": [
       "provider failure"
     ],
-    "min_response_length": 8
+    "min_response_length": 8,
+    "plain_text_required": true
   },
   {
     "case_id": "command-response",
@@ -51,7 +53,8 @@
     "forbidden_substrings": [
       "provider failure"
     ],
-    "min_response_length": 8
+    "min_response_length": 8,
+    "plain_text_required": true
   },
   {
     "case_id": "system-event-response",
@@ -71,6 +74,7 @@
     "forbidden_substrings": [
       "provider failure"
     ],
-    "min_response_length": 8
+    "min_response_length": 8,
+    "plain_text_required": true
   }
 ]
