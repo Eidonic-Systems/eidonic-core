@@ -39,6 +39,8 @@ def build_artifact(
     provider_route_reason: str | None = None,
     governance_outcome: str | None = None,
     governance_reason: str | None = None,
+    governance_rule_id: str | None = None,
+    governance_manifest_version: str | None = None,
     provider_error_code: str | None = None,
     provider_error_message: str | None = None,
 ) -> EidonArtifactRecord:
@@ -64,6 +66,8 @@ def build_artifact(
         provider_route_reason=provider_route_reason,
         governance_outcome=governance_outcome or "",
         governance_reason=governance_reason or "",
+        governance_rule_id=governance_rule_id or "",
+        governance_manifest_version=governance_manifest_version or "",
         provider_error_code=provider_error_code,
         provider_error_message=provider_error_message,
     )
@@ -87,6 +91,8 @@ def build_lineage_record(artifact: EidonArtifactRecord) -> ArtifactLineageRecord
         artifact_provider_route_reason=artifact.provider_route_reason,
         artifact_governance_outcome=artifact.governance_outcome,
         artifact_governance_reason=artifact.governance_reason,
+        artifact_governance_rule_id=artifact.governance_rule_id,
+        artifact_governance_manifest_version=artifact.governance_manifest_version,
         artifact_provider_error_code=artifact.provider_error_code,
         artifact_provider_error_message=artifact.provider_error_message,
         artifact_kind="eidon_orchestration",
@@ -101,6 +107,37 @@ GOVERNANCE_RULES_MANIFEST_PATH = REPO_ROOT / "config" / "governance_rules_manife
 def load_governance_rules_manifest():
     with GOVERNANCE_RULES_MANIFEST_PATH.open("r", encoding="utf-8") as handle:
         return json.load(handle)
+
+
+def get_governance_manifest_metadata(governance_outcome, governance_reason):
+    manifest = load_governance_rules_manifest()
+    manifest_version = str(manifest.get("manifest_version", "")).strip()
+
+    default_success = manifest.get("default_success", {})
+    if (
+        governance_outcome == str(default_success.get("governance_outcome", "")).strip()
+        and governance_reason == str(default_success.get("governance_reason", "")).strip()
+    ):
+        return (
+            str(default_success.get("rule_id", "")).strip(),
+            manifest_version,
+        )
+
+    rules = manifest.get("rules", [])
+    for rule in rules:
+        if not isinstance(rule, dict):
+            continue
+
+        if (
+            governance_outcome == str(rule.get("governance_outcome", "")).strip()
+            and governance_reason == str(rule.get("governance_reason", "")).strip()
+        ):
+            return (
+                str(rule.get("rule_id", "")).strip(),
+                manifest_version,
+            )
+
+    return ("", "")
 
 
 def evaluate_governance_pilot(payload):
@@ -256,6 +293,8 @@ def orchestrate(payload: EidonOrchestrationInput) -> dict[str, object]:
             provider_error_message=None,
             governance_outcome=governance_outcome,
             governance_reason=governance_reason,
+            governance_rule_id=get_governance_manifest_metadata(governance_outcome, governance_reason)[0],
+            governance_manifest_version=get_governance_manifest_metadata(governance_outcome, governance_reason)[1],
         )
         saved_artifact = ARTIFACT_STORE.upsert(artifact)
         lineage = build_lineage_record(saved_artifact)
@@ -276,6 +315,8 @@ def orchestrate(payload: EidonOrchestrationInput) -> dict[str, object]:
             "provider_route_reason": saved_artifact.provider_route_reason,
             "governance_outcome": saved_artifact.governance_outcome,
             "governance_reason": saved_artifact.governance_reason,
+            "governance_rule_id": saved_artifact.governance_rule_id,
+            "governance_manifest_version": saved_artifact.governance_manifest_version,
             "message": "Eidon scaffold applied a narrow governance enforcement pilot and persisted artifact and lineage records.",
         }
 
@@ -291,6 +332,8 @@ def orchestrate(payload: EidonOrchestrationInput) -> dict[str, object]:
             provider_status="succeeded",
             governance_outcome="allow",
             governance_reason="normal_orchestration_path",
+            governance_rule_id=get_governance_manifest_metadata("allow", "normal_orchestration_path")[0],
+            governance_manifest_version=get_governance_manifest_metadata("allow", "normal_orchestration_path")[1],
             provider_route_mode=(
                 "candidate"
                 if getattr(PROVIDER, "_last_route_reason", "") == "candidate_domain_route"
@@ -339,6 +382,8 @@ def orchestrate(payload: EidonOrchestrationInput) -> dict[str, object]:
             provider_route_reason=getattr(PROVIDER, "_last_route_reason", "control_default_no_routing"),
             governance_outcome="fallback",
             governance_reason="provider_failure_recorded",
+            governance_rule_id="",
+            governance_manifest_version="",
             provider_error_code=exc.error_code,
             provider_error_message=exc.message,
         )
@@ -363,5 +408,7 @@ def orchestrate(payload: EidonOrchestrationInput) -> dict[str, object]:
             "provider_error_message": saved_artifact.provider_error_message,
             "governance_outcome": saved_artifact.governance_outcome,
             "governance_reason": saved_artifact.governance_reason,
+            "governance_rule_id": saved_artifact.governance_rule_id,
+            "governance_manifest_version": saved_artifact.governance_manifest_version,
             "message": "Eidon scaffold recorded a provider failure and persisted artifact and lineage failure provenance.",
         }

@@ -694,3 +694,16 @@
 - Updated `services/eidon-orchestrator/app/main.py` to load the manifest
 - Added `docs/PHASE_2_GOVERNANCE_RULES_MANIFEST_SURFACE.md`
 - Next step: prove the manifest-backed pilot still matches the pinned governance baseline and enforcement behavior
+
+## 2026-04-12
+- Created branch `phase-2/governance-rule-provenance-surface`
+- Added governance rule id and governance manifest version to artifact and lineage provenance
+- Added `tests/integration/test_governance_rule_provenance_surface.ps1`
+- Added `docs/PHASE_2_GOVERNANCE_RULE_PROVENANCE_SURFACE.md`
+- Next step: prove manifest rule identity is persisted for allow, refuse, and hold outcomes
+
+## 2026-04-12
+- Added `docs/PHASE_2_STATUS.md` as the current top-level Phase 2 status surface
+- Added `docs/PHASE_2_MILESTONE_100_MERGED_PRS.md` to record the first 100 merged pull requests as a structural milestone
+- Updated `services/eidon-orchestrator/README.md` to reflect the current provider, routing, governance, manifest, and provenance surfaces
+- Completed a bounded docs consolidation pass on the 100-merge milestone branch
