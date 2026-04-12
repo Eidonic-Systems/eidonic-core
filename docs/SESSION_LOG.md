@@ -657,3 +657,17 @@
 - Updated `.gitignore` to ignore generated governance eval results
 - Added `docs/PHASE_2_GOVERNANCE_EVAL_SURFACE.md`
 - Next step: prove the current control model can answer named governance outcome cases in plain text
+
+## 2026-04-12
+- Created branch `phase-2/governance-provenance-surface`
+- Added governance outcome and governance reason to artifact and lineage provenance
+- Added `tests/integration/test_governance_provenance_surface.ps1`
+- Added `docs/PHASE_2_GOVERNANCE_PROVENANCE_SURFACE.md`
+- Next step: prove persisted governance outcome and reason through artifact and lineage retrieval
+
+## 2026-04-12
+- Created branch `phase-2/governance-provenance-surface`
+- Added governance outcome and governance reason to artifact and lineage provenance
+- Added `tests/integration/test_governance_provenance_surface.ps1`
+- Added `docs/PHASE_2_GOVERNANCE_PROVENANCE_SURFACE.md`
+- Next step: prove persisted governance outcome and reason through artifact and lineage retrieval

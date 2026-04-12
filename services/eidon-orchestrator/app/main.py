@@ -36,6 +36,8 @@ def build_artifact(
     provider_status: str,
     provider_route_mode: str | None = None,
     provider_route_reason: str | None = None,
+    governance_outcome: str | None = None,
+    governance_reason: str | None = None,
     provider_error_code: str | None = None,
     provider_error_message: str | None = None,
 ) -> EidonArtifactRecord:
@@ -59,6 +61,8 @@ def build_artifact(
         provider_status=provider_status,
         provider_route_mode=provider_route_mode,
         provider_route_reason=provider_route_reason,
+        governance_outcome=governance_outcome or "",
+        governance_reason=governance_reason or "",
         provider_error_code=provider_error_code,
         provider_error_message=provider_error_message,
     )
@@ -80,6 +84,8 @@ def build_lineage_record(artifact: EidonArtifactRecord) -> ArtifactLineageRecord
         artifact_provider_status=artifact.provider_status,
         artifact_provider_route_mode=artifact.provider_route_mode,
         artifact_provider_route_reason=artifact.provider_route_reason,
+        artifact_governance_outcome=artifact.governance_outcome,
+        artifact_governance_reason=artifact.governance_reason,
         artifact_provider_error_code=artifact.provider_error_code,
         artifact_provider_error_message=artifact.provider_error_message,
         artifact_kind="eidon_orchestration",
@@ -188,6 +194,8 @@ def orchestrate(payload: EidonOrchestrationInput) -> dict[str, object]:
             status="orchestrated",
             response_text=response_text,
             provider_status="succeeded",
+            governance_outcome="allow",
+            governance_reason="normal_orchestration_path",
             provider_route_mode=(
                 "candidate"
                 if getattr(PROVIDER, "_last_route_reason", "") == "candidate_domain_route"
@@ -234,6 +242,8 @@ def orchestrate(payload: EidonOrchestrationInput) -> dict[str, object]:
                 else getattr(PROVIDER, "_last_route_mode", "control")
             ),
             provider_route_reason=getattr(PROVIDER, "_last_route_reason", "control_default_no_routing"),
+            governance_outcome="fallback",
+            governance_reason="provider_failure_recorded",
             provider_error_code=exc.error_code,
             provider_error_message=exc.message,
         )
@@ -256,5 +266,7 @@ def orchestrate(payload: EidonOrchestrationInput) -> dict[str, object]:
             "provider_route_reason": saved_artifact.provider_route_reason,
             "provider_error_code": saved_artifact.provider_error_code,
             "provider_error_message": saved_artifact.provider_error_message,
+            "governance_outcome": saved_artifact.governance_outcome,
+            "governance_reason": saved_artifact.governance_reason,
             "message": "Eidon scaffold recorded a provider failure and persisted artifact and lineage failure provenance.",
         }
