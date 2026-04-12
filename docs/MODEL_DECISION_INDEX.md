@@ -17,22 +17,23 @@ This document is the top-level index for current model decisions in Eidonic Core
 
 It is the current model with the strongest combined operational and measurement position.
 
-## Current held candidates
+## Current candidate positions
 
 ### `gemma3n:e2b`
 Status:
-- `hold pending better runtime evidence`
+- `conditional domain-task routing candidate`
 
-Why it is held:
+Why this is the current position:
 - passed generic candidate comparison
 - passed domain-task candidate comparison
-- remained inside the Gemma family
-- but local runtime profiling on this machine did not justify lightweight promotion
+- passed the current drift-guarded eval surface
+- passed the current domain-task eval surface
+- lost the generic runtime profile on this machine
+- won the domain-task runtime profile on this machine
 
-Current machine-level runtime evidence:
-- `gemma3n:e2b` was faster on eval duration
-- `gemma3n:e2b` was slower overall than `gemma3n:e4b`
-- the warmup penalty outweighed the narrower eval-time gain
+Current interpretation:
+- not justified as the default replacement
+- now justified for conditional future consideration on narrow domain-task route classes only
 
 ### `gemma3:4b`
 Status:
@@ -40,7 +41,7 @@ Status:
 
 Why it is held:
 - completed a valid Gemma-family comparison run
-- did not regress on the narrow baseline during earlier comparison
+- did not regress on the earlier narrow baseline
 - but showed reasons for caution around output shape and formatting discipline during comparison work
 - current evidence is not strong enough to justify promotion or routing eligibility
 
@@ -59,26 +60,12 @@ They are not part of default strategy unless the model-family policy changes.
 ### Family policy
 - `docs/GEMMA_FAMILY_MODEL_POLICY.md`
 
-Defines:
-- Gemma as the primary local model family
-- the control model concept
-- candidate classes
-- promotion requirements
-
 ### Routing policy
 - `docs/GEMMA_ROUTING_POLICY.md`
-
-Defines:
-- routeable task classes as future policy
-- route disqualifiers
-- routing safety rules
-- the fact that routing is not yet live
 
 ### Candidate decision records
 - `docs/decision_records/GEMMA3N_E2B_CANDIDATE_DECISION.md`
 - `docs/decision_records/GEMMA3_4B_CANDIDATE_DECISION.md`
-
-These capture the current explicit verdicts for the tested Gemma candidates.
 
 ## Current measurement surfaces
 
@@ -99,13 +86,15 @@ These capture the current explicit verdicts for the tested Gemma candidates.
 - domain-task candidate comparison: `scripts/run_domain_task_candidate_eval.ps1`
 
 ### Runtime profile
-- runtime profile script: `scripts/profile_gemma_candidate_runtime.ps1`
+- generic runtime profile: `scripts/profile_gemma_candidate_runtime.ps1`
+- domain-task runtime profile: `scripts/profile_domain_task_candidate_runtime.ps1`
 
 ## Current rejected assumptions
 - smaller Gemma does not automatically mean better runtime on this machine
 - passing a narrow eval does not automatically justify promotion
 - routing should not be implemented before policy and measurement discipline exist
 - generic prompts are not enough to judge the real system
+- domain-task runtime advantage does not automatically mean global default replacement
 
 ## What would justify a future change
 A future change to the control model or route eligibility should require:
@@ -121,8 +110,8 @@ The build is Gemma-family-centered.
 Current control model:
 - `gemma3n:e4b`
 
-Current held candidates:
-- `gemma3n:e2b`
-- `gemma3:4b`
+Current candidate positions:
+- `gemma3n:e2b` is a conditional domain-task routing candidate
+- `gemma3:4b` remains on hold
 
 No candidate currently has enough evidence to replace the control model.
