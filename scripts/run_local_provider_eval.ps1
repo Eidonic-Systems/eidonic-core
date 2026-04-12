@@ -6,6 +6,23 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+$IdentityDriftSubstrings = @(
+    "qwen",
+    "llama",
+    "mistral",
+    "deepseek",
+    "claude",
+    "anthropic",
+    "openai",
+    "chatgpt",
+    "gpt-"
+)
+
+$EncodingDriftSubstrings = @(
+    "â",
+    "�"
+)
+
 function Test-ContainsAny {
     param(
         [string]$Text,
@@ -13,11 +30,12 @@ function Test-ContainsAny {
     )
 
     foreach ($needle in $Needles) {
-        if ([string]::IsNullOrWhiteSpace([string]$needle)) {
+        $value = [string]$needle
+        if ([string]::IsNullOrWhiteSpace($value)) {
             continue
         }
 
-        if ($Text.ToLowerInvariant().Contains(([string]$needle).ToLowerInvariant())) {
+        if ($Text.ToLowerInvariant().Contains($value.ToLowerInvariant())) {
             return $true
         }
     }
@@ -47,14 +65,41 @@ function Get-MissingRequired {
     return $missing
 }
 
+function Test-FormattingDrift {
+    param(
+        [string]$Text,
+        [bool]$PlainTextRequired
+    )
+
+    if (-not $PlainTextRequired) {
+        return $false
+    }
+
+    $trimmed = $Text.Trim()
+
+    if ($trimmed.StartsWith('```')) {
+        return $true
+    }
+
+    if ($trimmed.StartsWith('{') -or $trimmed.StartsWith('[')) {
+        return $true
+    }
+
+    if ($trimmed.Contains('```json')) {
+        return $true
+    }
+
+    return $false
+}
+
 $casesFullPath = Resolve-Path $CasesPath
 $cases = Get-Content $casesFullPath -Raw | ConvertFrom-Json
 
 $results = @()
 $passedCount = 0
 
-Write-Host ""
-Write-Host "Running local provider eval surface..." -ForegroundColor Yellow
+Write-Host ''
+Write-Host 'Running local provider eval surface...' -ForegroundColor Yellow
 
 foreach ($case in $cases) {
     $payload = @{
@@ -68,14 +113,14 @@ foreach ($case in $cases) {
     } | ConvertTo-Json -Depth 12
 
     $orchestrate = Invoke-RestMethod -Uri "$EidonBaseUrl/orchestrate" `
-      -Method Post `
-      -ContentType "application/json" `
-      -Body $payload
+        -Method Post `
+        -ContentType 'application/json' `
+        -Body $payload
 
     $artifactId = $orchestrate.artifact_id
 
     $artifactResponse = Invoke-RestMethod -Uri "$EidonBaseUrl/artifacts/$artifactId" `
-      -Method Get
+        -Method Get
 
     $artifact = $artifactResponse.artifact
     $responseText = [string]$artifact.response_text
@@ -83,9 +128,29 @@ foreach ($case in $cases) {
     $missingRequired = Get-MissingRequired -Text $responseText -Needles $case.required_substrings
     $hasForbidden = Test-ContainsAny -Text $responseText -Needles $case.forbidden_substrings
     $meetsLength = $responseText.Length -ge [int]$case.min_response_length
-    $isProviderFailure = $artifact.status -eq "provider_failed"
+    $isProviderFailure = $artifact.status -eq 'provider_failed'
 
-    $passed = ($missingRequired.Count -eq 0) -and (-not $hasForbidden) -and $meetsLength -and (-not $isProviderFailure)
+    $plainTextRequired = $false
+    if ($null -ne $case.plain_text_required) {
+        $plainTextRequired = [bool]$case.plain_text_required
+    }
+
+    $hasIdentityDrift = Test-ContainsAny -Text $responseText -Needles $IdentityDriftSubstrings
+    $hasEncodingDrift = Test-ContainsAny -Text $responseText -Needles $EncodingDriftSubstrings
+    $hasFormattingDrift = Test-FormattingDrift -Text $responseText -PlainTextRequired $plainTextRequired
+
+    $driftReasons = @()
+    if ($hasIdentityDrift) { $driftReasons += 'identity_drift' }
+    if ($hasEncodingDrift) { $driftReasons += 'encoding_drift' }
+    if ($hasFormattingDrift) { $driftReasons += 'formatting_drift' }
+
+    $passed = ($missingRequired.Count -eq 0) `
+        -and (-not $hasForbidden) `
+        -and $meetsLength `
+        -and (-not $isProviderFailure) `
+        -and (-not $hasIdentityDrift) `
+        -and (-not $hasEncodingDrift) `
+        -and (-not $hasFormattingDrift)
 
     if ($passed) {
         $passedCount += 1
@@ -102,20 +167,24 @@ foreach ($case in $cases) {
         missing_required = $missingRequired
         has_forbidden = $hasForbidden
         meets_min_length = $meetsLength
+        plain_text_required = $plainTextRequired
+        has_identity_drift = $hasIdentityDrift
+        has_encoding_drift = $hasEncodingDrift
+        has_formatting_drift = $hasFormattingDrift
+        drift_reasons = $driftReasons
     }
 
     $results += [pscustomobject]$result
 
     if ($passed) {
         Write-Host "PASS  $($case.case_id)" -ForegroundColor Green
-    }
-    else {
+    } else {
         Write-Host "FAIL  $($case.case_id)" -ForegroundColor Red
     }
 }
 
 $summary = [ordered]@{
-    status = if ($passedCount -eq $results.Count) { "passed" } else { "failed" }
+    status = if ($passedCount -eq $results.Count) { 'passed' } else { 'failed' }
     total_cases = $results.Count
     passed_cases = $passedCount
     failed_cases = $results.Count - $passedCount
@@ -124,12 +193,12 @@ $summary = [ordered]@{
 
 $summary | ConvertTo-Json -Depth 12 | Set-Content $OutputPath
 
-Write-Host ""
+Write-Host ''
 Write-Host ($summary | ConvertTo-Json -Depth 12)
 
-if ($summary.status -ne "passed") {
-    throw "Local provider eval surface failed."
+if ($summary.status -ne 'passed') {
+    throw 'Local provider eval surface failed.'
 }
 
-Write-Host ""
-Write-Host "Local provider eval surface passed." -ForegroundColor Green
+Write-Host ''
+Write-Host 'Local provider eval surface passed.' -ForegroundColor Green

@@ -531,8 +531,17 @@
 - Next step: open PR for runtime artifact gitignore hygiene
 
 ## 2026-04-11
+<<<<<<< Updated upstream
 - Created branch `phase-2/provider-plain-text-response-guard`
 - Updated the Ollama provider path to require and normalize plain-text responses
 - Added `docs/PHASE_2_PROVIDER_PLAIN_TEXT_RESPONSE_GUARD.md`
 - Updated `services/eidon-orchestrator/README.md`
 - Next step: prove the default model no longer leaks wrapper-style formatting in the command response path
+=======
+- Created branch `phase-2/local-provider-eval-drift-guards`
+- Hardened the local provider eval surface against identity, formatting, and encoding drift
+- Updated `evals/local_provider_eval_cases.json`
+- Updated `scripts/run_local_provider_eval.ps1`
+- Added `docs/PHASE_2_LOCAL_PROVIDER_EVAL_DRIFT_GUARDS.md`
+- Next step: prove the current default model still passes the strengthened eval surface or expose the specific drift that must be corrected
+>>>>>>> Stashed changes
