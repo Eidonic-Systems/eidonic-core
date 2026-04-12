@@ -574,3 +574,11 @@
 - Recorded that `gemma3n:e2b` remains on hold and is not currently justified as a lightweight routing candidate on this machine
 - Added `docs/PHASE_2_GEMMA_CANDIDATE_RUNTIME_DECISION_UPDATE.md`
 - Next step: open PR for Gemma candidate runtime decision update
+
+## 2026-04-12
+- Created branch `phase-2/domain-task-eval-surface`
+- Added `evals/domain_task_eval_cases.json`
+- Added `scripts/run_domain_task_eval.ps1`
+- Updated `.gitignore` to ignore generated domain task eval results
+- Added `docs/PHASE_2_DOMAIN_TASK_EVAL_SURFACE.md`
+- Next step: prove the current default model against domain-specific eval cases
