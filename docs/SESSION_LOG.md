@@ -559,3 +559,18 @@
 - Recorded both candidates as `hold` rather than promote
 - Added `docs/PHASE_2_GEMMA_CANDIDATE_DECISION_RECORDS.md`
 - Next step: open PR for Gemma candidate decision records
+
+## 2026-04-12
+- Created branch `phase-2/gemma-candidate-runtime-profile-surface`
+- Added `scripts/profile_gemma_candidate_runtime.ps1`
+- Added narrow local runtime profiling for Gemma control-vs-candidate comparison
+- Updated `.gitignore` to ignore generated runtime profile outputs under `evals/profiles/`
+- Added `docs/PHASE_2_GEMMA_CANDIDATE_RUNTIME_PROFILE_SURFACE.md`
+- Next step: prove whether `gemma3n:e2b` shows a real runtime advantage over `gemma3n:e4b` while still passing the eval surface
+
+## 2026-04-12
+- Created branch `phase-2/gemma-candidate-runtime-decision-update`
+- Updated the `gemma3n:e2b` candidate decision record with local runtime profile evidence
+- Recorded that `gemma3n:e2b` remains on hold and is not currently justified as a lightweight routing candidate on this machine
+- Added `docs/PHASE_2_GEMMA_CANDIDATE_RUNTIME_DECISION_UPDATE.md`
+- Next step: open PR for Gemma candidate runtime decision update
