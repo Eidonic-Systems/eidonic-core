@@ -93,6 +93,30 @@ def build_lineage_record(artifact: EidonArtifactRecord) -> ArtifactLineageRecord
     )
 
 
+def evaluate_governance_pilot(payload):
+    content = payload.content if isinstance(payload.content, dict) else {}
+    raw_text = content.get("text")
+    text_value = raw_text.strip().lower() if isinstance(raw_text, str) else ""
+    intent_value = payload.intent.strip().lower() if isinstance(payload.intent, str) else ""
+    combined = f"{intent_value} {text_value}"
+
+    if "impersonate a real human" in combined or "pretend to be a real human" in combined:
+        return (
+            "refuse",
+            "impersonation_request",
+            "I refuse this request because the system should not impersonate a real human.",
+        )
+
+    if payload.signal_type == "command" and ("do the thing" in combined or "handle it" in combined):
+        return (
+            "hold",
+            "material_ambiguity",
+            "I am holding this request because it is too ambiguous to execute responsibly.",
+        )
+
+    return None
+
+
 app = FastAPI(
     title="Eidonic Core Eidon Orchestrator",
     version="0.3.0",
@@ -184,6 +208,46 @@ def get_lineage(artifact_id: str) -> dict[str, object]:
 
 @app.post("/orchestrate")
 def orchestrate(payload: EidonOrchestrationInput) -> dict[str, object]:
+    governance_pilot = evaluate_governance_pilot(payload)
+    if governance_pilot is not None:
+        governance_outcome, governance_reason, response_text = governance_pilot
+        artifact = build_artifact(
+            payload,
+            storage_backend=ARTIFACT_STORE.backend_name,
+            provider_backend=PROVIDER.backend_name,
+            provider_model=PROVIDER.model_name,
+            status="orchestrated",
+            response_text=response_text,
+            provider_status="not_invoked",
+            provider_route_mode="control",
+            provider_route_reason="control_default_no_routing",
+            provider_error_code=None,
+            provider_error_message=None,
+            governance_outcome=governance_outcome,
+            governance_reason=governance_reason,
+        )
+        saved_artifact = ARTIFACT_STORE.upsert(artifact)
+        lineage = build_lineage_record(saved_artifact)
+        saved_lineage = LINEAGE_STORE.upsert(lineage)
+
+        return {
+            "status": "orchestrated",
+            "service": "eidon-orchestrator",
+            "session_id": saved_artifact.session_id,
+            "signal_id": saved_artifact.signal_id,
+            "artifact_id": saved_artifact.artifact_id,
+            "lineage_id": saved_lineage.lineage_id,
+            "storage_backend": saved_artifact.storage_backend,
+            "provider_backend": saved_artifact.provider_backend,
+            "provider_model": saved_artifact.provider_model,
+            "provider_status": saved_artifact.provider_status,
+            "provider_route_mode": saved_artifact.provider_route_mode,
+            "provider_route_reason": saved_artifact.provider_route_reason,
+            "governance_outcome": saved_artifact.governance_outcome,
+            "governance_reason": saved_artifact.governance_reason,
+            "message": "Eidon scaffold applied a narrow governance enforcement pilot and persisted artifact and lineage records.",
+        }
+
     try:
         response_text = PROVIDER.generate_response(intent=payload.intent, content=payload.content)
         artifact = build_artifact(

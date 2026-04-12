@@ -671,3 +671,10 @@
 - Added `tests/integration/test_governance_provenance_surface.ps1`
 - Added `docs/PHASE_2_GOVERNANCE_PROVENANCE_SURFACE.md`
 - Next step: prove persisted governance outcome and reason through artifact and lineage retrieval
+
+## 2026-04-12
+- Created branch `phase-2/governance-enforcement-pilot-surface`
+- Added a narrow governance enforcement pilot in Orchestrator
+- Added `tests/integration/test_governance_enforcement_pilot_surface.ps1`
+- Added `docs/PHASE_2_GOVERNANCE_ENFORCEMENT_PILOT_SURFACE.md`
+- Next step: prove allow, refuse, and hold outcomes are enforced and persisted cleanly
