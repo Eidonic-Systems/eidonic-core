@@ -1,148 +1,126 @@
 # Eidonic Core
 
-Implementation repository for the Eidonic Core.
+Eidonic Core is the current system repository for the Phase 2 build.
 
-This repo contains the executable runtime, services, shared schemas, scripts, tests, and docs for the current living core scaffold.
+It is no longer only scaffolding.
+The repo now contains a real operational spine built around:
+- provider truth
+- routing truth
+- governance truth
+- pinned baselines
+- visible manifest rules
+- persisted provenance
 
-## Current phase
-Phase 2 scaffold with chained services, PostgreSQL-backed state spine, real local provider integration, integrated proof coverage, and local measurement surfaces.
+## Current Phase 2 position
+The current build includes:
 
-## Current live chain
-`signal-gateway` -> `herald-service` -> `session-engine` -> `eidon-orchestrator`
+### Persistence and service backbone
+- PostgreSQL-backed artifact persistence
+- PostgreSQL-backed lineage persistence
+- Phase 2 Orchestrator service surfaces
+- health, warmup, orchestration, artifact, and lineage endpoints
 
-## Current verified persistence
-- `SignalRecord` via PostgreSQL
-- `ThresholdRecord` via PostgreSQL
-- `SessionRecord` via PostgreSQL
-- `EidonArtifactRecord` via PostgreSQL
-- `ArtifactLineageRecord` via PostgreSQL
-
-## Current verified provider surface
-- provider contract in Orchestrator
-- local Ollama-backed provider adapter
+### Provider discipline
+- local Ollama-backed provider support
+- provider warmup and readiness surfaces
 - persisted provider provenance
 - persisted provider failure semantics
-- explicit provider warmup and readiness surface
-- startup-enforced provider warmup
-- startup-enforced runtime preflight
+- plain-text response guard behavior
 
-## Current model policy
-- primary local model family: `Gemma`
-- current default live model: `gemma3n:e4b`
-- Gemma-family variants are the normal future candidates
-- non-Gemma models are tooling probes unless explicitly elevated by evidence
+### Model and routing discipline
+- Gemma-family model policy
+- model decision index and decision records
+- generic eval and baseline
+- domain-task eval and baseline
+- candidate comparison surfaces
+- runtime profile surfaces
+- narrow domain-task routing with fallback
+- persisted routing provenance
 
-## Current measurement surface
-- local provider eval surface
-- pinned local provider eval baseline
-- isolated candidate comparison workflow
-- written model-family policy
+### Governance discipline
+- Mirror Laws policy surface
+- Guardian Protocol policy surface
+- governance eval surface
+- governance provenance surface
+- narrow governance enforcement pilot
+- governance eval baseline
+- manifest-backed governance rules
+- governance rule provenance surface
 
-## Current verified retrieval surfaces
-- Signal Gateway
-  - `GET /health`
-  - `POST /signals/ingest`
-  - `GET /signals`
-  - `GET /signals/{signal_id}`
-- Herald Service
-  - `GET /health`
-  - `POST /threshold/check`
-  - `GET /thresholds`
-  - `GET /thresholds/{signal_id}`
-- Session Engine
-  - `GET /health`
-  - `POST /sessions/start`
-  - `GET /sessions`
-  - `GET /sessions/{session_id}`
-- Eidon Orchestrator
-  - `GET /health`
-  - `POST /provider/warm`
-  - `POST /orchestrate`
-  - `GET /artifacts`
-  - `GET /artifacts/{artifact_id}`
-  - `GET /lineage`
-  - `GET /lineage/{artifact_id}`
+## Current control and routing truth
+Control model:
+- `gemma3n:e4b`
 
-## Current integration proof
-The standard integration coverage now verifies:
-- full chained gateway response
-- signal retrieval
-- signal list retrieval
-- threshold retrieval
-- threshold list retrieval
-- session retrieval
-- session list retrieval
-- artifact retrieval
-- lineage retrieval
-- artifact list retrieval
-- lineage list retrieval
-- service health on all four services
-- list-limit behavior across current list surfaces
-- provider surface health
-- provider provenance retrieval
-- provider failure surface
-- provider warmup surface
-- provider warmup failure surface
+Conditionally route-eligible candidate:
+- `gemma3n:e2b`
 
-## Current local measurement workflow
-Run the local provider eval surface from repo root:
+Current routing truth:
+- control remains the default model
+- routing remains narrow and explicit
+- candidate routing is limited and reversible
+- routing provenance is persisted
 
-`powershell -ExecutionPolicy Bypass -File .\scripts\run_local_provider_eval.ps1`
+## Current governance truth
+The repo now has:
+- explicit governance policy
+- explicit governance evaluation
+- explicit governance provenance
+- narrow manifest-backed enforcement
+- pinned governance baseline
+- persisted rule identity and manifest version
 
-Compare the current eval output to the pinned baseline:
+Current enforced governance outcomes:
+- `allow`
+- `fallback`
+- `refuse`
+- `hold`
 
-`powershell -ExecutionPolicy Bypass -File .\scripts\compare_local_provider_eval_to_baseline.ps1`
+This is not yet a full Guardian runtime engine.
+It is a narrow, auditable governance pilot.
 
-Run an isolated alternate-model comparison without changing the live default:
+## Authoritative status surfaces
+Start here for current repo truth:
+- `docs/PHASE_2_STATUS.md`
+- `docs/PHASE_2_MILESTONE_100_MERGED_PRS.md`
+- `services/eidon-orchestrator/README.md`
 
-`powershell -ExecutionPolicy Bypass -File .\scripts\run_local_provider_candidate_eval.ps1 -CandidateModel "<installed-model-name>"`
+Model and policy surfaces:
+- `docs/MODEL_DECISION_INDEX.md`
+- `docs/GEMMA_FAMILY_MODEL_POLICY.md`
+- `docs/GEMMA_ROUTING_POLICY.md`
+- `docs/MIRROR_LAWS_POLICY.md`
+- `docs/GUARDIAN_PROTOCOL_POLICY.md`
 
-## Working rules
-- terminal-first local workflow
-- one narrow branch at a time
-- after every merge, update local first
-- prove changes from `main` after merge
-- no live hosted model in runtime
-- persistence, provenance, failure semantics, readiness, preflight, startup discipline, and measurement before model complexity
+Governance and routing surfaces:
+- `docs/PHASE_2_GOVERNANCE_EVAL_SURFACE.md`
+- `docs/PHASE_2_GOVERNANCE_PROVENANCE_SURFACE.md`
+- `docs/PHASE_2_GOVERNANCE_ENFORCEMENT_PILOT_SURFACE.md`
+- `docs/PHASE_2_GOVERNANCE_EVAL_BASELINE.md`
+- `docs/PHASE_2_GOVERNANCE_RULES_MANIFEST_SURFACE.md`
+- `docs/PHASE_2_GOVERNANCE_RULE_PROVENANCE_SURFACE.md`
+- `docs/PHASE_2_DOMAIN_TASK_ROUTING_PILOT_SURFACE.md`
+- `docs/PHASE_2_DOMAIN_TASK_ROUTING_PROVENANCE_SURFACE.md`
 
-## Local workflow
-Optional standalone preflight from repo root:
+## What is not live yet
+The repo does not yet have:
+- a full Guardian runtime engine
+- generalized dynamic routing
+- broad governance enforcement beyond the narrow pilot
+- full Mirror Laws runtime enforcement
 
-`powershell -ExecutionPolicy Bypass -File .\scripts\check_phase_2_runtime_prereqs.ps1`
+## Build discipline
+The repo direction remains:
+- narrow before broad
+- provenance before opacity
+- baseline before expansion
+- explicit policy before enforcement
+- reversible pilots before dependence
 
-Standard stack startup from repo root:
-
-`powershell -ExecutionPolicy Bypass -File .\scripts\start_phase_2_stack.ps1`
-
-The standard startup sequence now does this automatically:
-1. runtime preflight
-2. service boot
-3. health wait
-4. provider warmup
-
-Run happy-path integration proof from repo root:
-
-`powershell -ExecutionPolicy Bypass -File .\tests\integration\test_full_chain.ps1`
-
-Run focused provider-failure proof from repo root:
-
-`powershell -ExecutionPolicy Bypass -File .\tests\integration\test_provider_failure_surface.ps1`
-
-Run focused provider-warmup proof from repo root:
-
-`powershell -ExecutionPolicy Bypass -File .\tests\integration\test_provider_warmup_surface.ps1`
-
-Run focused provider-warmup failure proof from repo root:
-
-`powershell -ExecutionPolicy Bypass -File .\tests\integration\test_provider_warmup_failure_surface.ps1`
-
-## Notes
-PostgreSQL now backs the current proven Phase 2 state spine.
-
-Local JSON adapters remain in the repo as fallback implementations, not as the current proven primary backend.
-
-Preflight exists to catch missing local prerequisites before startup.
-
-The stack launcher now enforces that preflight before boot instead of relying on memory or ritual.
-
-Gemma is the current primary local model family, and `gemma3n:e4b` remains the proven default live model until evidence justifies a future pilot.
+## Current truth
+Eidonic Core is now a disciplined local orchestration build with:
+- persisted provider truth
+- persisted routing truth
+- persisted governance truth
+- baseline-backed behavior
+- visible rules
+- explicit rule provenance

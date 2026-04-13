@@ -707,3 +707,8 @@
 - Added `docs/PHASE_2_MILESTONE_100_MERGED_PRS.md` to record the first 100 merged pull requests as a structural milestone
 - Updated `services/eidon-orchestrator/README.md` to reflect the current provider, routing, governance, manifest, and provenance surfaces
 - Completed a bounded docs consolidation pass on the 100-merge milestone branch
+
+## 2026-04-13
+- Created branch `phase-2/root-readme-truth-sync`
+- Rewrote the root `README.md` to reflect the current Phase 2 provider, routing, governance, baseline, manifest, and provenance surfaces
+- Next step: open PR for root README truth sync
