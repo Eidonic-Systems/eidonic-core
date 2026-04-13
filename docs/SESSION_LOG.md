@@ -712,3 +712,10 @@
 - Created branch `phase-2/root-readme-truth-sync`
 - Rewrote the root `README.md` to reflect the current Phase 2 provider, routing, governance, baseline, manifest, and provenance surfaces
 - Next step: open PR for root README truth sync
+
+## 2026-04-13
+- Created branch `phase-2/governance-outcome-coverage-surface`
+- Extended the manifest-backed governance pilot to cover `reshape` and `handoff`
+- Added `tests/integration/test_governance_outcome_coverage_surface.ps1`
+- Added `docs/PHASE_2_GOVERNANCE_OUTCOME_COVERAGE_SURFACE.md`
+- Next step: prove `reshape` and `handoff` are enforced and persisted cleanly while keeping baseline and full-chain behavior intact

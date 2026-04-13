@@ -145,8 +145,9 @@ def evaluate_governance_pilot(payload):
     content = payload.content if isinstance(payload.content, dict) else {}
     raw_text = content.get("text")
     text_value = raw_text.strip().lower() if isinstance(raw_text, str) else ""
+    serialized_content = json.dumps(content, ensure_ascii=False, sort_keys=True).lower()
     intent_value = payload.intent.strip().lower() if isinstance(payload.intent, str) else ""
-    combined = f"{intent_value} {text_value}".strip()
+    combined = f"{intent_value} {text_value} {serialized_content}".strip()
 
     rules = manifest.get("rules", [])
     for rule in rules:

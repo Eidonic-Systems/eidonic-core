@@ -36,6 +36,37 @@
       "governance_outcome": "hold",
       "governance_reason": "material_ambiguity",
       "response_text": "I am holding this request because it is too ambiguous to execute responsibly."
+    },
+    {
+      "rule_id": "reshape_scope_drift_request",
+      "enabled": true,
+      "match_mode": "contains_any",
+      "signal_types": [
+        "user_message",
+        "command"
+      ],
+      "patterns": [
+        "rambling all over the place",
+        "scope is drifting"
+      ],
+      "governance_outcome": "reshape",
+      "governance_reason": "scope_drift",
+      "response_text": "I am reshaping this request toward one next useful step because the current scope is drifting."
+    },
+    {
+      "rule_id": "handoff_human_review_event",
+      "enabled": true,
+      "match_mode": "contains_all",
+      "signal_types": [
+        "system_event"
+      ],
+      "patterns": [
+        "human_review_recommended",
+        "material_accountability_needed"
+      ],
+      "governance_outcome": "handoff",
+      "governance_reason": "human_review_required",
+      "response_text": "I am issuing a handoff because material accountability requires human review."
     }
   ]
 }
