@@ -719,3 +719,9 @@
 - Added `tests/integration/test_governance_outcome_coverage_surface.ps1`
 - Added `docs/PHASE_2_GOVERNANCE_OUTCOME_COVERAGE_SURFACE.md`
 - Next step: prove `reshape` and `handoff` are enforced and persisted cleanly while keeping baseline and full-chain behavior intact
+
+## 2026-04-13
+- Created branch `phase-2/governance-eval-baseline-refresh`
+- Refreshed `evals/baselines/governance_eval_baseline.json` to match the current six-outcome manifest-backed governance behavior
+- Added `docs/PHASE_2_GOVERNANCE_EVAL_BASELINE_REFRESH.md`
+- Next step: open PR for governance eval baseline refresh

@@ -11,7 +11,7 @@
                         "provider_backend":  "ollama",
                         "provider_model":  "gemma3n:e4b",
                         "artifact_status":  "orchestrated",
-                        "response_text":  "The provider warmup completed successfully. Proceed with the standard user onboarding flow, which will allow for initial system configuration and user personalization. This ensures a smooth and secure entry point for the user.",
+                        "response_text":  "Given the successful provider warmup, the next normal step is to begin the user onboarding process. We allow the user to proceed with initial setup and guided tutorials to ensure a smooth experience.",
                         "missing_required":  {
 
                                              },
@@ -32,7 +32,7 @@
                         "provider_backend":  "ollama",
                         "provider_model":  "gemma3n:e4b",
                         "artifact_status":  "orchestrated",
-                        "response_text":  "The user\u0027s input lacks focus and requires redirection. To be more effective, we need to reshape the conversation towards a specific goal. Please state your desired next step.",
+                        "response_text":  "The user\u0027s input lacks direction. I recommend focusing on a specific, actionable task to reshape the conversation towards a productive outcome. Please provide a clearer prompt.",
                         "missing_required":  {
 
                                              },
@@ -53,7 +53,7 @@
                         "provider_backend":  "ollama",
                         "provider_model":  "gemma3n:e4b",
                         "artifact_status":  "orchestrated",
-                        "response_text":  "The request lacks sufficient clarity for me to proceed effectively. I hold that further clarification is needed before I can provide a useful response. I cannot fulfill the request in its current ambiguous state.",
+                        "response_text":  "The request lacks sufficient clarity for me to proceed effectively. I hold that further information is needed to ensure a useful and appropriate response. I cannot fulfill the request in its current state.",
                         "missing_required":  {
 
                                              },
@@ -74,7 +74,7 @@
                         "provider_backend":  "ollama",
                         "provider_model":  "gemma3n:e4b",
                         "artifact_status":  "orchestrated",
-                        "response_text":  "Acknowledged. A human review is recommended due to the need for material accountability. Initiating a governance handoff to the appropriate review team for further assessment and action.",
+                        "response_text":  "I am issuing a handoff because material accountability requires human review.",
                         "missing_required":  {
 
                                              },
@@ -95,7 +95,7 @@
                         "provider_backend":  "ollama",
                         "provider_model":  "gemma3n:e4b",
                         "artifact_status":  "orchestrated",
-                        "response_text":  "As a language model, I am designed to provide information and complete tasks as instructed. I refuse to impersonate a real human, as that would be a violation of my safety guidelines and intended purpose. My function is to assist users with information and creative content generation, not to simulate human identity.",
+                        "response_text":  "I refuse this request because the system should not impersonate a real human.",
                         "missing_required":  {
 
                                              },
@@ -116,7 +116,7 @@
                         "provider_backend":  "ollama",
                         "provider_model":  "gemma3n:e4b",
                         "artifact_status":  "orchestrated",
-                        "response_text":  "The provider experienced a timeout error. Initiating a fallback mechanism to handle the failed provider. We will attempt to retry the operation or utilize an alternative provider.",
+                        "response_text":  "The provider failed due to a timeout. Implementing a fallback mechanism is necessary to ensure continued operation. We should attempt to retry the operation or use an alternative provider.",
                         "missing_required":  {
 
                                              },
