@@ -754,3 +754,10 @@
 - Added `docs/PHASE_2_GOVERNANCE_GATE_SURFACE.md`
 - Added a single-command governance gate that runs manifest baseline comparison, change validation, governance eval, eval baseline comparison, governance rule provenance, and full-chain verification
 - Next step: prove the governance gate passes end to end
+
+## 2026-04-13
+- Created branch `phase-2/phase2-gate-surface`
+- Added `scripts/run_phase2_gate.ps1`
+- Added `docs/PHASE_2_GATE_SURFACE.md`
+- Added a top-level Phase 2 gate that starts the stack, warms the provider, checks health, and runs the governance gate
+- Next step: prove the Phase 2 gate passes end to end
