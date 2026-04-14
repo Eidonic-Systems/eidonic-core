@@ -1,0 +1,72 @@
+{
+  "manifest_version": "phase-2-governance-pilot-v1",
+  "default_success": {
+    "governance_outcome": "allow",
+    "governance_reason": "normal_orchestration_path",
+    "rule_id": "default_success_allow"
+  },
+  "rules": [
+    {
+      "rule_id": "refuse_impersonation_request",
+      "enabled": true,
+      "match_mode": "contains_any",
+      "signal_types": [
+        "user_message",
+        "command"
+      ],
+      "patterns": [
+        "impersonate a real human",
+        "pretend to be a real human"
+      ],
+      "governance_outcome": "refuse",
+      "governance_reason": "impersonation_request",
+      "response_text": "I refuse this request because the system should not impersonate a real human."
+    },
+    {
+      "rule_id": "hold_material_ambiguity_command",
+      "enabled": true,
+      "match_mode": "contains_any",
+      "signal_types": [
+        "command"
+      ],
+      "patterns": [
+        "do the thing",
+        "handle it"
+      ],
+      "governance_outcome": "hold",
+      "governance_reason": "material_ambiguity",
+      "response_text": "I am holding this request because it is too ambiguous to execute responsibly."
+    },
+    {
+      "rule_id": "reshape_scope_drift_request",
+      "enabled": true,
+      "match_mode": "contains_any",
+      "signal_types": [
+        "user_message",
+        "command"
+      ],
+      "patterns": [
+        "rambling all over the place",
+        "scope is drifting"
+      ],
+      "governance_outcome": "reshape",
+      "governance_reason": "scope_drift",
+      "response_text": "I am reshaping this request toward one next useful step because the current scope is drifting."
+    },
+    {
+      "rule_id": "handoff_human_review_event",
+      "enabled": true,
+      "match_mode": "contains_all",
+      "signal_types": [
+        "system_event"
+      ],
+      "patterns": [
+        "human_review_recommended",
+        "material_accountability_needed"
+      ],
+      "governance_outcome": "handoff",
+      "governance_reason": "human_review_required",
+      "response_text": "I am issuing a handoff because material accountability requires human review."
+    }
+  ]
+}
