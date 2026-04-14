@@ -747,3 +747,10 @@
 - Added `docs/PHASE_2_GOVERNANCE_CHANGE_VALIDATION_SURFACE.md`
 - Added a validation surface that fails when the governance manifest changes materially without version change and matching governance change record coverage
 - Next step: prove the current unchanged manifest passes the new governance change validation surface
+
+## 2026-04-13
+- Created branch `phase-2/governance-gate-surface`
+- Added `scripts/run_governance_gate.ps1`
+- Added `docs/PHASE_2_GOVERNANCE_GATE_SURFACE.md`
+- Added a single-command governance gate that runs manifest baseline comparison, change validation, governance eval, eval baseline comparison, governance rule provenance, and full-chain verification
+- Next step: prove the governance gate passes end to end
