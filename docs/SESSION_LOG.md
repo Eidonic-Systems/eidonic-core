@@ -725,3 +725,10 @@
 - Refreshed `evals/baselines/governance_eval_baseline.json` to match the current six-outcome manifest-backed governance behavior
 - Added `docs/PHASE_2_GOVERNANCE_EVAL_BASELINE_REFRESH.md`
 - Next step: open PR for governance eval baseline refresh
+
+## 2026-04-13
+- Created branch `phase-2/governance-manifest-baseline-surface`
+- Added `config/baselines/governance_rules_manifest_baseline.json`
+- Added `scripts/compare_governance_manifest_to_baseline.ps1`
+- Added `docs/PHASE_2_GOVERNANCE_MANIFEST_BASELINE_SURFACE.md`
+- Next step: prove the current governance manifest matches the pinned baseline
