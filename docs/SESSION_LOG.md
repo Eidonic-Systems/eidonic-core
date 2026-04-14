@@ -740,3 +740,10 @@
 - Added `docs/PHASE_2_GOVERNANCE_CHANGE_RECORD_SURFACE.md`
 - Established governance manifest changes as explicit decision-recorded changes rather than casual config edits
 - Next step: open PR for governance change record surface
+
+## 2026-04-13
+- Created branch `phase-2/governance-change-validation-surface`
+- Added `scripts/validate_governance_manifest_change.ps1`
+- Added `docs/PHASE_2_GOVERNANCE_CHANGE_VALIDATION_SURFACE.md`
+- Added a validation surface that fails when the governance manifest changes materially without version change and matching governance change record coverage
+- Next step: prove the current unchanged manifest passes the new governance change validation surface
