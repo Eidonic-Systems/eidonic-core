@@ -761,3 +761,10 @@
 - Added `docs/PHASE_2_GATE_SURFACE.md`
 - Added a top-level Phase 2 gate that starts the stack, warms the provider, checks health, and runs the governance gate
 - Next step: prove the Phase 2 gate passes end to end
+
+## 2026-04-13
+- Created branch `phase-2/phase2-gate-ci-surface`
+- Added `.github/workflows/phase2-gate.yml`
+- Added `docs/PHASE_2_GATE_CI_SURFACE.md`
+- Added the first CI surface for the Phase 2 gate using a self-hosted Windows runner and the existing `scripts/run_phase2_gate.ps1` command
+- Next step: push the workflow branch and verify the Phase 2 gate workflow is available in GitHub Actions
