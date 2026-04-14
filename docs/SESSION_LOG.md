@@ -732,3 +732,11 @@
 - Added `scripts/compare_governance_manifest_to_baseline.ps1`
 - Added `docs/PHASE_2_GOVERNANCE_MANIFEST_BASELINE_SURFACE.md`
 - Next step: prove the current governance manifest matches the pinned baseline
+
+## 2026-04-13
+- Created branch `phase-2/governance-change-record-surface`
+- Added `docs/GOVERNANCE_CHANGE_RECORDS_INDEX.md`
+- Added `docs/decision_records/GOVERNANCE_MANIFEST_CHANGE_RECORD_2026_04_13.md`
+- Added `docs/PHASE_2_GOVERNANCE_CHANGE_RECORD_SURFACE.md`
+- Established governance manifest changes as explicit decision-recorded changes rather than casual config edits
+- Next step: open PR for governance change record surface
