@@ -13,7 +13,14 @@ function Run-Step {
 
     Write-Host ""
     Write-Host ("==> {0}" -f $Label) -ForegroundColor Yellow
+
+    $global:LASTEXITCODE = 0
     & $Action
+
+    $exitCode = $LASTEXITCODE
+    if ($null -ne $exitCode -and $exitCode -ne 0) {
+        throw ("Step failed: {0} (exit code {1})." -f $Label, $exitCode)
+    }
 }
 
 if (-not $SkipStackStart) {
