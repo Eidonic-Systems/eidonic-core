@@ -829,3 +829,9 @@
 - Updated `scripts/start_phase_2_stack.ps1` to verify service readiness before provider warmup
 - Added `docs/PHASE_2_STARTUP_READINESS_SURFACE.md`
 - Next step: prove startup now waits for real service readiness instead of treating window launch as success
+
+## 2026-04-15
+- Created branch `phase-2/readme-truth-refresh`
+- Updated root `README.md` to reflect current governance, startup, bootstrap, and state surfaces
+- Updated `services/eidon-orchestrator/README.md` to reflect current provider, governance, state, and readiness surfaces
+- Next step: open PR for bounded README truth refresh
