@@ -835,3 +835,10 @@
 - Updated root `README.md` to reflect current governance, startup, bootstrap, and state surfaces
 - Updated `services/eidon-orchestrator/README.md` to reflect current provider, governance, state, and readiness surfaces
 - Next step: open PR for bounded README truth refresh
+
+## 2026-04-15
+- Created branch `phase-2/stack-restart-surface`
+- Added `scripts/restart_phase_2_stack.ps1`
+- Added `docs/PHASE_2_STACK_RESTART_SURFACE.md`
+- Added a bounded restart surface for stopping stale Phase 2 service processes, clearing known ports, restarting the stack, and optionally rerunning the top level gate
+- Next step: prove the restart script can recover a messy local stack and still pass the normal proof path
