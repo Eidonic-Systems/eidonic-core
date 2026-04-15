@@ -789,3 +789,10 @@
 - Added `docs/PHASE_2_POSTGRES_BOOTSTRAP_SURFACE.md`
 - Added an explicit PostgreSQL bootstrap surface for local Phase 2 machines
 - Next step: prove PostgreSQL bootstrap passes cleanly against the local Phase 2 `.env` and database
+
+## 2026-04-15
+- Created branch `phase-2/laptop-sync-surface`
+- Added `scripts/sync_laptop_runner_main.ps1`
+- Added `docs/PHASE_2_LAPTOP_SYNC_SURFACE.md`
+- Added a local runner sync surface so the laptop box can refresh from `main` and rerun bootstrap checks without branch-by-branch babysitting
+- Next step: prove the laptop sync script passes on the runner box and can optionally rerun the Phase 2 gate
