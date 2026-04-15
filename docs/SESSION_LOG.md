@@ -796,3 +796,10 @@
 - Added `docs/PHASE_2_LAPTOP_SYNC_SURFACE.md`
 - Added a local runner sync surface so the laptop box can refresh from `main` and rerun bootstrap checks without branch-by-branch babysitting
 - Next step: prove the laptop sync script passes on the runner box and can optionally rerun the Phase 2 gate
+
+## 2026-04-15
+- Created branch `phase-2/postgres-schema-bootstrap-surface`
+- Added `scripts/bootstrap_phase2_postgres_schema.ps1`
+- Added `docs/PHASE_2_POSTGRES_SCHEMA_BOOTSTRAP_SURFACE.md`
+- Added an explicit PostgreSQL schema bootstrap and verification surface for the local Phase 2 state layer
+- Next step: prove required PostgreSQL tables are created and verified cleanly from the local Orchestrator environment
