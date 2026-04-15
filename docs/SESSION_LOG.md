@@ -768,3 +768,10 @@
 - Added `docs/PHASE_2_GATE_CI_SURFACE.md`
 - Added the first CI surface for the Phase 2 gate using a self-hosted Windows runner and the existing `scripts/run_phase2_gate.ps1` command
 - Next step: push the workflow branch and verify the Phase 2 gate workflow is available in GitHub Actions
+
+## 2026-04-15
+- Created branch `phase-2/gate-fail-fast-surface`
+- Updated `scripts/run_governance_gate.ps1` to fail fast on child step exit codes
+- Updated `scripts/run_phase2_gate.ps1` to fail fast on child step exit codes
+- Added `docs/PHASE_2_GATE_FAIL_FAST_SURFACE.md`
+- Next step: prove the gates only report success when all required steps actually pass
