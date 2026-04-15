@@ -822,3 +822,10 @@
 - Updated `scripts/start_phase_2_stack.ps1` to include PostgreSQL database bootstrap, schema bootstrap, and schema drift validation before service startup
 - Added `docs/PHASE_2_STARTUP_STATE_BOOTSTRAP_SURFACE.md`
 - Next step: prove the startup path now enforces state discipline before bringing Phase 2 services up
+
+## 2026-04-15
+- Created branch `phase-2/startup-readiness-surface`
+- Added `scripts/check_phase_2_startup_readiness.ps1`
+- Updated `scripts/start_phase_2_stack.ps1` to verify service readiness before provider warmup
+- Added `docs/PHASE_2_STARTUP_READINESS_SURFACE.md`
+- Next step: prove startup now waits for real service readiness instead of treating window launch as success
