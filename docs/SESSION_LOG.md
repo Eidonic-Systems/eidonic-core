@@ -846,3 +846,9 @@
 ## 2026-04-15
 - Patched `scripts/restart_phase_2_stack.ps1` so `-RunGate` calls `run_phase2_gate.ps1 -SkipStackStart` instead of launching a second full startup cycle
 - Updated `docs/PHASE_2_STACK_RESTART_SURFACE.md` to reflect single-start restart behavior
+
+## 2026-04-15
+- Created branch `phase-2/readme-truth-refresh`
+- Updated root `README.md` to reflect current governance, startup, bootstrap, state, and recovery surfaces
+- Updated `services/eidon-orchestrator/README.md` to reflect current provider, governance, state, and readiness surfaces
+- Next step: open PR for bounded README truth refresh
