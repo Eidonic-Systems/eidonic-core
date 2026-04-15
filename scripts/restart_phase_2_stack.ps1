@@ -96,7 +96,7 @@ Run-Step -Label "Starting Phase 2 stack" -Action {
 
 if ($RunGate) {
     Run-Step -Label "Running Phase 2 gate" -Action {
-        powershell -ExecutionPolicy Bypass -File .\scripts\run_phase2_gate.ps1
+        powershell -ExecutionPolicy Bypass -File .\scripts\run_phase2_gate.ps1 -SkipStackStart
     }
 }
 

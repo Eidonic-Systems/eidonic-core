@@ -842,3 +842,7 @@
 - Added `docs/PHASE_2_STACK_RESTART_SURFACE.md`
 - Added a bounded restart surface for stopping stale Phase 2 service processes, clearing known ports, restarting the stack, and optionally rerunning the top level gate
 - Next step: prove the restart script can recover a messy local stack and still pass the normal proof path
+
+## 2026-04-15
+- Patched `scripts/restart_phase_2_stack.ps1` so `-RunGate` calls `run_phase2_gate.ps1 -SkipStackStart` instead of launching a second full startup cycle
+- Updated `docs/PHASE_2_STACK_RESTART_SURFACE.md` to reflect single-start restart behavior

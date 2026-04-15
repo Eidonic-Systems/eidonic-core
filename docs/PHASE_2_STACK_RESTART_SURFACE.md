@@ -12,7 +12,7 @@ Provide one explicit recovery command for a messy local stack.
 - stops stale Phase 2 service processes
 - clears the known Phase 2 service ports
 - reruns `scripts/start_phase_2_stack.ps1`
-- optionally reruns `scripts/run_phase2_gate.ps1`
+- optionally reruns `scripts/run_phase2_gate.ps1 -SkipStackStart`
 
 ## Covered ports
 - `8000`
