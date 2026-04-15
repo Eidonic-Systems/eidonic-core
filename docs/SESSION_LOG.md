@@ -810,3 +810,9 @@
 - Added `docs/PHASE_2_POSTGRES_SCHEMA_DRIFT_SURFACE.md`
 - Added a PostgreSQL schema drift validation surface for required artifact and lineage provenance columns
 - Next step: prove required Phase 2 PostgreSQL columns are present and fail cleanly if the schema shape drifts
+
+## 2026-04-15
+- Created branch `phase-2/state-gate-surface`
+- Updated `scripts/run_phase2_gate.ps1` to include PostgreSQL database bootstrap, schema bootstrap, and schema drift validation in the required proof path
+- Added `docs/PHASE_2_STATE_GATE_SURFACE.md`
+- Next step: prove the top-level Phase 2 gate now enforces state bootstrap and schema validation before the rest of the proof path

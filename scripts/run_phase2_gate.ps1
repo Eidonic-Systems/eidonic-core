@@ -33,6 +33,18 @@ Run-Step -Label "Warming provider" -Action {
     Invoke-RestMethod -Uri "$EidonBaseUrl/provider/warm" -Method Post | ConvertTo-Json -Depth 12
 }
 
+Run-Step -Label "Bootstrapping Phase 2 PostgreSQL database" -Action {
+    powershell -ExecutionPolicy Bypass -File .\scripts\bootstrap_phase2_postgres.ps1
+}
+
+Run-Step -Label "Bootstrapping Phase 2 PostgreSQL schema" -Action {
+    powershell -ExecutionPolicy Bypass -File .\scripts\bootstrap_phase2_postgres_schema.ps1
+}
+
+Run-Step -Label "Validating Phase 2 PostgreSQL schema drift" -Action {
+    powershell -ExecutionPolicy Bypass -File .\scripts\validate_phase2_postgres_schema_drift.ps1
+}
+
 Run-Step -Label "Checking Phase 2 health" -Action {
     $health = Invoke-RestMethod -Uri "$EidonBaseUrl/health" -Method Get
 
