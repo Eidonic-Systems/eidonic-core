@@ -803,3 +803,10 @@
 - Added `docs/PHASE_2_POSTGRES_SCHEMA_BOOTSTRAP_SURFACE.md`
 - Added an explicit PostgreSQL schema bootstrap and verification surface for the local Phase 2 state layer
 - Next step: prove required PostgreSQL tables are created and verified cleanly from the local Orchestrator environment
+
+## 2026-04-15
+- Created branch `phase-2/postgres-schema-drift-surface`
+- Added `scripts/validate_phase2_postgres_schema_drift.ps1`
+- Added `docs/PHASE_2_POSTGRES_SCHEMA_DRIFT_SURFACE.md`
+- Added a PostgreSQL schema drift validation surface for required artifact and lineage provenance columns
+- Next step: prove required Phase 2 PostgreSQL columns are present and fail cleanly if the schema shape drifts
