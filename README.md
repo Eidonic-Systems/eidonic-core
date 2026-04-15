@@ -63,7 +63,9 @@ The repo now has a real operational spine built around:
 - self-hosted CI mirror for the Phase 2 gate
 - host bootstrap checks
 - service venv bootstrap
+- PostgreSQL bootstrap surfaces
 - laptop runner sync surface
+- stack restart surface
 
 ## Current control and routing truth
 Control model:
@@ -125,6 +127,7 @@ Governance and state surfaces:
 - `docs/PHASE_2_POSTGRES_SCHEMA_DRIFT_SURFACE.md`
 - `docs/PHASE_2_STARTUP_STATE_BOOTSTRAP_SURFACE.md`
 - `docs/PHASE_2_STARTUP_READINESS_SURFACE.md`
+- `docs/PHASE_2_STACK_RESTART_SURFACE.md`
 - `docs/RUNNER_BOOTSTRAP.md`
 
 ## What is not live yet
