@@ -782,3 +782,10 @@
 - Added `docs/PHASE_2_SERVICE_VENV_BOOTSTRAP_SURFACE.md`
 - Added a reusable bootstrap surface for the four Phase 2 service virtual environments
 - Next step: prove service venv bootstrap passes on an already-prepared dev box and reduces manual runner setup repetition
+
+## 2026-04-15
+- Created branch `phase-2/postgres-bootstrap-surface`
+- Added `scripts/bootstrap_phase2_postgres.ps1`
+- Added `docs/PHASE_2_POSTGRES_BOOTSTRAP_SURFACE.md`
+- Added an explicit PostgreSQL bootstrap surface for local Phase 2 machines
+- Next step: prove PostgreSQL bootstrap passes cleanly against the local Phase 2 `.env` and database
