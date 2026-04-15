@@ -775,3 +775,10 @@
 - Updated `scripts/run_phase2_gate.ps1` to fail fast on child step exit codes
 - Added `docs/PHASE_2_GATE_FAIL_FAST_SURFACE.md`
 - Next step: prove the gates only report success when all required steps actually pass
+
+## 2026-04-15
+- Created branch `phase-2/service-venv-bootstrap-surface`
+- Added `scripts/bootstrap_phase2_service_venvs.ps1`
+- Added `docs/PHASE_2_SERVICE_VENV_BOOTSTRAP_SURFACE.md`
+- Added a reusable bootstrap surface for the four Phase 2 service virtual environments
+- Next step: prove service venv bootstrap passes on an already-prepared dev box and reduces manual runner setup repetition
