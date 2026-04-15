@@ -816,3 +816,9 @@
 - Updated `scripts/run_phase2_gate.ps1` to include PostgreSQL database bootstrap, schema bootstrap, and schema drift validation in the required proof path
 - Added `docs/PHASE_2_STATE_GATE_SURFACE.md`
 - Next step: prove the top-level Phase 2 gate now enforces state bootstrap and schema validation before the rest of the proof path
+
+## 2026-04-15
+- Created branch `phase-2/startup-state-bootstrap-surface`
+- Updated `scripts/start_phase_2_stack.ps1` to include PostgreSQL database bootstrap, schema bootstrap, and schema drift validation before service startup
+- Added `docs/PHASE_2_STARTUP_STATE_BOOTSTRAP_SURFACE.md`
+- Next step: prove the startup path now enforces state discipline before bringing Phase 2 services up

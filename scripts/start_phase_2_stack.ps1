@@ -59,6 +59,27 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host ""
+Write-Host "Running Phase 2 PostgreSQL bootstrap..." -ForegroundColor Yellow
+& powershell -ExecutionPolicy Bypass -File .\scripts\bootstrap_phase2_postgres.ps1
+if ($LASTEXITCODE -ne 0) {
+    throw "Phase 2 PostgreSQL bootstrap failed. Stop and fix the database before starting the stack."
+}
+
+Write-Host ""
+Write-Host "Running Phase 2 PostgreSQL schema bootstrap..." -ForegroundColor Yellow
+& powershell -ExecutionPolicy Bypass -File .\scripts\bootstrap_phase2_postgres_schema.ps1
+if ($LASTEXITCODE -ne 0) {
+    throw "Phase 2 PostgreSQL schema bootstrap failed. Stop and fix the schema before starting the stack."
+}
+
+Write-Host ""
+Write-Host "Running Phase 2 PostgreSQL schema drift validation..." -ForegroundColor Yellow
+& powershell -ExecutionPolicy Bypass -File .\scripts\validate_phase2_postgres_schema_drift.ps1
+if ($LASTEXITCODE -ne 0) {
+    throw "Phase 2 PostgreSQL schema drift validation failed. Stop and fix the schema before starting the stack."
+}
+
+Write-Host ""
 Write-Host "Starting Phase 2 local stack..." -ForegroundColor Yellow
 Write-Host ""
 
