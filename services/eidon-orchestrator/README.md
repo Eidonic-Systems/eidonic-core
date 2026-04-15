@@ -11,10 +11,10 @@ The Eidon Orchestrator is the current orchestration service for Eidonic Core.
 - record governance provenance
 - expose provider warmup and readiness surfaces
 - expose retrieval surfaces for persisted records
-- route response generation through the current provider and governance layers
+- participate in the current startup, state, and gate discipline
 
 ## Current phase
-Phase 2 PostgreSQL-backed orchestration service with local provider discipline, narrow routing, and narrow governance enforcement.
+Phase 2 PostgreSQL-backed orchestration service with local provider discipline, narrow routing, narrow governance enforcement, and explicit state bootstrap verification.
 
 ## Current endpoints
 - `GET /health`
@@ -28,9 +28,9 @@ Phase 2 PostgreSQL-backed orchestration service with local provider discipline, 
 ## Current persistence
 - artifact records persisted in PostgreSQL
 - lineage records persisted in PostgreSQL
-- local JSON stores remain available as fallback only
+- local JSON stores remain fallback only
 
-## Current provider/runtime surface
+## Current provider surface
 - provider adapter contract
 - local Ollama-backed provider
 - persisted provider provenance
@@ -50,6 +50,23 @@ Phase 2 PostgreSQL-backed orchestration service with local provider discipline, 
 - pinned governance baseline
 - manifest-backed governance rules
 - persisted governance rule provenance
+- governance change records
+- governance change validation
+- governance gate coverage
+
+## Current state surface
+The Orchestrator now participates in an explicit Postgres state discipline:
+- database bootstrap
+- schema bootstrap
+- schema drift validation
+- startup-path state enforcement
+- top-level gate state enforcement
+
+Required PostgreSQL tables:
+- `artifact_records`
+- `artifact_lineage_records`
+
+Required schema validation now checks the expected provider, routing, governance, and rule-provenance fields on both tables.
 
 ## Persisted provider provenance
 Artifact records persist:
@@ -87,7 +104,7 @@ Lineage records persist:
 - `POST /provider/warm` warms the selected provider
 - `GET /health` exposes provider readiness truth
 - `scripts/warm_eidon_provider.ps1` provides a direct warmup entry point
-- `scripts/start_phase_2_stack.ps1` runs warmup after health passes
+- `scripts/start_phase_2_stack.ps1` now verifies startup readiness before provider warmup completes
 
 ## Failure semantics
 The current provider layer distinguishes:
@@ -120,12 +137,16 @@ Current enforced outcomes:
 - `fallback`
 - `refuse`
 - `hold`
+- `reshape`
+- `handoff`
 
 Current truth:
 - normal safe orchestration persists `allow`
 - provider failure persists `fallback`
 - explicit impersonation-style requests persist `refuse`
 - explicit materially ambiguous command input persists `hold`
+- explicit scope-drift requests can persist `reshape`
+- explicit human-review events can persist `handoff`
 
 ## Governance rules manifest
 The narrow governance pilot rules are loaded from:
@@ -145,10 +166,11 @@ The manifest currently defines:
 - control model: `gemma3n:e4b`
 - narrow route candidate: `gemma3n:e2b`
 
-## Notes
-This service now has a real operational spine.
-The next layers should remain disciplined:
-- visible rules before hidden behavior
-- provenance before opacity
-- baselines before widening scope
-- narrow enforcement before full governance expansion
+## Current truth
+The Orchestrator now sits inside a stricter Phase 2 spine:
+- explicit provider truth
+- explicit routing truth
+- explicit governance truth
+- explicit state truth
+- startup readiness verification
+- fail-fast proof behavior
