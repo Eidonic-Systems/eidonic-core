@@ -852,3 +852,11 @@
 - Updated root `README.md` to reflect current governance, startup, bootstrap, state, and recovery surfaces
 - Updated `services/eidon-orchestrator/README.md` to reflect current provider, governance, state, and readiness surfaces
 - Next step: open PR for bounded README truth refresh
+
+## 2026-04-15
+- Created branch `phase-2/service-topology-manifest-surface`
+- Added `config/service_topology_manifest.json`
+- Updated `scripts/check_phase_2_startup_readiness.ps1` to read service truth from the topology manifest
+- Updated `scripts/restart_phase_2_stack.ps1` to read service ports and process match patterns from the topology manifest
+- Added `docs/PHASE_2_SERVICE_TOPOLOGY_MANIFEST_SURFACE.md`
+- Next step: prove readiness and restart still pass while reading service topology from one declared manifest

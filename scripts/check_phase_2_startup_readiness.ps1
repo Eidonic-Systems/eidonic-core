@@ -1,69 +1,90 @@
 param(
-    [int]$SignalGatewayPort = 8000,
-    [int]$SessionEnginePort = 8001,
-    [int]$HeraldServicePort = 8002,
-    [int]$EidonOrchestratorPort = 8003,
+    [string]$RepoRoot = ".",
     [int]$MaxAttempts = 30,
     [int]$SleepSeconds = 2
 )
 
 $ErrorActionPreference = "Stop"
 
+function Get-ServiceTopology {
+    param([string]$ResolvedRepoRoot)
+
+    $manifestPath = Join-Path $ResolvedRepoRoot "config\service_topology_manifest.json"
+    if (-not (Test-Path $manifestPath)) {
+        throw "Missing service topology manifest at $manifestPath"
+    }
+
+    $manifest = Get-Content $manifestPath -Raw | ConvertFrom-Json
+    if ($null -eq $manifest.services -or $manifest.services.Count -eq 0) {
+        throw "Service topology manifest has no services."
+    }
+
+    return $manifest
+}
+
 function Wait-ForServiceHealth {
     param(
-        [string]$Name,
-        [string]$HealthUrl,
-        [int]$Port
+        $Service,
+        [int]$MaxAttempts,
+        [int]$SleepSeconds
     )
+
+    $name = [string]$Service.name
+    $healthUrl = [string]$Service.health_url
+    $port = [int]$Service.port
+    $checkProviderStatus = [bool]$Service.check_provider_status
 
     for ($attempt = 1; $attempt -le $MaxAttempts; $attempt++) {
         try {
-            $response = Invoke-RestMethod -Uri $HealthUrl -Method Get -TimeoutSec 10
+            $response = Invoke-RestMethod -Uri $healthUrl -Method Get -TimeoutSec 10
 
             if ($null -eq $response) {
-                throw "$Name returned no response."
+                throw "$name returned no response."
             }
 
             if ($response.status -ne "ok") {
-                throw "$Name health status was '$($response.status)'."
+                throw "$name health status was '$($response.status)'."
             }
 
-            if ($response.PSObject.Properties.Name -contains "provider") {
+            if ($checkProviderStatus -and ($response.PSObject.Properties.Name -contains "provider")) {
                 if ($response.provider.status -ne "ok") {
-                    throw "$Name provider status was '$($response.provider.status)'."
+                    throw "$name provider status was '$($response.provider.status)'."
                 }
             }
 
             return [pscustomobject]@{
-                name = $Name
-                port = $Port
-                health_url = $HealthUrl
+                name = $name
+                port = $port
+                health_url = $healthUrl
                 status = $response.status
             }
         }
         catch {
             if ($attempt -eq $MaxAttempts) {
-                throw "$Name readiness failed after $MaxAttempts attempts. Last error: $($_.Exception.Message)"
+                throw "$name readiness failed after $MaxAttempts attempts. Last error: $($_.Exception.Message)"
             }
 
-            Write-Host ("Waiting for {0} on port {1} ({2}/{3})..." -f $Name, $Port, $attempt, $MaxAttempts) -ForegroundColor Yellow
+            Write-Host ("Waiting for {0} on port {1} ({2}/{3})..." -f $name, $port, $attempt, $MaxAttempts) -ForegroundColor Yellow
             Start-Sleep -Seconds $SleepSeconds
         }
     }
 }
+
+$resolvedRepoRoot = (Resolve-Path $RepoRoot).Path
+$manifest = Get-ServiceTopology -ResolvedRepoRoot $resolvedRepoRoot
 
 Write-Host ""
 Write-Host "Checking Phase 2 startup readiness..." -ForegroundColor Yellow
 
 $results = @()
 
-$results += Wait-ForServiceHealth -Name "signal-gateway" -HealthUrl ("http://127.0.0.1:{0}/health" -f $SignalGatewayPort) -Port $SignalGatewayPort
-$results += Wait-ForServiceHealth -Name "session-engine" -HealthUrl ("http://127.0.0.1:{0}/health" -f $SessionEnginePort) -Port $SessionEnginePort
-$results += Wait-ForServiceHealth -Name "herald-service" -HealthUrl ("http://127.0.0.1:{0}/health" -f $HeraldServicePort) -Port $HeraldServicePort
-$results += Wait-ForServiceHealth -Name "eidon-orchestrator" -HealthUrl ("http://127.0.0.1:{0}/health" -f $EidonOrchestratorPort) -Port $EidonOrchestratorPort
+foreach ($service in $manifest.services) {
+    $results += Wait-ForServiceHealth -Service $service -MaxAttempts $MaxAttempts -SleepSeconds $SleepSeconds
+}
 
 $summary = [ordered]@{
     status = "passed"
+    manifest_version = [string]$manifest.manifest_version
     total_services = $results.Count
     results = $results
 }
