@@ -1,0 +1,46 @@
+{
+  "manifest_version": "phase-2-service-topology-v1",
+  "services": [
+    {
+      "name": "signal-gateway",
+      "port": 8000,
+      "health_url": "http://127.0.0.1:8000/health",
+      "service_root": "services\\signal-gateway",
+      "process_match_patterns": [
+        "services\\signal-gateway"
+      ],
+      "check_provider_status": false
+    },
+    {
+      "name": "session-engine",
+      "port": 8001,
+      "health_url": "http://127.0.0.1:8001/health",
+      "service_root": "services\\session-engine",
+      "process_match_patterns": [
+        "services\\session-engine"
+      ],
+      "check_provider_status": false
+    },
+    {
+      "name": "herald-service",
+      "port": 8002,
+      "health_url": "http://127.0.0.1:8002/health",
+      "service_root": "services\\herald-service",
+      "process_match_patterns": [
+        "services\\herald-service"
+      ],
+      "check_provider_status": false
+    },
+    {
+      "name": "eidon-orchestrator",
+      "port": 8003,
+      "health_url": "http://127.0.0.1:8003/health",
+      "service_root": "services\\eidon-orchestrator",
+      "process_match_patterns": [
+        "services\\eidon-orchestrator",
+        "app.main:app"
+      ],
+      "check_provider_status": true
+    }
+  ]
+}

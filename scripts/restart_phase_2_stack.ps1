@@ -23,21 +23,50 @@ function Run-Step {
     }
 }
 
-function Stop-Phase2ServiceProcesses {
+function Get-ServiceTopology {
     param([string]$ResolvedRepoRoot)
 
-    $patterns = @(
-        "services\signal-gateway",
-        "services\session-engine",
-        "services\herald-service",
-        "services\eidon-orchestrator",
-        "app.main:app"
-    )
+    $manifestPath = Join-Path $ResolvedRepoRoot "config\service_topology_manifest.json"
+    if (-not (Test-Path $manifestPath)) {
+        throw "Missing service topology manifest at $manifestPath"
+    }
+
+    $manifest = Get-Content $manifestPath -Raw | ConvertFrom-Json
+    if ($null -eq $manifest.services -or $manifest.services.Count -eq 0) {
+        throw "Service topology manifest has no services."
+    }
+
+    return $manifest
+}
+
+function Stop-Phase2ServiceProcesses {
+    param($Services)
+
+    $patterns = @()
+    foreach ($service in $Services) {
+        foreach ($pattern in $service.process_match_patterns) {
+            if (-not [string]::IsNullOrWhiteSpace([string]$pattern)) {
+                $patterns += [string]$pattern
+            }
+        }
+    }
+
+    if ($patterns.Count -eq 0) {
+        Write-Host "No process match patterns declared in service topology manifest." -ForegroundColor DarkGray
+        return
+    }
 
     $candidates = Get-CimInstance Win32_Process | Where-Object {
-        $null -ne $_.CommandLine -and (
-            ($patterns | Where-Object { $_ -and $_ -in $_.CommandLine }).Count -gt 0
-        )
+        $cmd = $_.CommandLine
+        if ($null -eq $cmd) { return $false }
+
+        foreach ($pattern in $patterns) {
+            if ($cmd -like "*$pattern*") {
+                return $true
+            }
+        }
+
+        return $false
     }
 
     $pids = @($candidates |
@@ -58,9 +87,11 @@ function Stop-Phase2ServiceProcesses {
 }
 
 function Stop-PortListeners {
-    param([int[]]$Ports)
+    param($Services)
 
-    foreach ($port in $Ports) {
+    $ports = @($Services | ForEach-Object { [int]$_.port } | Sort-Object -Unique)
+
+    foreach ($port in $ports) {
         $connections = @(Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue |
             Select-Object -ExpandProperty OwningProcess -Unique)
 
@@ -81,13 +112,14 @@ function Stop-PortListeners {
 
 $resolvedRepoRoot = (Resolve-Path $RepoRoot).Path
 Set-Location $resolvedRepoRoot
+$manifest = Get-ServiceTopology -ResolvedRepoRoot $resolvedRepoRoot
 
 Run-Step -Label "Stopping Phase 2 service processes" -Action {
-    Stop-Phase2ServiceProcesses -ResolvedRepoRoot $resolvedRepoRoot
+    Stop-Phase2ServiceProcesses -Services $manifest.services
 }
 
 Run-Step -Label "Clearing known Phase 2 ports" -Action {
-    Stop-PortListeners -Ports @(8000, 8001, 8002, 8003)
+    Stop-PortListeners -Services $manifest.services
 }
 
 Run-Step -Label "Starting Phase 2 stack" -Action {
