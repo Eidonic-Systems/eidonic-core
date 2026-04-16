@@ -9,7 +9,10 @@
       "process_match_patterns": [
         "services\\signal-gateway"
       ],
-      "check_provider_status": false
+      "check_provider_status": false,
+      "startup_name": "signal-gateway",
+      "startup_workdir": "services\\signal-gateway",
+      "startup_command": ".\\.venv\\Scripts\\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000"
     },
     {
       "name": "session-engine",
@@ -19,7 +22,10 @@
       "process_match_patterns": [
         "services\\session-engine"
       ],
-      "check_provider_status": false
+      "check_provider_status": false,
+      "startup_name": "session-engine",
+      "startup_workdir": "services\\session-engine",
+      "startup_command": ".\\.venv\\Scripts\\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8001"
     },
     {
       "name": "herald-service",
@@ -29,7 +35,10 @@
       "process_match_patterns": [
         "services\\herald-service"
       ],
-      "check_provider_status": false
+      "check_provider_status": false,
+      "startup_name": "herald-service",
+      "startup_workdir": "services\\herald-service",
+      "startup_command": ".\\.venv\\Scripts\\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8002"
     },
     {
       "name": "eidon-orchestrator",
@@ -40,7 +49,10 @@
         "services\\eidon-orchestrator",
         "app.main:app"
       ],
-      "check_provider_status": true
+      "check_provider_status": true,
+      "startup_name": "eidon-orchestrator",
+      "startup_workdir": "services\\eidon-orchestrator",
+      "startup_command": ".\\.venv\\Scripts\\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8003"
     }
   ]
 }

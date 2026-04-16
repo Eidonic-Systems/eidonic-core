@@ -860,3 +860,10 @@
 - Updated `scripts/restart_phase_2_stack.ps1` to read service ports and process match patterns from the topology manifest
 - Added `docs/PHASE_2_SERVICE_TOPOLOGY_MANIFEST_SURFACE.md`
 - Next step: prove readiness and restart still pass while reading service topology from one declared manifest
+
+## 2026-04-15
+- Created branch `phase-2/startup-topology-surface`
+- Extended `config/service_topology_manifest.json` with startup launch truth
+- Updated `scripts/start_phase_2_stack.ps1` to launch services from the topology manifest instead of hardcoded startup blocks
+- Added `docs/PHASE_2_STARTUP_TOPOLOGY_SURFACE.md`
+- Next step: prove startup, readiness, and restart all still pass while reading one declared service topology surface
