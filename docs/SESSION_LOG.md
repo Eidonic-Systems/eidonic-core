@@ -891,3 +891,11 @@
 - Added `docs/PHASE_2_GOVERNANCE_MANIFEST_VALIDATION_SURFACE.md`
 - Added a direct validation surface for governance manifest shape and allowed outcomes
 - Next step: prove malformed governance manifest state now fails clearly before wider fixture coverage
+
+## 2026-04-18
+- Created branch `phase-2/governance-rule-fixtures-surface`
+- Added `tests/fixtures/governance_rule_fixtures.json`
+- Added `scripts/test_governance_rule_fixtures.ps1`
+- Added `docs/PHASE_2_GOVERNANCE_RULE_FIXTURES_SURFACE.md`
+- Added deterministic positive and negative fixtures for every current governance manifest rule
+- Next step: prove current governance manifest behavior matches the fixture expectations exactly
