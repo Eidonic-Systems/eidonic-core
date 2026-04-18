@@ -907,3 +907,10 @@
 - Tightened `.github/CODEOWNERS` for repo trust surfaces
 - Added `docs/PHASE_2_REPO_TRUST_SURFACE.md`
 - Next step: review explicit repo trust surfaces and keep legal/license posture deliberate instead of implicit
+
+## 2026-04-18
+- Created branch `phase-2/dependabot-intake-surface`
+- Reviewed newly fetched Dependabot branches after enabling dependency update visibility
+- Recorded a bounded intake decision: defer current framework and workflow updates to dedicated compatibility branches instead of blind merges
+- Added `docs/PHASE_2_DEPENDABOT_INTAKE_SURFACE.md`
+- Next step: choose one dedicated upgrade batch instead of mixing framework updates into unrelated work
