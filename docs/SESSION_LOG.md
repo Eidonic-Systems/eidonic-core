@@ -933,3 +933,9 @@
 - Updated `uvicorn` from `0.30.6` to `0.44.0` in all four Phase 2 service requirements files
 - Added `docs/PHASE_2_UVICORN_COMPATIBILITY_BATCH.md`
 - Next step: prove the stack still starts and the top-level gate still passes after the narrowed `uvicorn` update
+
+## 2026-04-18
+- Created branch `phase-2/fastapi-compatibility-batch`
+- Updated `fastapi` from `0.115.0` to `0.136.0` in all four Phase 2 service requirements files
+- Added `docs/PHASE_2_FASTAPI_COMPATIBILITY_BATCH.md`
+- Next step: prove the stack still starts and the top-level gate still passes after the narrowed `fastapi` update
