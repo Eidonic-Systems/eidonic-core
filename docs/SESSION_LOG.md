@@ -877,3 +877,10 @@
 - Added `SECURITY.md`
 - Added `docs/PHASE_2_AUDIT_PRIORITY_BATCH_1.md`
 - Next step: prove topology consistency validation passes and review the hardened workflow surface
+
+## 2026-04-17
+- Created branch `phase-2/dependency-reproducibility-surface`
+- Added `scripts/pin_phase2_python_dependencies.ps1`
+- Added `docs/PHASE_2_DEPENDENCY_REPRODUCIBILITY_SURFACE.md`
+- Ran a bounded direct-dependency pinning pass against the four Phase 2 service requirements files using installed service venv versions as the realization source
+- Next step: review pinned requirement diffs and capture any intentionally unresolved dependency entries
