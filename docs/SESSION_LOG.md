@@ -867,3 +867,13 @@
 - Updated `scripts/start_phase_2_stack.ps1` to launch services from the topology manifest instead of hardcoded startup blocks
 - Added `docs/PHASE_2_STARTUP_TOPOLOGY_SURFACE.md`
 - Next step: prove startup, readiness, and restart all still pass while reading one declared service topology surface
+
+## 2026-04-17
+- Created branch `phase-2/audit-priority-batch-1`
+- Aligned `.env.example` and `tests/README.md` to the canonical service topology manifest
+- Added `scripts/validate_phase2_topology_consistency.ps1`
+- Hardened `.github/workflows/phase2-gate.yml` with explicit permissions, concurrency, timeout, and SHA-pinned checkout
+- Added `.github/CODEOWNERS`
+- Added `SECURITY.md`
+- Added `docs/PHASE_2_AUDIT_PRIORITY_BATCH_1.md`
+- Next step: prove topology consistency validation passes and review the hardened workflow surface

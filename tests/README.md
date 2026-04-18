@@ -23,8 +23,8 @@ powershell -ExecutionPolicy Bypass -File .\tests\integration\test_full_chain.ps1
 ## Expected condition
 The current Phase 2 services must already be running locally on:
 - port 8000 for `signal-gateway`
-- port 8001 for `herald-service`
-- port 8002 for `session-engine`
+- port 8001 for `session-engine`
+- port 8002 for `herald-service`
 - port 8003 for `eidon-orchestrator`
 
 ## Verified outcomes
