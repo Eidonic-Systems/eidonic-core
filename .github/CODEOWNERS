@@ -1,6 +1,7 @@
 * @Eidonic-Systems
 
 /.github/ @Eidonic-Systems
+/.github/workflows/ @Eidonic-Systems
 /config/ @Eidonic-Systems
 /docs/ @Eidonic-Systems
 /evals/ @Eidonic-Systems
@@ -10,3 +11,6 @@
 /services/ @Eidonic-Systems
 /specs/ @Eidonic-Systems
 /tests/ @Eidonic-Systems
+/README.md @Eidonic-Systems
+/SECURITY.md @Eidonic-Systems
+/LICENSE @Eidonic-Systems
