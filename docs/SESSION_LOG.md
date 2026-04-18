@@ -914,3 +914,9 @@
 - Recorded a bounded intake decision: defer current framework and workflow updates to dedicated compatibility branches instead of blind merges
 - Added `docs/PHASE_2_DEPENDABOT_INTAKE_SURFACE.md`
 - Next step: choose one dedicated upgrade batch instead of mixing framework updates into unrelated work
+
+## 2026-04-18
+- Created branch `phase-2/dependabot-grouping-surface`
+- Updated `.github/dependabot.yml` to group minor and patch Dependabot updates and cap open version-update PR volume
+- Added `docs/PHASE_2_DEPENDABOT_GROUPING_SURFACE.md`
+- Next step: confirm future Dependabot update flow is grouped and materially quieter
