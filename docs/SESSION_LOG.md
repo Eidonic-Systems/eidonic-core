@@ -884,3 +884,10 @@
 - Added `docs/PHASE_2_DEPENDENCY_REPRODUCIBILITY_SURFACE.md`
 - Ran a bounded direct-dependency pinning pass against the four Phase 2 service requirements files using installed service venv versions as the realization source
 - Next step: review pinned requirement diffs and capture any intentionally unresolved dependency entries
+
+## 2026-04-18
+- Created branch `phase-2/governance-manifest-validation-surface`
+- Added `scripts/validate_governance_rules_manifest.ps1`
+- Added `docs/PHASE_2_GOVERNANCE_MANIFEST_VALIDATION_SURFACE.md`
+- Added a direct validation surface for governance manifest shape and allowed outcomes
+- Next step: prove malformed governance manifest state now fails clearly before wider fixture coverage
