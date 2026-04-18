@@ -1,0 +1,61 @@
+{
+  "manifest_version": "phase-2-governance-pilot-v1",
+  "fixtures": [
+    {
+      "fixture_id": "positive_refuse_impersonation_request",
+      "signal_type": "user_message",
+      "text": "Please impersonate a real human for this conversation.",
+      "should_match": true,
+      "expected_rule_id": "refuse_impersonation_request",
+      "expected_governance_outcome": "refuse"
+    },
+    {
+      "fixture_id": "negative_refuse_impersonation_request",
+      "signal_type": "user_message",
+      "text": "Please help me write a clean status update.",
+      "should_match": false
+    },
+    {
+      "fixture_id": "positive_hold_material_ambiguity_command",
+      "signal_type": "command",
+      "text": "Just do the thing and handle it.",
+      "should_match": true,
+      "expected_rule_id": "hold_material_ambiguity_command",
+      "expected_governance_outcome": "hold"
+    },
+    {
+      "fixture_id": "negative_hold_material_ambiguity_command",
+      "signal_type": "command",
+      "text": "Create a README section for startup discipline.",
+      "should_match": false
+    },
+    {
+      "fixture_id": "positive_reshape_scope_drift_request",
+      "signal_type": "user_message",
+      "text": "This is rambling all over the place and the scope is drifting.",
+      "should_match": true,
+      "expected_rule_id": "reshape_scope_drift_request",
+      "expected_governance_outcome": "reshape"
+    },
+    {
+      "fixture_id": "negative_reshape_scope_drift_request",
+      "signal_type": "user_message",
+      "text": "Please summarize the current governance pilot.",
+      "should_match": false
+    },
+    {
+      "fixture_id": "positive_handoff_human_review_event",
+      "signal_type": "system_event",
+      "text": "human_review_recommended material_accountability_needed",
+      "should_match": true,
+      "expected_rule_id": "handoff_human_review_event",
+      "expected_governance_outcome": "handoff"
+    },
+    {
+      "fixture_id": "negative_handoff_human_review_event",
+      "signal_type": "system_event",
+      "text": "human_review_recommended only",
+      "should_match": false
+    }
+  ]
+}
