@@ -927,3 +927,9 @@
 - Updated `httpx` from `0.27.2` to `0.28.1` in `services/signal-gateway/requirements.txt`
 - Added `docs/PHASE_2_HTTPX_COMPATIBILITY_BATCH.md`
 - Next step: prove the stack still starts and the top-level gate still passes after the narrowed `httpx` update
+
+## 2026-04-18
+- Created branch `phase-2/uvicorn-compatibility-batch`
+- Updated `uvicorn` from `0.30.6` to `0.44.0` in all four Phase 2 service requirements files
+- Added `docs/PHASE_2_UVICORN_COMPATIBILITY_BATCH.md`
+- Next step: prove the stack still starts and the top-level gate still passes after the narrowed `uvicorn` update
