@@ -899,3 +899,11 @@
 - Added `docs/PHASE_2_GOVERNANCE_RULE_FIXTURES_SURFACE.md`
 - Added deterministic positive and negative fixtures for every current governance manifest rule
 - Next step: prove current governance manifest behavior matches the fixture expectations exactly
+
+## 2026-04-18
+- Created branch `phase-2/repo-trust-surface`
+- Added `LICENSE` with explicit proprietary repo posture
+- Added `.github/dependabot.yml` for GitHub Actions and Phase 2 Python service dependency visibility
+- Tightened `.github/CODEOWNERS` for repo trust surfaces
+- Added `docs/PHASE_2_REPO_TRUST_SURFACE.md`
+- Next step: review explicit repo trust surfaces and keep legal/license posture deliberate instead of implicit
