@@ -920,3 +920,10 @@
 - Updated `.github/dependabot.yml` to group minor and patch Dependabot updates and cap open version-update PR volume
 - Added `docs/PHASE_2_DEPENDABOT_GROUPING_SURFACE.md`
 - Next step: confirm future Dependabot update flow is grouped and materially quieter
+
+## 2026-04-18
+- Created branch `phase-2/httpx-compatibility-batch`
+- Updated `httpx` from `0.27.2` to `0.28.1` in `services/eidon-orchestrator/requirements.txt`
+- Updated `httpx` from `0.27.2` to `0.28.1` in `services/signal-gateway/requirements.txt`
+- Added `docs/PHASE_2_HTTPX_COMPATIBILITY_BATCH.md`
+- Next step: prove the stack still starts and the top-level gate still passes after the narrowed `httpx` update
