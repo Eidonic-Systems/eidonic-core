@@ -1,16 +1,41 @@
-* @Eidonic-Systems
-
-/.github/ @Eidonic-Systems
+# Core governance surfaces
+/.github/CODEOWNERS @Eidonic-Systems
+/.github/dependabot.yml @Eidonic-Systems
 /.github/workflows/ @Eidonic-Systems
-/config/ @Eidonic-Systems
-/docs/ @Eidonic-Systems
-/evals/ @Eidonic-Systems
-/infra/ @Eidonic-Systems
-/packages/ @Eidonic-Systems
-/scripts/ @Eidonic-Systems
-/services/ @Eidonic-Systems
-/specs/ @Eidonic-Systems
-/tests/ @Eidonic-Systems
-/README.md @Eidonic-Systems
 /SECURITY.md @Eidonic-Systems
 /LICENSE @Eidonic-Systems
+
+# Control-plane truth surfaces
+/config/service_topology_manifest.json @Eidonic-Systems
+/config/governance_rules_manifest.json @Eidonic-Systems
+/config/ @Eidonic-Systems
+
+# Runtime and gate surfaces
+/scripts/run_phase2_gate.ps1 @Eidonic-Systems
+/scripts/start_phase_2_stack.ps1 @Eidonic-Systems
+/scripts/validate_*.ps1 @Eidonic-Systems
+/scripts/ @Eidonic-Systems
+
+# Shared package surfaces
+/packages/common-schemas/python/ @Eidonic-Systems
+/packages/ @Eidonic-Systems
+
+# Service runtime surfaces
+/services/ @Eidonic-Systems
+
+# Test and evaluation surfaces
+/tests/integration/ @Eidonic-Systems
+/tests/ @Eidonic-Systems
+/evals/ @Eidonic-Systems
+
+# Documentation and specs
+/docs/ @Eidonic-Systems
+/specs/ @Eidonic-Systems
+/README.md @Eidonic-Systems
+
+# Infrastructure and application shells
+/infra/ @Eidonic-Systems
+/apps/ @Eidonic-Systems
+
+# Default fallback
+* @Eidonic-Systems
