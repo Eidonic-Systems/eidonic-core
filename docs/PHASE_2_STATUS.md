@@ -84,3 +84,23 @@ It now has a real operational spine:
 - baseline-backed behavior
 - visible manifest rules
 - persisted rule provenance
+
+## Dependency wave status update
+
+The Phase 2 dependency wave has now been absorbed and proved on `main`.
+
+Current proved dependency position:
+- `httpx==0.28.1`
+- `uvicorn==0.44.0`
+- `fastapi==0.136.0`
+- `pydantic==2.13.2`
+
+Important truth:
+- the isolated `pydantic` service batch was not the real blocker
+- the real blocker was the shared editable package in `packages/common-schemas/python` still pinning the older `pydantic` version
+- once the shared package and the four services were aligned, the dependency wave could be proved cleanly
+
+Main proof after the dependency wave:
+- `scripts/restart_phase_2_stack.ps1 -RunGate` passed
+- `scripts/validate_governance_rules_manifest.ps1` passed
+- `scripts/test_governance_rule_fixtures.ps1` passed

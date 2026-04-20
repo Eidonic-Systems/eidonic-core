@@ -67,3 +67,22 @@ Record the 100-merge milestone as a structural milestone, not a vanity milestone
 
 The repo now has enough disciplined surfaces to widen carefully.
 It still needs the same standard of proof for every further expansion.
+
+## Post-milestone dependency wave note
+
+After the earlier milestone surfaces, the Phase 2 dependency wave was completed and proved on `main`.
+
+Absorbed updates:
+- `httpx==0.28.1`
+- `uvicorn==0.44.0`
+- `fastapi==0.136.0`
+- `pydantic==2.13.2`
+
+Critical correction:
+- the `pydantic` move required shared-package alignment in `packages/common-schemas/python` before the service environment resolver could succeed cleanly
+
+Proof after absorption:
+- stack restart passed
+- gate passed
+- governance manifest validation passed
+- governance rule fixtures passed
