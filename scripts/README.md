@@ -19,6 +19,20 @@ Checks include:
 powershell -ExecutionPolicy Bypass -File .\scripts\validate_service_topology_manifest.ps1
 ```
 
+## validate_phase2_dependency_pins.ps1
+
+Validates the bounded dependency reproducibility posture for the current Phase 2 Python services.
+
+Checks include:
+- exact direct `==` pins in each Phase 2 service `requirements.txt`
+- exactly one editable local `common-schemas` reference per service
+- expected shared `pydantic==2.13.2` pin in `packages/common-schemas/python/pyproject.toml`
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_phase2_dependency_pins.ps1
+```
+
 ## start_phase_2_stack.ps1
 
 Starts four new PowerShell windows for the current local Phase 2 stack using `config/service_topology_manifest.json` as the topology truth source.
@@ -52,11 +66,20 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_phase2_topology_cons
 
 ## run_phase2_gate.ps1
 
-Runs the current Phase 2 gate surface, including service topology manifest validation and topology consistency validation before the rest of the gate flow.
+Runs the current Phase 2 gate surface, including dependency pin validation, service topology manifest validation, and topology consistency validation before the rest of the gate flow.
 
 ### Run from repository root
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\run_phase2_gate.ps1
+```
+
+## pin_phase2_python_dependencies.ps1
+
+Pins still-floating direct Python service dependencies to exact versions using the current local service virtual environments as the source of truth.
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\pin_phase2_python_dependencies.ps1
 ```
 
 ## test_phase_1_core_loop.ps1
