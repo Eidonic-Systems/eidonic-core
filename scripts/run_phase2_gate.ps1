@@ -4,6 +4,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+$RepoRoot = Split-Path -Parent $PSScriptRoot
 
 function Run-Step {
     param(
@@ -23,9 +24,13 @@ function Run-Step {
     }
 }
 
+Run-Step -Label "Validating Phase 2 topology consistency" -Action {
+    powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\validate_phase2_topology_consistency.ps1') -RepoRoot $RepoRoot
+}
+
 if (-not $SkipStackStart) {
     Run-Step -Label "Starting standard Phase 2 stack" -Action {
-        powershell -ExecutionPolicy Bypass -File .\scripts\start_phase_2_stack.ps1
+        powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\start_phase_2_stack.ps1')
     }
 }
 
@@ -34,15 +39,15 @@ Run-Step -Label "Warming provider" -Action {
 }
 
 Run-Step -Label "Bootstrapping Phase 2 PostgreSQL database" -Action {
-    powershell -ExecutionPolicy Bypass -File .\scripts\bootstrap_phase2_postgres.ps1
+    powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\bootstrap_phase2_postgres.ps1')
 }
 
 Run-Step -Label "Bootstrapping Phase 2 PostgreSQL schema" -Action {
-    powershell -ExecutionPolicy Bypass -File .\scripts\bootstrap_phase2_postgres_schema.ps1
+    powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\bootstrap_phase2_postgres_schema.ps1')
 }
 
 Run-Step -Label "Validating Phase 2 PostgreSQL schema drift" -Action {
-    powershell -ExecutionPolicy Bypass -File .\scripts\validate_phase2_postgres_schema_drift.ps1
+    powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\validate_phase2_postgres_schema_drift.ps1')
 }
 
 Run-Step -Label "Checking Phase 2 health" -Action {
@@ -72,7 +77,7 @@ Run-Step -Label "Checking Phase 2 health" -Action {
 }
 
 Run-Step -Label "Running governance gate" -Action {
-    powershell -ExecutionPolicy Bypass -File .\scripts\run_governance_gate.ps1 -SkipStackStart
+    powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\run_governance_gate.ps1') -SkipStackStart
 }
 
 Write-Host ""

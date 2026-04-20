@@ -1,6 +1,6 @@
 param(
     [string]$GatewayBaseUrl = "http://127.0.0.1:8000",
-    [string]$SessionEngineBaseUrl = "http://127.0.0.1:8002",
+    [string]$SessionEngineBaseUrl = "http://127.0.0.1:8001",
     [string]$EidonBaseUrl = "http://127.0.0.1:8003"
 )
 
@@ -183,7 +183,7 @@ if ($null -eq $lineageFromList) {
 
 $signalId = $response.received_signal_id
 
-$persistedThreshold = Invoke-RestMethod -Uri "http://127.0.0.1:8001/thresholds/$signalId" `
+$persistedThreshold = Invoke-RestMethod -Uri "http://127.0.0.1:8002/thresholds/$signalId" `
   -Method Get
 
 $persistedThresholdJson = $persistedThreshold | ConvertTo-Json -Depth 12
@@ -222,7 +222,7 @@ Assert-Equal -Name "persisted threshold storage backend" `
   -Actual $persistedThreshold.threshold.storage_backend `
   -Expected "postgres"
 
-$thresholdList = Invoke-RestMethod -Uri "http://127.0.0.1:8001/thresholds" `
+$thresholdList = Invoke-RestMethod -Uri "http://127.0.0.1:8002/thresholds" `
   -Method Get
 
 $thresholdListJson = $thresholdList | ConvertTo-Json -Depth 12
@@ -381,7 +381,7 @@ Assert-Equal -Name "signal gateway store backend" `
   -Actual $signalGatewayHealth.store.backend `
   -Expected "postgres"
 
-$heraldHealth = Invoke-RestMethod -Uri "http://127.0.0.1:8001/health" `
+$heraldHealth = Invoke-RestMethod -Uri "http://127.0.0.1:8002/health" `
   -Method Get
 
 $heraldHealthJson = $heraldHealth | ConvertTo-Json -Depth 12
@@ -511,7 +511,7 @@ Assert-Equal -Name "signal limited list first id" `
   -Actual $signalFromLimitedList.signal_id `
   -Expected $signalId
 
-$thresholdListLimited = Invoke-RestMethod -Uri "http://127.0.0.1:8001/thresholds?limit=1" `
+$thresholdListLimited = Invoke-RestMethod -Uri "http://127.0.0.1:8002/thresholds?limit=1" `
   -Method Get
 
 $thresholdListLimitedJson = $thresholdListLimited | ConvertTo-Json -Depth 12
@@ -705,6 +705,9 @@ Assert-Equal -Name "lineage provider model" `
   -Expected "gemma3n:e4b"
 
 Write-Host "Full chain integration test with provider provenance surface passed." -ForegroundColor Green
+
+
+
 
 
 
