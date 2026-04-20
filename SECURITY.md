@@ -23,5 +23,17 @@ This repository uses:
 
 Because self-hosted execution is a privileged trust boundary, workflow and runner hardening issues should be treated as high priority.
 
+## Runner trust contract
+The minimum operating contract for the self-hosted Phase 2 runner is documented in:
+- `docs/PHASE_2_RUNNER_TRUST_CONTRACT.md`
+
+That document defines the current repo-level expectations for:
+- dedicated runner use
+- minimal workflow authority
+- clean workspace discipline
+- secret handling restraint
+- persistence awareness
+- incident handling for runner trust concerns
+
 ## Disclosure expectations
 Please allow time for validation and remediation before public disclosure.
