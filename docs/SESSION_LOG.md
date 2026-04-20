@@ -946,3 +946,10 @@
 - Updated all four Phase 2 service requirements to `pydantic==2.13.2`
 - Added `docs/PHASE_2_SHARED_SCHEMAS_PYDANTIC_ALIGNMENT.md`
 - Next step: prove service environment resolution, startup, and the top-level gate all pass after aligning the shared package and service pins
+
+## 2026-04-18
+- Created branch `phase-2/dependency-wave-status-surface`
+- Added `docs/PHASE_2_DEPENDENCY_WAVE_STATUS_SURFACE.md`
+- Updated `docs/PHASE_2_STATUS.md` to record the now-proved dependency wave on `main`
+- Updated `docs/PHASE_2_MILESTONE_100_MERGED_PRS.md` with the post-milestone dependency wave note
+- Recorded that the full dependency wave proof passed on `main` after shared-schemas `pydantic` alignment
