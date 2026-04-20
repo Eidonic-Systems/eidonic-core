@@ -964,3 +964,9 @@
 - Created branch `phase-2/codeowners-granularity-surface`
 - Replaced coarse one-line `CODEOWNERS` coverage with explicit ownership paths for governance, control-plane, runtime, shared package, test, and documentation surfaces
 - Kept current ownership authority unchanged while making critical review boundaries visible and easier to specialize later
+
+## 2026-04-20
+- Created branch `phase-2/runner-trust-contract-surface`
+- Added `docs/PHASE_2_RUNNER_TRUST_CONTRACT.md` to define the minimum operating contract for the self-hosted Phase 2 runner
+- Updated `SECURITY.md` to link the runner trust contract and make the runner boundary more explicit at the repo security surface
+- Kept the branch bounded to runner trust documentation and governance hygiene
