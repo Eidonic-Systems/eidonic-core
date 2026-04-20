@@ -939,3 +939,10 @@
 - Updated `fastapi` from `0.115.0` to `0.136.0` in all four Phase 2 service requirements files
 - Added `docs/PHASE_2_FASTAPI_COMPATIBILITY_BATCH.md`
 - Next step: prove the stack still starts and the top-level gate still passes after the narrowed `fastapi` update
+
+## 2026-04-18
+- Created branch `phase-2/shared-schemas-pydantic-alignment`
+- Updated the shared editable schemas package from `pydantic==2.9.2` to `pydantic==2.13.2`
+- Updated all four Phase 2 service requirements to `pydantic==2.13.2`
+- Added `docs/PHASE_2_SHARED_SCHEMAS_PYDANTIC_ALIGNMENT.md`
+- Next step: prove service environment resolution, startup, and the top-level gate all pass after aligning the shared package and service pins
