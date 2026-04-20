@@ -1,6 +1,8 @@
 $ErrorActionPreference = "Stop"
 
 $RepoRoot = Split-Path -Parent $PSScriptRoot
+$ResolvedRepoRoot = (Resolve-Path $RepoRoot).Path
+$TopologyManifestPath = Join-Path $ResolvedRepoRoot 'config\service_topology_manifest.json'
 
 function Start-ServiceWindow {
     param(
@@ -50,78 +52,110 @@ function Wait-For-Health {
     throw "$Name health did not become ready at $Url."
 }
 
+function Get-TopologyServices {
+    param(
+        [string]$ManifestPath
+    )
+
+    if (-not (Test-Path $ManifestPath)) {
+        throw "Missing service topology manifest at $ManifestPath"
+    }
+
+    $manifest = Get-Content $ManifestPath -Raw | ConvertFrom-Json
+    $services = @($manifest.services)
+
+    if ($services.Count -eq 0) {
+        throw "Service topology manifest did not declare any services."
+    }
+
+    foreach ($service in $services) {
+        foreach ($requiredProperty in @('name', 'port', 'health_url', 'startup_workdir', 'startup_command')) {
+            $value = [string]$service.$requiredProperty
+            if ([string]::IsNullOrWhiteSpace($value)) {
+                throw "Service topology manifest entry for '$($service.name)' is missing required property '$requiredProperty'."
+            }
+        }
+    }
+
+    return $services
+}
+
+$services = Get-TopologyServices -ManifestPath $TopologyManifestPath
+
+Write-Host ""
+Write-Host "Running Phase 2 topology consistency validation..." -ForegroundColor Yellow
+
+& powershell -ExecutionPolicy Bypass -File (Join-Path $ResolvedRepoRoot 'scripts\validate_phase2_topology_consistency.ps1') -RepoRoot $ResolvedRepoRoot
+if ($LASTEXITCODE -ne 0) {
+    throw "Phase 2 topology consistency validation failed. Stop and fix topology drift before starting the stack."
+}
+
 Write-Host ""
 Write-Host "Running Phase 2 startup preflight..." -ForegroundColor Yellow
 
-& powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\check_phase_2_runtime_prereqs.ps1')
+& powershell -ExecutionPolicy Bypass -File (Join-Path $ResolvedRepoRoot 'scripts\check_phase_2_runtime_prereqs.ps1')
 if ($LASTEXITCODE -ne 0) {
     throw "Phase 2 runtime preflight failed. Stop and fix the environment before starting the stack."
 }
 
 Write-Host ""
 Write-Host "Running Phase 2 PostgreSQL bootstrap..." -ForegroundColor Yellow
-& powershell -ExecutionPolicy Bypass -File .\scripts\bootstrap_phase2_postgres.ps1
+
+& powershell -ExecutionPolicy Bypass -File (Join-Path $ResolvedRepoRoot 'scripts\bootstrap_phase2_postgres.ps1')
 if ($LASTEXITCODE -ne 0) {
     throw "Phase 2 PostgreSQL bootstrap failed. Stop and fix the database before starting the stack."
 }
 
 Write-Host ""
 Write-Host "Running Phase 2 PostgreSQL schema bootstrap..." -ForegroundColor Yellow
-& powershell -ExecutionPolicy Bypass -File .\scripts\bootstrap_phase2_postgres_schema.ps1
+
+& powershell -ExecutionPolicy Bypass -File (Join-Path $ResolvedRepoRoot 'scripts\bootstrap_phase2_postgres_schema.ps1')
 if ($LASTEXITCODE -ne 0) {
     throw "Phase 2 PostgreSQL schema bootstrap failed. Stop and fix the schema before starting the stack."
 }
 
 Write-Host ""
 Write-Host "Running Phase 2 PostgreSQL schema drift validation..." -ForegroundColor Yellow
-& powershell -ExecutionPolicy Bypass -File .\scripts\validate_phase2_postgres_schema_drift.ps1
+
+& powershell -ExecutionPolicy Bypass -File (Join-Path $ResolvedRepoRoot 'scripts\validate_phase2_postgres_schema_drift.ps1')
 if ($LASTEXITCODE -ne 0) {
     throw "Phase 2 PostgreSQL schema drift validation failed. Stop and fix the schema before starting the stack."
 }
 
 Write-Host ""
-Write-Host "Starting Phase 2 local stack..." -ForegroundColor Yellow
+Write-Host "Starting Phase 2 local stack from topology manifest..." -ForegroundColor Yellow
 Write-Host ""
 
-Start-ServiceWindow `
-    -Name 'herald-service' `
-    -WorkingDirectory (Join-Path $RepoRoot 'services\herald-service') `
-    -Command '.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8001 --reload' `
-    -Port 8001
+foreach ($service in $services) {
+    $serviceName = if ([string]::IsNullOrWhiteSpace([string]$service.startup_name)) { [string]$service.name } else { [string]$service.startup_name }
+    $workingDirectory = Join-Path $ResolvedRepoRoot ([string]$service.startup_workdir)
 
-Start-ServiceWindow `
-    -Name 'session-engine' `
-    -WorkingDirectory (Join-Path $RepoRoot 'services\session-engine') `
-    -Command '.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8002 --reload' `
-    -Port 8002
+    if (-not (Test-Path $workingDirectory)) {
+        throw "Startup working directory for '$serviceName' does not exist: $workingDirectory"
+    }
 
-Start-ServiceWindow `
-    -Name 'eidon-orchestrator' `
-    -WorkingDirectory (Join-Path $RepoRoot 'services\eidon-orchestrator') `
-    -Command '.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8003 --reload' `
-    -Port 8003
-
-Start-ServiceWindow `
-    -Name 'signal-gateway' `
-    -WorkingDirectory (Join-Path $RepoRoot 'services\signal-gateway') `
-    -Command '.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload' `
-    -Port 8000
+    Start-ServiceWindow `
+        -Name $serviceName `
+        -WorkingDirectory $workingDirectory `
+        -Command ([string]$service.startup_command) `
+        -Port ([int]$service.port)
+}
 
 Write-Host ""
 Write-Host "Waiting for service health..." -ForegroundColor Yellow
 
-Wait-For-Health -Name 'herald-service' -Url 'http://127.0.0.1:8001/health'
-Wait-For-Health -Name 'session-engine' -Url 'http://127.0.0.1:8002/health'
-Wait-For-Health -Name 'eidon-orchestrator' -Url 'http://127.0.0.1:8003/health'
-Wait-For-Health -Name 'signal-gateway' -Url 'http://127.0.0.1:8000/health'
+foreach ($service in $services) {
+    $serviceName = if ([string]::IsNullOrWhiteSpace([string]$service.startup_name)) { [string]$service.name } else { [string]$service.startup_name }
+    Wait-For-Health -Name $serviceName -Url ([string]$service.health_url)
+}
 
 Write-Host ""
 Write-Host "Warming Eidon provider..." -ForegroundColor Yellow
 
-& powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\warm_eidon_provider.ps1')
+& powershell -ExecutionPolicy Bypass -File (Join-Path $ResolvedRepoRoot 'scripts\warm_eidon_provider.ps1')
 if ($LASTEXITCODE -ne 0) {
     throw "Eidon provider warmup failed during stack startup. Stop and inspect the provider before continuing."
 }
 
 Write-Host ""
-Write-Host "Phase 2 startup sequence completed: preflight passed, services started, health checks passed, provider warmed." -ForegroundColor Green
+Write-Host "Phase 2 startup sequence completed: topology validated, preflight passed, services started, health checks passed, provider warmed." -ForegroundColor Green

@@ -21,8 +21,8 @@ STORE_PATH = Path(__file__).resolve().parents[1] / "data" / "signals.json"
 
 load_dotenv(REPO_ROOT / ".env")
 
-HERALD_BASE_URL = os.getenv("HERALD_BASE_URL", "http://127.0.0.1:8001")
-SESSION_ENGINE_BASE_URL = os.getenv("SESSION_ENGINE_BASE_URL", "http://127.0.0.1:8002")
+HERALD_BASE_URL = os.getenv("HERALD_BASE_URL", "http://127.0.0.1:8002")
+SESSION_ENGINE_BASE_URL = os.getenv("SESSION_ENGINE_BASE_URL", "http://127.0.0.1:8001")
 EIDON_BASE_URL = os.getenv("EIDON_BASE_URL", "http://127.0.0.1:8003")
 
 SIGNAL_GATEWAY_HERALD_TIMEOUT_SECONDS = float(
@@ -204,3 +204,5 @@ def ingest_signal(signal: SignalEventInput) -> dict[str, Any]:
     response["derived_intent"] = derived_intent
     response["eidon_result"] = eidon_result
     return response
+
+
