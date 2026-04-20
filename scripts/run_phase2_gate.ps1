@@ -82,3 +82,4 @@ Run-Step -Label "Running governance gate" -Action {
 
 Write-Host ""
 Write-Host "Phase 2 gate surface passed." -ForegroundColor Green
+
