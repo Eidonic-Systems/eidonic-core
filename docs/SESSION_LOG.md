@@ -953,3 +953,9 @@
 - Updated `docs/PHASE_2_STATUS.md` to record the now-proved dependency wave on `main`
 - Updated `docs/PHASE_2_MILESTONE_100_MERGED_PRS.md` with the post-milestone dependency wave note
 - Recorded that the full dependency wave proof passed on `main` after shared-schemas `pydantic` alignment
+
+## 2026-04-20
+- Created branch `phase-2/dependabot-shared-package-coverage`
+- Updated `.github/dependabot.yml` to add Dependabot coverage for `packages/common-schemas/python`
+- Extended Python dependency update intake to include the shared `common-schemas` package used across the Phase 2 services
+- Kept the branch bounded to dependency update coverage and repo truth-surface hygiene
