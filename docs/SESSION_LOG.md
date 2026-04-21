@@ -1009,3 +1009,9 @@
 - Added scripts/sync_phase2_dependency_truth.ps1 so the declared Phase 2 dependency truth can rewrite service requirements and the shared package dependency block.
 - Updated scripts and dependency reproducibility docs to document the new dependency truth sync surface.
 - Kept the current aligned dependency state idempotent so sync can be proved without introducing version churn.
+
+## 2026-04-20
+- Created branch `phase-2/dependency-wave-automation-surface`
+- Added scripts/absorb_phase2_dependency_wave.ps1 to automate approved dependency version updates through the dependency truth source, sync surface, and validation surface.
+- Updated the dependency-wave skill and repo docs to record the new dependency-wave automation surface.
+- Kept proof bounded by using a no-op approved version for dry-run and execution checks rather than introducing new dependency churn.

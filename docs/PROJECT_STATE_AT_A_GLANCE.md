@@ -80,3 +80,7 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 - `scripts/finish_merged_branch.ps1`
 - `scripts/run_phase2_gate_with_capture.ps1`
 - `scripts/append_session_log_entry.ps1`
+
+## Current dependency-wave automation surface
+
+- `scripts/absorb_phase2_dependency_wave.ps1`

@@ -159,3 +159,20 @@ Supports:
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\sync_phase2_dependency_truth.ps1
 ```
+
+## absorb_phase2_dependency_wave.ps1
+
+Automates a bounded dependency-wave absorption flow for the current Phase 2 Python dependency truth source.
+
+Supports:
+- updating one approved package version in `config/phase2_python_dependency_truth.json`
+- syncing dependent files from the truth source
+- running dependency pin validation
+- optionally running the Phase 2 gate with capture
+- optionally appending a session-log entry
+- dry-run preview mode
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\absorb_phase2_dependency_wave.ps1 -PackageName pydantic -NewVersion 2.13.3 -ExpectedCurrentVersion 2.13.3 -DryRun
+```

@@ -68,3 +68,18 @@ Operational rule:
 - run the validation surface to confirm alignment
 
 This reduces manual edit churn across service requirements, the shared package dependency block, and future dependency-wave absorption work.
+
+## Dependency-wave automation update
+
+The current Phase 2 Python dependency control surface now includes a bounded automation wrapper:
+- `scripts/absorb_phase2_dependency_wave.ps1`
+
+That wrapper can:
+- update one approved package version in the dependency truth file
+- sync dependent files
+- run dependency validation
+- optionally run the Phase 2 gate with captured output
+- optionally append a session-log entry
+
+Operational rule:
+Use the wrapper for coordinated dependency waves instead of manually editing the same version across multiple repo surfaces.
