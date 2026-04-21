@@ -206,3 +206,8 @@ Validates the local workflow automation helper layer for bounded branch flow, me
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\validate_automation_helpers.ps1
 ```
+
+The current Phase 2 gate surface now also validates the local automation helper layer before runtime startup and downstream gate checks.
+
+This includes:
+- `scripts/validate_automation_helpers.ps1`
