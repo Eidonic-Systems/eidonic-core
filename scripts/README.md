@@ -211,3 +211,9 @@ The current Phase 2 gate surface now also validates the local automation helper 
 
 This includes:
 - `scripts/validate_automation_helpers.ps1`
+
+## Workflow gate capture note
+
+The GitHub Actions Phase 2 workflow now runs `scripts/run_phase2_gate_with_capture.ps1` and uploads the captured gate output as a workflow artifact.
+
+This keeps failure output reviewable without depending on raw step log reconstruction alone.

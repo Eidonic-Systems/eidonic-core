@@ -1030,3 +1030,9 @@
 - Created branch `phase-2/automation-helper-gate-integration`
 - Integrated automation helper validation into scripts/run_phase2_gate.ps1 so helper regressions are caught inside the standard Phase 2 proof path.
 - Updated scripts and project-state docs to record automation helper validation as part of the gate surface.
+
+## 2026-04-21
+- Created branch `phase-2/workflow-gate-capture-surface`
+- Updated .github/workflows/phase2-gate.yml to run scripts/run_phase2_gate_with_capture.ps1 instead of calling the gate directly.
+- Added workflow artifact upload for the captured Phase 2 gate output so failures remain reviewable after the run.
+- Updated scripts and project-state docs to record the workflow gate capture surface.
