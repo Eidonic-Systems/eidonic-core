@@ -225,3 +225,7 @@ Known local proof artifacts are ignored by git and pre-cleaned by `scripts/finis
 Current local proof artifact paths:
 - `tmp_phase2_gate_output.txt`
 - `tmp_test_full_chain_output.txt`
+
+## Cleanup idempotence note
+
+`scripts/finish_merged_branch.ps1` now treats an already-absent local branch as a clean outcome instead of a cleanup failure.

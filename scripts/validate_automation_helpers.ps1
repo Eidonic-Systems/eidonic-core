@@ -99,6 +99,7 @@ Write-Section -Label "Checking static finish-helper guard placement"
 $finishHelperText = Get-Content $finishHelperPath -Raw
 $dirtyGuardIndex = $finishHelperText.IndexOf("Working tree is dirty. Refusing merged-branch cleanup before pull.")
 $switchMainIndex = $finishHelperText.IndexOf('Run-GitStep -Label "Switching to main"')
+$alreadyAbsentIndex = $finishHelperText.IndexOf("Local branch already absent:")
 
 if ($dirtyGuardIndex -lt 0) {
     Add-Failure -Failures $failures -Message "finish_merged_branch.ps1 missing dirty-tree refusal message"
@@ -108,6 +109,9 @@ if ($switchMainIndex -lt 0) {
 }
 if ($dirtyGuardIndex -ge 0 -and $switchMainIndex -ge 0 -and $dirtyGuardIndex -gt $switchMainIndex) {
     Add-Failure -Failures $failures -Message "finish_merged_branch.ps1 dirty-tree refusal appears after switch-to-main step"
+}
+if ($alreadyAbsentIndex -lt 0) {
+    Add-Failure -Failures $failures -Message "finish_merged_branch.ps1 missing already-absent branch handling"
 }
 
 $baselineStatus = Get-StatusSnapshot
@@ -138,7 +142,7 @@ $finishResult = Invoke-Helper -Label "Dry-run finish merged branch helper" -Powe
 if ($finishResult.exit_code -ne 0) {
     Add-Failure -Failures $failures -Message "finish_merged_branch.ps1 dry-run failed"
 }
-foreach ($pattern in @('git switch main', 'git pull --ff-only', 'git branch -d phase-2/example-branch')) {
+foreach ($pattern in @('git switch main', 'git pull --ff-only', 'idempotent cleanup supports already-absent branch')) {
     if ($finishResult.output -notmatch [regex]::Escape($pattern)) {
         Add-Failure -Failures $failures -Message ("finish_merged_branch.ps1 dry-run missing pattern '{0}'" -f $pattern)
     }
