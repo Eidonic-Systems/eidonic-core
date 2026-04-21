@@ -70,6 +70,7 @@ function Invoke-Helper {
 $resolvedRepoRoot = (Resolve-Path $RepoRoot).Path
 Set-Location $resolvedRepoRoot
 
+$gitIgnorePath = Join-Path $resolvedRepoRoot ".gitignore"
 $startHelperPath = Join-Path $resolvedRepoRoot "scripts\start_bounded_branch.ps1"
 $finishHelperPath = Join-Path $resolvedRepoRoot "scripts\finish_merged_branch.ps1"
 $gateWrapperPath = Join-Path $resolvedRepoRoot "scripts\run_phase2_gate_with_capture.ps1"
@@ -79,6 +80,7 @@ $waveHelperPath = Join-Path $resolvedRepoRoot "scripts\absorb_phase2_dependency_
 $truthPath = Join-Path $resolvedRepoRoot "config\phase2_python_dependency_truth.json"
 
 foreach ($requiredPath in @(
+    $gitIgnorePath,
     $startHelperPath,
     $finishHelperPath,
     $gateWrapperPath,
@@ -100,6 +102,7 @@ $finishHelperText = Get-Content $finishHelperPath -Raw
 $dirtyGuardIndex = $finishHelperText.IndexOf("Working tree is dirty. Refusing merged-branch cleanup before pull.")
 $switchMainIndex = $finishHelperText.IndexOf('Run-GitStep -Label "Switching to main"')
 $alreadyAbsentIndex = $finishHelperText.IndexOf("Local branch already absent:")
+$preCleanIndex = $finishHelperText.IndexOf("==> Pre-cleaning known temp output files")
 
 if ($dirtyGuardIndex -lt 0) {
     Add-Failure -Failures $failures -Message "finish_merged_branch.ps1 missing dirty-tree refusal message"
@@ -113,8 +116,46 @@ if ($dirtyGuardIndex -ge 0 -and $switchMainIndex -ge 0 -and $dirtyGuardIndex -gt
 if ($alreadyAbsentIndex -lt 0) {
     Add-Failure -Failures $failures -Message "finish_merged_branch.ps1 missing already-absent branch handling"
 }
+if ($preCleanIndex -lt 0) {
+    Add-Failure -Failures $failures -Message "finish_merged_branch.ps1 missing pre-clean temp file step"
+}
+
+Write-Section -Label "Checking gitignore coverage for local proof artifacts"
+$gitIgnoreText = Get-Content $gitIgnorePath -Raw
+foreach ($pattern in @('tmp_phase2_gate_output.txt', 'tmp_test_full_chain_output.txt')) {
+    if ($gitIgnoreText -notmatch [regex]::Escape($pattern)) {
+        Add-Failure -Failures $failures -Message (".gitignore missing local proof artifact pattern '{0}'" -f $pattern)
+    }
+}
 
 $baselineStatus = Get-StatusSnapshot
+
+Write-Section -Label "Checking ignored temp artifact behavior"
+$tempArtifactPaths = @(
+    (Join-Path $resolvedRepoRoot "tmp_phase2_gate_output.txt"),
+    (Join-Path $resolvedRepoRoot "tmp_test_full_chain_output.txt")
+)
+
+try {
+    foreach ($tempArtifactPath in $tempArtifactPaths) {
+        Set-Content -Path $tempArtifactPath -Value "automation-helper-validation" -NoNewline
+    }
+
+    $statusWithTempArtifacts = Get-StatusSnapshot
+    if (-not (Status-SnapshotsMatch -Before $baselineStatus -After $statusWithTempArtifacts)) {
+        Add-Failure -Failures $failures -Message "ignored temp proof artifacts changed git status"
+    }
+}
+finally {
+    foreach ($tempArtifactPath in $tempArtifactPaths) {
+        Remove-Item $tempArtifactPath -Force -ErrorAction SilentlyContinue
+    }
+}
+
+$afterTempArtifactCleanupStatus = Get-StatusSnapshot
+if (-not (Status-SnapshotsMatch -Before $baselineStatus -After $afterTempArtifactCleanupStatus)) {
+    Add-Failure -Failures $failures -Message "temp artifact cleanup did not restore original git status snapshot"
+}
 
 $startResult = Invoke-Helper -Label "Dry-run start bounded branch helper" -PowerShellArgs @(
     "-ExecutionPolicy", "Bypass",
@@ -142,7 +183,14 @@ $finishResult = Invoke-Helper -Label "Dry-run finish merged branch helper" -Powe
 if ($finishResult.exit_code -ne 0) {
     Add-Failure -Failures $failures -Message "finish_merged_branch.ps1 dry-run failed"
 }
-foreach ($pattern in @('git switch main', 'git pull --ff-only', 'idempotent cleanup supports already-absent branch')) {
+foreach ($pattern in @(
+    'remove-item',
+    'tmp_phase2_gate_output.txt',
+    'tmp_test_full_chain_output.txt',
+    'git switch main',
+    'git pull --ff-only',
+    'idempotent cleanup supports already-absent branch'
+)) {
     if ($finishResult.output -notmatch [regex]::Escape($pattern)) {
         Add-Failure -Failures $failures -Message ("finish_merged_branch.ps1 dry-run missing pattern '{0}'" -f $pattern)
     }

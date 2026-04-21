@@ -1048,3 +1048,8 @@
 - Hardened finish_merged_branch.ps1 so rerunning cleanup after successful branch deletion does not fail when the local branch is already absent.
 - Updated automation helper validation to check the already-absent branch path.
 - Updated scripts and project-state docs to record cleanup idempotence.
+
+## 2026-04-21
+- Created branch `phase-2/temp-hygiene-validation-surface`
+- Extended automation helper validation to prove gitignore coverage for local proof artifacts and confirm merged-branch cleanup still exposes temp-file pre-clean behavior.
+- Updated scripts and project-state docs to record temp-hygiene validation as part of the automation-helper proof surface.

@@ -229,3 +229,7 @@ Current local proof artifact paths:
 ## Cleanup idempotence note
 
 `scripts/finish_merged_branch.ps1` now treats an already-absent local branch as a clean outcome instead of a cleanup failure.
+
+## Temp hygiene validation note
+
+`scripts/validate_automation_helpers.ps1` now proves that local proof artifact files stay ignored by git and that merged-branch cleanup still advertises temp-file pre-clean behavior.
