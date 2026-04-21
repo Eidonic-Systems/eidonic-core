@@ -23,10 +23,13 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_service_topology_man
 
 Validates the bounded dependency reproducibility posture for the current Phase 2 Python services.
 
+Dependency truth source:
+- `config/phase2_python_dependency_truth.json`
+
 Checks include:
 - exact direct `==` pins in each Phase 2 service `requirements.txt`
 - exactly one editable local `common-schemas` reference per service
-- expected shared `pydantic==2.13.2` pin in `packages/common-schemas/python/pyproject.toml`
+- expected shared dependency pins in `packages/common-schemas/python/pyproject.toml`
 
 ### Run from repository root
 ```powershell

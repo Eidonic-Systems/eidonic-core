@@ -27,3 +27,24 @@ Current truth after this branch:
 - the audit correctly identified dependency realization drift as a medium-severity reproducibility weakness
 - pinning floating direct dependencies is the first sane step before any heavier lock strategy
 - this keeps the change narrow, reviewable, and reversible
+
+## Single dependency truth source update
+
+The current Phase 2 Python dependency posture now has one declared repo truth source:
+- `config/phase2_python_dependency_truth.json`
+
+That file defines:
+- the editable shared package line expected in each service `requirements.txt`
+- the required exact direct pins for each Phase 2 service
+- the required shared package dependency pins for `packages/common-schemas/python/pyproject.toml`
+
+The dependency validator now reads this file instead of hardcoding version truth directly inside the script.
+
+This change exists to reduce drift between:
+- service requirement files
+- shared package dependency declarations
+- validator expectations
+- future dependency absorption work
+
+Operational rule:
+Phase 2 Python dependency version truth should be declared once and consumed by validation surfaces, not retyped independently across multiple repo control surfaces.
