@@ -233,3 +233,25 @@ Current local proof artifact paths:
 ## Temp hygiene validation note
 
 `scripts/validate_automation_helpers.ps1` now proves that local proof artifact files stay ignored by git and that merged-branch cleanup still advertises temp-file pre-clean behavior.
+
+## validate_phase2_workflow_surface.ps1
+
+Validates the current `.github/workflows/phase2-gate.yml` surface for the repo posture the gate now depends on.
+
+Checks include:
+- workflow_dispatch-only trigger posture
+- minimal `contents: read` permission surface
+- self-hosted Windows runner label set including `eidonic-phase2`
+- pinned `actions/checkout` commit SHA
+- use of `scripts/run_phase2_gate_with_capture.ps1`
+- upload of captured gate output artifact
+- `if: always()` on artifact upload
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_phase2_workflow_surface.ps1
+```
+
+## Workflow surface validation note
+
+The current Phase 2 gate surface now also validates `.github/workflows/phase2-gate.yml` before runtime startup and downstream gate checks.

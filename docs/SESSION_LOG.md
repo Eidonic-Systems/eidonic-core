@@ -1053,3 +1053,9 @@
 - Created branch `phase-2/temp-hygiene-validation-surface`
 - Extended automation helper validation to prove gitignore coverage for local proof artifacts and confirm merged-branch cleanup still exposes temp-file pre-clean behavior.
 - Updated scripts and project-state docs to record temp-hygiene validation as part of the automation-helper proof surface.
+
+## 2026-04-21
+- Created branch `phase-2/workflow-surface-validation`
+- Added scripts/validate_phase2_workflow_surface.ps1 to validate the current .github/workflows/phase2-gate.yml posture the repo depends on.
+- Integrated workflow surface validation into scripts/run_phase2_gate.ps1 so workflow drift is caught inside the standard Phase 2 proof path.
+- Updated scripts and project-state docs to record workflow surface validation.
