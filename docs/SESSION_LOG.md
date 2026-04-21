@@ -1082,3 +1082,8 @@
 - Created branch `phase-2/gate-doc-consolidation-surface`
 - Consolidated gate documentation so scripts/README.md and docs/PROJECT_STATE_AT_A_GLANCE.md point to config/phase2_gate_surface_manifest.json as the gate validation truth source instead of manually restating the gate sequence.
 - Trimmed stale prose that duplicated gate inclusion details already declared in the gate-surface manifest.
+
+## 2026-04-21
+- Created branch `phase-2/scripts-readme-hygiene-surface`
+- Removed duplicated automation-helper hardening prose from scripts/README.md.
+- Updated the temp-file hygiene note in scripts/README.md so it reflects wildcard local proof-artifact coverage instead of exact filenames.
