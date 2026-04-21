@@ -42,6 +42,15 @@ function Get-DirtyWorkingTree {
     )
 }
 
+function Test-LocalBranchExists {
+    param(
+        [string]$Name
+    )
+
+    $branchText = (git branch --list $Name | Out-String).Trim()
+    return (-not [string]::IsNullOrWhiteSpace($branchText))
+}
+
 Write-Host ""
 Write-Host "==> Pre-cleaning known temp output files" -ForegroundColor Yellow
 foreach ($tempFile in $TempFiles) {
@@ -70,8 +79,27 @@ Run-GitStep -Label "Pulling latest main" -GitArgs @("pull", "--ff-only")
 Run-GitStep -Label "Pruning remote refs" -GitArgs @("fetch", "--prune")
 Run-GitStep -Label "Showing repo status" -GitArgs @("status")
 
-$deleteFlag = if ($ForceDelete) { "-D" } else { "-d" }
-Run-GitStep -Label ("Deleting local branch {0}" -f $BranchName) -GitArgs @("branch", $deleteFlag, $BranchName)
+Write-Host ""
+Write-Host ("==> Cleaning local branch {0}" -f $BranchName) -ForegroundColor Yellow
+
+if ($DryRun) {
+    Write-Host ("[DRY-RUN] would check for local branch {0}" -f $BranchName) -ForegroundColor Cyan
+    Write-Host ("[DRY-RUN] idempotent cleanup supports already-absent branch {0}" -f $BranchName) -ForegroundColor Cyan
+}
+else {
+    if (Test-LocalBranchExists -Name $BranchName) {
+        $deleteFlag = if ($ForceDelete) { "-D" } else { "-d" }
+        & git branch $deleteFlag $BranchName
+        if ($LASTEXITCODE -ne 0) {
+            throw ("git step failed: Deleting local branch {0}" -f $BranchName)
+        }
+
+        Write-Host ("Deleted local branch {0}" -f $BranchName) -ForegroundColor Green
+    }
+    else {
+        Write-Host ("Local branch already absent: {0}" -f $BranchName) -ForegroundColor Green
+    }
+}
 
 if ($DryRun) {
     Write-Host ""

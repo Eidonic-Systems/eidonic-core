@@ -103,3 +103,7 @@ Current gate validation surfaces also include:
 
 - `.gitignore` ignores local proof artifact files
 - `scripts/finish_merged_branch.ps1` pre-cleans known temp output files before dirty-tree refusal
+
+## Current cleanup idempotence posture
+
+- `scripts/finish_merged_branch.ps1` treats an already-absent local branch as an idempotent cleanup outcome
