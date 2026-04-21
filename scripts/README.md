@@ -217,3 +217,11 @@ This includes:
 The GitHub Actions Phase 2 workflow now runs `scripts/run_phase2_gate_with_capture.ps1` and uploads the captured gate output as a workflow artifact.
 
 This keeps failure output reviewable without depending on raw step log reconstruction alone.
+
+## Temp file hygiene note
+
+Known local proof artifacts are ignored by git and pre-cleaned by `scripts/finish_merged_branch.ps1` before dirty-tree refusal.
+
+Current local proof artifact paths:
+- `tmp_phase2_gate_output.txt`
+- `tmp_test_full_chain_output.txt`
