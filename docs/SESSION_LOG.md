@@ -1077,3 +1077,8 @@
 - Added config/phase2_gate_surface_manifest.json as the declared truth source for Phase 2 gate validation order.
 - Added scripts/validate_phase2_gate_surface_manifest.ps1 and reworked scripts/run_phase2_gate.ps1 to consume the gate-surface truth source.
 - Updated scripts and project-state docs to record the gate-surface truth source.
+
+## 2026-04-21
+- Created branch `phase-2/gate-doc-consolidation-surface`
+- Consolidated gate documentation so scripts/README.md and docs/PROJECT_STATE_AT_A_GLANCE.md point to config/phase2_gate_surface_manifest.json as the gate validation truth source instead of manually restating the gate sequence.
+- Trimmed stale prose that duplicated gate inclusion details already declared in the gate-surface manifest.

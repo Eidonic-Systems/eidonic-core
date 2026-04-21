@@ -32,13 +32,13 @@ Current shared critical pin:
 Gate entry:
 - `scripts/run_phase2_gate.ps1`
 
-Current gate validation surfaces include:
-- dependency pin validation
-- service topology manifest validation
-- topology consistency validation
-- PostgreSQL bootstrap and schema checks
-- health verification
-- governance gate
+Gate validation truth source:
+- `config/phase2_gate_surface_manifest.json`
+
+Gate manifest validator:
+- `scripts/validate_phase2_gate_surface_manifest.ps1`
+
+The gate consumes the declared validation order from the manifest before downstream runtime startup, database, health, and governance checks.
 
 ## Current governance posture
 
@@ -89,11 +89,6 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 
 - `scripts/validate_automation_helpers.ps1`
 
-## Current gate posture update
-
-Current gate validation surfaces also include:
-- automation helper validation
-
 ## Current workflow gate capture posture
 
 - `.github/workflows/phase2-gate.yml` runs `scripts/run_phase2_gate_with_capture.ps1`
@@ -113,23 +108,20 @@ Current gate validation surfaces also include:
 - `scripts/validate_automation_helpers.ps1` proves ignored local proof artifacts do not change git status
 - `scripts/validate_automation_helpers.ps1` proves merged-branch cleanup still includes temp-file pre-clean behavior
 
-## Current workflow validation posture
+## Current workflow validation surface
 
 - `scripts/validate_phase2_workflow_surface.ps1` validates `.github/workflows/phase2-gate.yml`
-- `scripts/run_phase2_gate.ps1` includes workflow surface validation before downstream runtime checks
+- gate inclusion order is declared in `config/phase2_gate_surface_manifest.json`
 
 ## Current capture-wrapper output posture
 
 - `scripts/run_phase2_gate_with_capture.ps1` uses a unique default local gate-output path per run
 - `.gitignore` and cleanup hygiene cover wildcard gate-output temp artifacts
 
-## Current Codex validation posture
+## Current Codex validation surface
 
 - `scripts/validate_codex_surfaces.ps1` validates `AGENTS.md`, `.codex/config.toml`, repo skill manifests, and Codex recovery docs
-- `scripts/run_phase2_gate.ps1` includes Codex surface validation before downstream runtime checks
+- gate inclusion order is declared in `config/phase2_gate_surface_manifest.json`
 
-## Current gate truth source posture
 
-- validation order is declared in `config/phase2_gate_surface_manifest.json`
-- `scripts/validate_phase2_gate_surface_manifest.ps1` validates that truth source
-- `scripts/run_phase2_gate.ps1` consumes the gate-surface truth source before downstream runtime checks
+
