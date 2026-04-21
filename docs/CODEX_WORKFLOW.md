@@ -76,3 +76,13 @@ When multiple bot PRs represent one shared dependency wave:
 The primary local path is Windows PowerShell from `C:\eidonic_core`.
 
 Use one-line commands or closed command blocks where practical to avoid unfinished PowerShell prompts.
+
+## Current branch automation surfaces
+
+The repo now includes bounded PowerShell helpers for recurring local workflow steps:
+- `scripts/start_bounded_branch.ps1`
+- `scripts/finish_merged_branch.ps1`
+- `scripts/run_phase2_gate_with_capture.ps1`
+- `scripts/append_session_log_entry.ps1`
+
+These exist to reduce repeated manual branch churn and keep proof and session-log discipline more consistent.

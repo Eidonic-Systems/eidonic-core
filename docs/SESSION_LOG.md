@@ -998,3 +998,8 @@
 - Added repo-scoped Codex skills under `.agents/skills/` for standard Phase 2 branch flow and coordinated dependency-wave absorption
 - Updated `docs/CODEX_WORKFLOW.md` and `docs/PROJECT_STATE_AT_A_GLANCE.md` to record the actual Codex config and skill locations
 - Kept the branch bounded to Codex project configuration, repo skills, and repo-memory documentation
+
+## 2026-04-20
+- Created branch `phase-2/branch-automation-surface`
+- Added bounded PowerShell helpers for branch start, merged-branch cleanup, Phase 2 gate output capture, and session-log entry creation.
+- Updated scripts and Codex docs to record the new branch automation surfaces.

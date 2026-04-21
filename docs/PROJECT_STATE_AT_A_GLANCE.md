@@ -73,3 +73,10 @@ Declared in:
 ## Current open hardening direction
 
 Keep reducing duplicated truth and turn recurring manual workflows into bounded, documented, repo-carried operating surfaces.
+
+## Current branch automation surfaces
+
+- `scripts/start_bounded_branch.ps1`
+- `scripts/finish_merged_branch.ps1`
+- `scripts/run_phase2_gate_with_capture.ps1`
+- `scripts/append_session_log_entry.ps1`
