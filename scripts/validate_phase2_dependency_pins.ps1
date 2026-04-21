@@ -39,7 +39,7 @@ $serviceRequirements = @(
         RequiredPins = @(
             "fastapi==0.136.0",
             "uvicorn==0.44.0",
-            "pydantic==2.13.2",
+            "pydantic==2.13.3",
             "httpx==0.28.1",
             "python-dotenv==1.2.2",
             "psycopg[binary]==3.3.3"
@@ -51,7 +51,7 @@ $serviceRequirements = @(
         RequiredPins = @(
             "fastapi==0.136.0",
             "uvicorn==0.44.0",
-            "pydantic==2.13.2",
+            "pydantic==2.13.3",
             "python-dotenv==1.2.2",
             "psycopg[binary]==3.3.3"
         )
@@ -62,7 +62,7 @@ $serviceRequirements = @(
         RequiredPins = @(
             "fastapi==0.136.0",
             "uvicorn==0.44.0",
-            "pydantic==2.13.2",
+            "pydantic==2.13.3",
             "python-dotenv==1.2.2",
             "psycopg[binary]==3.3.3"
         )
@@ -73,7 +73,7 @@ $serviceRequirements = @(
         RequiredPins = @(
             "fastapi==0.136.0",
             "uvicorn==0.44.0",
-            "pydantic==2.13.2",
+            "pydantic==2.13.3",
             "httpx==0.28.1",
             "python-dotenv==1.2.2",
             "psycopg[binary]==3.3.3"
@@ -146,8 +146,8 @@ else {
         Add-Failure -Failures $pyprojectFailures -Message 'project name "eidonic-schemas" missing'
     }
 
-    if ($pyprojectText -notmatch 'pydantic==2\.13\.2') {
-        Add-Failure -Failures $pyprojectFailures -Message 'shared package pydantic pin "2.13.2" missing'
+    if ($pyprojectText -notmatch 'pydantic==2\.13\.3') {
+        Add-Failure -Failures $pyprojectFailures -Message 'shared package pydantic pin "2.13.3" missing'
     }
 }
 
@@ -177,3 +177,5 @@ if ($summary.status -ne "passed") {
 
 Write-Host ""
 Write-Host "Phase 2 dependency pin validation passed." -ForegroundColor Green
+
+
