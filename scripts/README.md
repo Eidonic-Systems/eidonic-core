@@ -93,3 +93,55 @@ Runs the earlier Phase 1 core loop checks against locally running services.
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\test_phase_1_core_loop.ps1
 ```
+
+## start_bounded_branch.ps1
+
+Automates the standard start-of-branch flow from clean `main`.
+
+Supports:
+- switching to `main`
+- pulling fast-forward only
+- pruning remotes
+- status check
+- bounded branch creation
+- dry-run preview mode
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\start_bounded_branch.ps1 -BranchName phase-2/example-branch
+```
+
+## finish_merged_branch.ps1
+
+Automates the standard post-merge local cleanup flow.
+
+Supports:
+- switching to `main`
+- pulling fast-forward only
+- pruning remotes
+- temp output cleanup
+- local branch deletion
+- dry-run preview mode
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\finish_merged_branch.ps1 -BranchName phase-2/example-branch
+```
+
+## run_phase2_gate_with_capture.ps1
+
+Runs the Phase 2 gate and captures output to a file, with optional `-SkipStackStart` and dry-run preview mode.
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\run_phase2_gate_with_capture.ps1
+```
+
+## append_session_log_entry.ps1
+
+Appends a standard branch-scoped entry to `docs/SESSION_LOG.md` and supports dry-run preview mode.
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\append_session_log_entry.ps1 -BranchName phase-2/example-branch -Notes "Did the thing."
+```
