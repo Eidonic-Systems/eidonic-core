@@ -48,3 +48,23 @@ This change exists to reduce drift between:
 
 Operational rule:
 Phase 2 Python dependency version truth should be declared once and consumed by validation surfaces, not retyped independently across multiple repo control surfaces.
+
+## Dependency truth sync surface update
+
+The current Phase 2 Python dependency truth source now has both a validation surface and a write surface.
+
+Declared truth source:
+- `config/phase2_python_dependency_truth.json`
+
+Validation surface:
+- `scripts/validate_phase2_dependency_pins.ps1`
+
+Sync surface:
+- `scripts/sync_phase2_dependency_truth.ps1`
+
+Operational rule:
+- update the truth file first
+- run the sync surface to rewrite dependent files
+- run the validation surface to confirm alignment
+
+This reduces manual edit churn across service requirements, the shared package dependency block, and future dependency-wave absorption work.

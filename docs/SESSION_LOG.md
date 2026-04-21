@@ -1003,3 +1003,9 @@
 - Created branch `phase-2/branch-automation-surface`
 - Added bounded PowerShell helpers for branch start, merged-branch cleanup, Phase 2 gate output capture, and session-log entry creation.
 - Updated scripts and Codex docs to record the new branch automation surfaces.
+
+## 2026-04-20
+- Created branch `phase-2/dependency-truth-sync-surface`
+- Added scripts/sync_phase2_dependency_truth.ps1 so the declared Phase 2 dependency truth can rewrite service requirements and the shared package dependency block.
+- Updated scripts and dependency reproducibility docs to document the new dependency truth sync surface.
+- Kept the current aligned dependency state idempotent so sync can be proved without introducing version churn.
