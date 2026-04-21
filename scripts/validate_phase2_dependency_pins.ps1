@@ -21,76 +21,50 @@ function Test-ExactPinLine {
     return ($Line -match '^[A-Za-z0-9_.-]+(\[[A-Za-z0-9_,.-]+\])?==[^=\s]+$')
 }
 
-function Test-EditableLocalPathLine {
-    param(
-        [string]$Line
-    )
+$resolvedRepoRoot = (Resolve-Path $RepoRoot).Path
+$truthPath = Join-Path $resolvedRepoRoot "config\phase2_python_dependency_truth.json"
 
-    return ($Line -match '^-e\s+\.\.\/\.\.\/packages\/common-schemas\/python$' -or
-            $Line -match '^-e\s+\.\.\\\.\.\\packages\\common-schemas\\python$')
+if (-not (Test-Path $truthPath)) {
+    throw "Missing Phase 2 dependency truth file at $truthPath"
 }
 
-$resolvedRepoRoot = (Resolve-Path $RepoRoot).Path
-
-$serviceRequirements = @(
-    @{
-        Service = "signal-gateway"
-        Path = Join-Path $resolvedRepoRoot "services\signal-gateway\requirements.txt"
-        RequiredPins = @(
-            "fastapi==0.136.0",
-            "uvicorn==0.44.0",
-            "pydantic==2.13.3",
-            "httpx==0.28.1",
-            "python-dotenv==1.2.2",
-            "psycopg[binary]==3.3.3"
-        )
-    },
-    @{
-        Service = "herald-service"
-        Path = Join-Path $resolvedRepoRoot "services\herald-service\requirements.txt"
-        RequiredPins = @(
-            "fastapi==0.136.0",
-            "uvicorn==0.44.0",
-            "pydantic==2.13.3",
-            "python-dotenv==1.2.2",
-            "psycopg[binary]==3.3.3"
-        )
-    },
-    @{
-        Service = "session-engine"
-        Path = Join-Path $resolvedRepoRoot "services\session-engine\requirements.txt"
-        RequiredPins = @(
-            "fastapi==0.136.0",
-            "uvicorn==0.44.0",
-            "pydantic==2.13.3",
-            "python-dotenv==1.2.2",
-            "psycopg[binary]==3.3.3"
-        )
-    },
-    @{
-        Service = "eidon-orchestrator"
-        Path = Join-Path $resolvedRepoRoot "services\eidon-orchestrator\requirements.txt"
-        RequiredPins = @(
-            "fastapi==0.136.0",
-            "uvicorn==0.44.0",
-            "pydantic==2.13.3",
-            "httpx==0.28.1",
-            "python-dotenv==1.2.2",
-            "psycopg[binary]==3.3.3"
-        )
-    }
-)
-
-$pyprojectPath = Join-Path $resolvedRepoRoot "packages\common-schemas\python\pyproject.toml"
-
+$truth = Get-Content $truthPath -Raw | ConvertFrom-Json
 $failures = [System.Collections.ArrayList]::new()
 $serviceResults = [System.Collections.ArrayList]::new()
 
+if ([string]::IsNullOrWhiteSpace([string]$truth.manifest_version)) {
+    Add-Failure -Failures $failures -Message "dependency truth file missing manifest_version"
+}
+
+$editableCommonSchemasLine = [string]$truth.editable_common_schemas_line
+if ([string]::IsNullOrWhiteSpace($editableCommonSchemasLine)) {
+    Add-Failure -Failures $failures -Message "dependency truth file missing editable_common_schemas_line"
+}
+
+$serviceRequirements = @($truth.service_requirements)
+if ($serviceRequirements.Count -eq 0) {
+    Add-Failure -Failures $failures -Message "dependency truth file has no service_requirements"
+}
+
 foreach ($entry in $serviceRequirements) {
-    $serviceName = $entry.Service
-    $requirementsPath = $entry.Path
-    $requiredPins = @($entry.RequiredPins)
+    $serviceName = [string]$entry.service
+    $relativePath = [string]$entry.path
+    $requiredPins = @($entry.required_pins)
     $serviceFailures = [System.Collections.ArrayList]::new()
+
+    if ([string]::IsNullOrWhiteSpace($serviceName)) {
+        Add-Failure -Failures $serviceFailures -Message "missing service name"
+    }
+
+    if ([string]::IsNullOrWhiteSpace($relativePath)) {
+        Add-Failure -Failures $serviceFailures -Message "missing requirements path"
+    }
+
+    if ($requiredPins.Count -eq 0) {
+        Add-Failure -Failures $serviceFailures -Message "missing required pins"
+    }
+
+    $requirementsPath = Join-Path $resolvedRepoRoot $relativePath
 
     if (-not (Test-Path $requirementsPath)) {
         Add-Failure -Failures $serviceFailures -Message "requirements.txt missing"
@@ -99,9 +73,9 @@ foreach ($entry in $serviceRequirements) {
         $lines = Get-Content $requirementsPath | ForEach-Object { $_.Trim() } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
         $nonCommentLines = @($lines | Where-Object { -not $_.StartsWith("#") })
 
-        $editableLines = @($nonCommentLines | Where-Object { Test-EditableLocalPathLine -Line $_ })
+        $editableLines = @($nonCommentLines | Where-Object { $_ -eq $editableCommonSchemasLine })
         if ($editableLines.Count -ne 1) {
-            Add-Failure -Failures $serviceFailures -Message "expected exactly one editable common-schemas line"
+            Add-Failure -Failures $serviceFailures -Message ("expected exactly one editable common-schemas line '{0}'" -f $editableCommonSchemasLine)
         }
 
         foreach ($requiredPin in $requiredPins) {
@@ -111,7 +85,7 @@ foreach ($entry in $serviceRequirements) {
         }
 
         foreach ($line in $nonCommentLines) {
-            if (Test-EditableLocalPathLine -Line $line) {
+            if ($line -eq $editableCommonSchemasLine) {
                 continue
             }
 
@@ -131,38 +105,69 @@ foreach ($entry in $serviceRequirements) {
     })
 
     foreach ($failure in $serviceFailures) {
-        Add-Failure -Failures $failures -Message ("{0}: {1}" -f $serviceName, $failure)
+        $prefix = if ([string]::IsNullOrWhiteSpace($serviceName)) { "<unnamed-service>" } else { $serviceName }
+        Add-Failure -Failures $failures -Message ("{0}: {1}" -f $prefix, $failure)
     }
 }
 
-$pyprojectFailures = [System.Collections.ArrayList]::new()
+$sharedPackageFailures = [System.Collections.ArrayList]::new()
+$sharedPackage = $truth.shared_package
 
-if (-not (Test-Path $pyprojectPath)) {
-    Add-Failure -Failures $pyprojectFailures -Message "pyproject.toml missing"
+if ($null -eq $sharedPackage) {
+    Add-Failure -Failures $sharedPackageFailures -Message "missing shared_package section"
 }
 else {
-    $pyprojectText = Get-Content $pyprojectPath -Raw
-    if ($pyprojectText -notmatch 'name\s*=\s*"eidonic-schemas"') {
-        Add-Failure -Failures $pyprojectFailures -Message 'project name "eidonic-schemas" missing'
+    $sharedRelativePath = [string]$sharedPackage.path
+    $sharedProjectName = [string]$sharedPackage.project_name
+    $sharedRequiredPins = @($sharedPackage.required_dependency_pins)
+
+    if ([string]::IsNullOrWhiteSpace($sharedRelativePath)) {
+        Add-Failure -Failures $sharedPackageFailures -Message "shared package missing path"
     }
 
-    if ($pyprojectText -notmatch 'pydantic==2\.13\.3') {
-        Add-Failure -Failures $pyprojectFailures -Message 'shared package pydantic pin "2.13.3" missing'
+    if ([string]::IsNullOrWhiteSpace($sharedProjectName)) {
+        Add-Failure -Failures $sharedPackageFailures -Message "shared package missing project_name"
+    }
+
+    if ($sharedRequiredPins.Count -eq 0) {
+        Add-Failure -Failures $sharedPackageFailures -Message "shared package missing required_dependency_pins"
+    }
+
+    $pyprojectPath = Join-Path $resolvedRepoRoot $sharedRelativePath
+
+    if (-not (Test-Path $pyprojectPath)) {
+        Add-Failure -Failures $sharedPackageFailures -Message "pyproject.toml missing"
+    }
+    else {
+        $pyprojectText = Get-Content $pyprojectPath -Raw
+
+        if ($pyprojectText -notmatch ("name\s*=\s*`"{0}`"" -f [regex]::Escape($sharedProjectName))) {
+            Add-Failure -Failures $sharedPackageFailures -Message ("project name '{0}' missing" -f $sharedProjectName)
+        }
+
+        foreach ($requiredPin in $sharedRequiredPins) {
+            $escapedPin = [regex]::Escape($requiredPin)
+            if ($pyprojectText -notmatch $escapedPin) {
+                Add-Failure -Failures $sharedPackageFailures -Message ("shared package dependency pin '{0}' missing" -f $requiredPin)
+            }
+        }
     }
 }
 
-foreach ($failure in $pyprojectFailures) {
+foreach ($failure in $sharedPackageFailures) {
     Add-Failure -Failures $failures -Message ("eidonic-schemas: {0}" -f $failure)
 }
 
 $summary = [ordered]@{
     status = $(if ($failures.Count -eq 0) { "passed" } else { "failed" })
     repo_root = $resolvedRepoRoot
+    dependency_truth_path = $truthPath
+    manifest_version = [string]$truth.manifest_version
     service_results = $serviceResults
     shared_package = [ordered]@{
-        path = $pyprojectPath
-        status = $(if ($pyprojectFailures.Count -eq 0) { "passed" } else { "failed" })
-        failures = @($pyprojectFailures)
+        path = if ($null -ne $sharedPackage) { (Join-Path $resolvedRepoRoot ([string]$sharedPackage.path)) } else { $null }
+        status = $(if ($sharedPackageFailures.Count -eq 0) { "passed" } else { "failed" })
+        failures = @($sharedPackageFailures)
     }
     failures = @($failures)
 }
@@ -177,5 +182,3 @@ if ($summary.status -ne "passed") {
 
 Write-Host ""
 Write-Host "Phase 2 dependency pin validation passed." -ForegroundColor Green
-
-

@@ -1,0 +1,59 @@
+{
+  "manifest_version": "phase-2-python-dependency-truth-v1",
+  "editable_common_schemas_line": "-e ../../packages/common-schemas/python",
+  "service_requirements": [
+    {
+      "service": "signal-gateway",
+      "path": "services/signal-gateway/requirements.txt",
+      "required_pins": [
+        "fastapi==0.136.0",
+        "uvicorn==0.44.0",
+        "pydantic==2.13.3",
+        "httpx==0.28.1",
+        "python-dotenv==1.2.2",
+        "psycopg[binary]==3.3.3"
+      ]
+    },
+    {
+      "service": "herald-service",
+      "path": "services/herald-service/requirements.txt",
+      "required_pins": [
+        "fastapi==0.136.0",
+        "uvicorn==0.44.0",
+        "pydantic==2.13.3",
+        "python-dotenv==1.2.2",
+        "psycopg[binary]==3.3.3"
+      ]
+    },
+    {
+      "service": "session-engine",
+      "path": "services/session-engine/requirements.txt",
+      "required_pins": [
+        "fastapi==0.136.0",
+        "uvicorn==0.44.0",
+        "pydantic==2.13.3",
+        "python-dotenv==1.2.2",
+        "psycopg[binary]==3.3.3"
+      ]
+    },
+    {
+      "service": "eidon-orchestrator",
+      "path": "services/eidon-orchestrator/requirements.txt",
+      "required_pins": [
+        "fastapi==0.136.0",
+        "uvicorn==0.44.0",
+        "pydantic==2.13.3",
+        "httpx==0.28.1",
+        "python-dotenv==1.2.2",
+        "psycopg[binary]==3.3.3"
+      ]
+    }
+  ],
+  "shared_package": {
+    "path": "packages/common-schemas/python/pyproject.toml",
+    "project_name": "eidonic-schemas",
+    "required_dependency_pins": [
+      "pydantic==2.13.3"
+    ]
+  }
+}

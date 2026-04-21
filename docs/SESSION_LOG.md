@@ -977,3 +977,10 @@
 - Updated `scripts/validate_phase2_dependency_pins.ps1` so the dependency pin validator reflects the new shared `pydantic==2.13.3` truth
 - Re-proved the dependency pin validation surface and Phase 2 gate after the coordinated update
 - Confirmed again that duplicated dependency truth surfaces create avoidable maintenance drag and should be collapsed into one source of truth next
+
+## 2026-04-20
+- Created branch `phase-2/dependency-truth-source-surface`
+- Added `config/phase2_python_dependency_truth.json` as the single declared truth source for current Phase 2 Python dependency expectations
+- Reworked `scripts/validate_phase2_dependency_pins.ps1` to consume the dependency truth file instead of hardcoding version truth in the validator
+- Updated dependency reproducibility and scripts documentation to make the new single-source rule explicit
+- Reduced dependency drift risk by collapsing duplicated version expectations into one repo control surface
