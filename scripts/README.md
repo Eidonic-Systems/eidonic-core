@@ -69,7 +69,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_phase2_topology_cons
 
 ## run_phase2_gate.ps1
 
-Runs the current Phase 2 gate surface, including dependency pin validation, service topology manifest validation, and topology consistency validation before the rest of the gate flow.
+Runs the current Phase 2 gate using `config/phase2_gate_surface_manifest.json` as the validation-order truth source before downstream runtime checks.
 
 ### Run from repository root
 ```powershell
@@ -207,11 +207,6 @@ Validates the local workflow automation helper layer for bounded branch flow, me
 powershell -ExecutionPolicy Bypass -File .\scripts\validate_automation_helpers.ps1
 ```
 
-The current Phase 2 gate surface now also validates the local automation helper layer before runtime startup and downstream gate checks.
-
-This includes:
-- `scripts/validate_automation_helpers.ps1`
-
 ## Workflow gate capture note
 
 The GitHub Actions Phase 2 workflow now runs `scripts/run_phase2_gate_with_capture.ps1` and uploads the captured gate output as a workflow artifact.
@@ -252,10 +247,6 @@ Checks include:
 powershell -ExecutionPolicy Bypass -File .\scripts\validate_phase2_workflow_surface.ps1
 ```
 
-## Workflow surface validation note
-
-The current Phase 2 gate surface now also validates `.github/workflows/phase2-gate.yml` before runtime startup and downstream gate checks.
-
 ## Capture-wrapper output hardening note
 
 `scripts/run_phase2_gate_with_capture.ps1` now uses a unique default local output path for each run, and cleanup/temp-hygiene surfaces now cover wildcard gate-output artifacts.
@@ -268,10 +259,6 @@ Validates the repo-carried Codex operating surfaces, including `AGENTS.md`, proj
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\validate_codex_surfaces.ps1
 ```
-
-## Codex surface validation note
-
-The current Phase 2 gate surface now also validates the repo-carried Codex operating surfaces before downstream runtime startup and gate checks.
 
 ## validate_phase2_gate_surface_manifest.ps1
 
@@ -293,3 +280,10 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_phase2_gate_surface_
 ## Gate surface truth source note
 
 The Phase 2 validation order is now declared in `config/phase2_gate_surface_manifest.json` and consumed by `scripts/run_phase2_gate.ps1` instead of being retyped only inside the gate script.
+
+## Gate documentation rule
+
+`config/phase2_gate_surface_manifest.json` is the declared truth source for gate validation order.
+
+This README should reference that manifest instead of manually restating the full gate validation sequence in prose.
+
