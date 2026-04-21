@@ -1059,3 +1059,9 @@
 - Added scripts/validate_phase2_workflow_surface.ps1 to validate the current .github/workflows/phase2-gate.yml posture the repo depends on.
 - Integrated workflow surface validation into scripts/run_phase2_gate.ps1 so workflow drift is caught inside the standard Phase 2 proof path.
 - Updated scripts and project-state docs to record workflow surface validation.
+
+## 2026-04-21
+- Created branch `phase-2/capture-wrapper-output-hardening`
+- Hardened scripts/run_phase2_gate_with_capture.ps1 so repeated local gate runs use unique default output files instead of competing for one reused path.
+- Extended temp-file hygiene to cover wildcard gate-output artifacts and cleanup pre-clean behavior for those files.
+- Extended automation helper validation to prove unique default capture paths and wildcard temp-artifact hygiene.

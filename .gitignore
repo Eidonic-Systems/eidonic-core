@@ -63,5 +63,8 @@ services/signal-gateway/data/signals.json
 /evals/governance_eval_results.json
 
 # Local proof artifacts
-tmp_phase2_gate_output.txt
-tmp_test_full_chain_output.txt
+
+# Local proof artifacts
+tmp_phase2_gate_output*.txt
+tmp_test_full_chain_output*.txt
+

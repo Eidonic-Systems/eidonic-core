@@ -255,3 +255,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_phase2_workflow_surf
 ## Workflow surface validation note
 
 The current Phase 2 gate surface now also validates `.github/workflows/phase2-gate.yml` before runtime startup and downstream gate checks.
+
+## Capture-wrapper output hardening note
+
+`scripts/run_phase2_gate_with_capture.ps1` now uses a unique default local output path for each run, and cleanup/temp-hygiene surfaces now cover wildcard gate-output artifacts.

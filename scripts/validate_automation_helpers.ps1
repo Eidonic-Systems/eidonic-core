@@ -103,6 +103,7 @@ $dirtyGuardIndex = $finishHelperText.IndexOf("Working tree is dirty. Refusing me
 $switchMainIndex = $finishHelperText.IndexOf('Run-GitStep -Label "Switching to main"')
 $alreadyAbsentIndex = $finishHelperText.IndexOf("Local branch already absent:")
 $preCleanIndex = $finishHelperText.IndexOf("==> Pre-cleaning known temp output files")
+$tempPatternIndex = $finishHelperText.IndexOf('tmp_phase2_gate_output*.txt')
 
 if ($dirtyGuardIndex -lt 0) {
     Add-Failure -Failures $failures -Message "finish_merged_branch.ps1 missing dirty-tree refusal message"
@@ -119,10 +120,13 @@ if ($alreadyAbsentIndex -lt 0) {
 if ($preCleanIndex -lt 0) {
     Add-Failure -Failures $failures -Message "finish_merged_branch.ps1 missing pre-clean temp file step"
 }
+if ($tempPatternIndex -lt 0) {
+    Add-Failure -Failures $failures -Message "finish_merged_branch.ps1 missing wildcard gate-output temp cleanup pattern"
+}
 
 Write-Section -Label "Checking gitignore coverage for local proof artifacts"
 $gitIgnoreText = Get-Content $gitIgnorePath -Raw
-foreach ($pattern in @('tmp_phase2_gate_output.txt', 'tmp_test_full_chain_output.txt')) {
+foreach ($pattern in @('tmp_phase2_gate_output*.txt', 'tmp_test_full_chain_output*.txt')) {
     if ($gitIgnoreText -notmatch [regex]::Escape($pattern)) {
         Add-Failure -Failures $failures -Message (".gitignore missing local proof artifact pattern '{0}'" -f $pattern)
     }
@@ -132,8 +136,9 @@ $baselineStatus = Get-StatusSnapshot
 
 Write-Section -Label "Checking ignored temp artifact behavior"
 $tempArtifactPaths = @(
-    (Join-Path $resolvedRepoRoot "tmp_phase2_gate_output.txt"),
-    (Join-Path $resolvedRepoRoot "tmp_test_full_chain_output.txt")
+    (Join-Path $resolvedRepoRoot "tmp_phase2_gate_output_validation_a.txt"),
+    (Join-Path $resolvedRepoRoot "tmp_phase2_gate_output_validation_b.txt"),
+    (Join-Path $resolvedRepoRoot "tmp_test_full_chain_output_validation.txt")
 )
 
 try {
@@ -185,8 +190,8 @@ if ($finishResult.exit_code -ne 0) {
 }
 foreach ($pattern in @(
     'remove-item',
-    'tmp_phase2_gate_output.txt',
-    'tmp_test_full_chain_output.txt',
+    'tmp_phase2_gate_output',
+    'tmp_test_full_chain_output',
     'git switch main',
     'git pull --ff-only',
     'idempotent cleanup supports already-absent branch'
@@ -196,19 +201,35 @@ foreach ($pattern in @(
     }
 }
 
-$gateResult = Invoke-Helper -Label "Dry-run captured gate helper" -PowerShellArgs @(
+$gateResult1 = Invoke-Helper -Label "Dry-run captured gate helper first pass" -PowerShellArgs @(
     "-ExecutionPolicy", "Bypass",
     "-File", $gateWrapperPath,
     "-DryRun"
 )
-[void]$results.Add($gateResult)
-if ($gateResult.exit_code -ne 0) {
-    Add-Failure -Failures $failures -Message "run_phase2_gate_with_capture.ps1 dry-run failed"
-}
-foreach ($pattern in @('run_phase2_gate.ps1', 'tmp_phase2_gate_output.txt')) {
-    if ($gateResult.output -notmatch [regex]::Escape($pattern)) {
-        Add-Failure -Failures $failures -Message ("run_phase2_gate_with_capture.ps1 dry-run missing pattern '{0}'" -f $pattern)
+[void]$results.Add($gateResult1)
+
+Start-Sleep -Milliseconds 25
+
+$gateResult2 = Invoke-Helper -Label "Dry-run captured gate helper second pass" -PowerShellArgs @(
+    "-ExecutionPolicy", "Bypass",
+    "-File", $gateWrapperPath,
+    "-DryRun"
+)
+[void]$results.Add($gateResult2)
+
+foreach ($gateResult in @($gateResult1, $gateResult2)) {
+    if ($gateResult.exit_code -ne 0) {
+        Add-Failure -Failures $failures -Message "run_phase2_gate_with_capture.ps1 dry-run failed"
     }
+    foreach ($pattern in @('run_phase2_gate.ps1', 'tmp_phase2_gate_output_', '.txt')) {
+        if ($gateResult.output -notmatch [regex]::Escape($pattern)) {
+            Add-Failure -Failures $failures -Message ("run_phase2_gate_with_capture.ps1 dry-run missing pattern '{0}'" -f $pattern)
+        }
+    }
+}
+
+if ($gateResult1.output -eq $gateResult2.output) {
+    Add-Failure -Failures $failures -Message "run_phase2_gate_with_capture.ps1 dry-run did not produce distinct default output paths across repeated calls"
 }
 
 $sessionResult = Invoke-Helper -Label "Dry-run session log helper" -PowerShellArgs @(

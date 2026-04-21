@@ -3,9 +3,9 @@ param(
     [string]$BranchName,
     [switch]$ForceDelete,
     [switch]$DryRun,
-    [string[]]$TempFiles = @(
-        "tmp_phase2_gate_output.txt",
-        "tmp_test_full_chain_output.txt"
+    [string[]]$TempPatterns = @(
+        "tmp_phase2_gate_output*.txt",
+        "tmp_test_full_chain_output*.txt"
     )
 )
 
@@ -53,15 +53,24 @@ function Test-LocalBranchExists {
 
 Write-Host ""
 Write-Host "==> Pre-cleaning known temp output files" -ForegroundColor Yellow
-foreach ($tempFile in $TempFiles) {
-    $tempPath = Join-Path $RepoRoot $tempFile
+foreach ($tempPattern in $TempPatterns) {
+    $matches = @(Get-ChildItem -Path $RepoRoot -Filter $tempPattern -File -ErrorAction SilentlyContinue)
 
     if ($DryRun) {
-        Write-Host ("[DRY-RUN] remove-item {0}" -f $tempPath) -ForegroundColor Cyan
+        if ($matches.Count -gt 0) {
+            foreach ($match in $matches) {
+                Write-Host ("[DRY-RUN] remove-item {0}" -f $match.FullName) -ForegroundColor Cyan
+            }
+        }
+        else {
+            Write-Host ("[DRY-RUN] remove-item pattern {0}" -f (Join-Path $RepoRoot $tempPattern)) -ForegroundColor Cyan
+        }
         continue
     }
 
-    Remove-Item $tempPath -Force -ErrorAction SilentlyContinue
+    foreach ($match in $matches) {
+        Remove-Item $match.FullName -Force -ErrorAction SilentlyContinue
+    }
 }
 
 if (-not $DryRun) {
