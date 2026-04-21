@@ -259,3 +259,16 @@ The current Phase 2 gate surface now also validates `.github/workflows/phase2-ga
 ## Capture-wrapper output hardening note
 
 `scripts/run_phase2_gate_with_capture.ps1` now uses a unique default local output path for each run, and cleanup/temp-hygiene surfaces now cover wildcard gate-output artifacts.
+
+## validate_codex_surfaces.ps1
+
+Validates the repo-carried Codex operating surfaces, including `AGENTS.md`, project-scoped Codex config, repo skill manifests, Codex workflow documentation, and project-state recovery documentation.
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_codex_surfaces.ps1
+```
+
+## Codex surface validation note
+
+The current Phase 2 gate surface now also validates the repo-carried Codex operating surfaces before downstream runtime startup and gate checks.

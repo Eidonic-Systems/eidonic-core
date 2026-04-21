@@ -99,3 +99,27 @@ When changing any of these surfaces:
 
 run:
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_automation_helpers.ps1`
+
+## Codex surface validation rule
+
+When changing any of these surfaces:
+- `AGENTS.md`
+- `.codex/config.toml`
+- `.agents/skills/`
+- `docs/CODEX_WORKFLOW.md`
+- `docs/PROJECT_STATE_AT_A_GLANCE.md`
+
+run:
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_codex_surfaces.ps1`
+
+## Codex surface validation rule
+
+When changing any of these surfaces:
+- `AGENTS.md`
+- `.codex/config.toml`
+- `.agents/skills/`
+- `docs/CODEX_WORKFLOW.md`
+- `docs/PROJECT_STATE_AT_A_GLANCE.md`
+
+run:
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_codex_surfaces.ps1`

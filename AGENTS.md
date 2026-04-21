@@ -88,3 +88,8 @@ A branch is done only when:
 - `docs/SESSION_LOG.md` is updated
 - `docs/PROJECT_STATE_AT_A_GLANCE.md` is updated if structural truth changed
 - the PR description states what changed, why, and what proof passed
+
+
+## Codex validation proof
+
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_codex_surfaces.ps1`

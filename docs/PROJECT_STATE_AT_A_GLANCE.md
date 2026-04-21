@@ -122,3 +122,8 @@ Current gate validation surfaces also include:
 
 - `scripts/run_phase2_gate_with_capture.ps1` uses a unique default local gate-output path per run
 - `.gitignore` and cleanup hygiene cover wildcard gate-output temp artifacts
+
+## Current Codex validation posture
+
+- `scripts/validate_codex_surfaces.ps1` validates `AGENTS.md`, `.codex/config.toml`, repo skill manifests, and Codex recovery docs
+- `scripts/run_phase2_gate.ps1` includes Codex surface validation before downstream runtime checks

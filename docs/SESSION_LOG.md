@@ -1065,3 +1065,9 @@
 - Hardened scripts/run_phase2_gate_with_capture.ps1 so repeated local gate runs use unique default output files instead of competing for one reused path.
 - Extended temp-file hygiene to cover wildcard gate-output artifacts and cleanup pre-clean behavior for those files.
 - Extended automation helper validation to prove unique default capture paths and wildcard temp-artifact hygiene.
+
+## 2026-04-21
+- Created branch `phase-2/codex-surface-validation`
+- Added scripts/validate_codex_surfaces.ps1 to validate the repo-carried Codex operating surfaces the build now depends on.
+- Integrated Codex surface validation into scripts/run_phase2_gate.ps1 so Codex operating-surface drift is caught inside the standard Phase 2 proof path.
+- Updated AGENTS, Codex workflow, scripts, and project-state docs to record Codex surface validation.
