@@ -28,8 +28,17 @@ jobs:
         run: |
           $PSVersionTable
 
-      - name: Run Phase 2 gate
+      - name: Run Phase 2 gate with captured output
         shell: powershell
         run: |
           Set-Location $env:GITHUB_WORKSPACE
-          powershell -ExecutionPolicy Bypass -File .\scripts\run_phase2_gate.ps1
+          $outputPath = Join-Path $env:RUNNER_TEMP "phase2_gate_output.txt"
+          powershell -ExecutionPolicy Bypass -File .\scripts\run_phase2_gate_with_capture.ps1 -OutputPath $outputPath
+
+      - name: Upload Phase 2 gate output artifact
+        if: always()
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: phase2-gate-output-${{ github.run_id }}
+          path: ${{ runner.temp }}/phase2_gate_output.txt
+          if-no-files-found: warn

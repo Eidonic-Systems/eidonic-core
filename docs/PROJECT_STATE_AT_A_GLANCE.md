@@ -93,3 +93,8 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 
 Current gate validation surfaces also include:
 - automation helper validation
+
+## Current workflow gate capture posture
+
+- `.github/workflows/phase2-gate.yml` runs `scripts/run_phase2_gate_with_capture.ps1`
+- the workflow uploads captured Phase 2 gate output as a workflow artifact
