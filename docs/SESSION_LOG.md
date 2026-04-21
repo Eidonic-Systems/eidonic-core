@@ -984,3 +984,10 @@
 - Reworked `scripts/validate_phase2_dependency_pins.ps1` to consume the dependency truth file instead of hardcoding version truth in the validator
 - Updated dependency reproducibility and scripts documentation to make the new single-source rule explicit
 - Reduced dependency drift risk by collapsing duplicated version expectations into one repo control surface
+
+## 2026-04-20
+- Created branch `phase-2/codex-operating-surface`
+- Added repo-root `AGENTS.md` to define how coding agents should operate inside `eidonic-core`
+- Added `docs/CODEX_WORKFLOW.md` to standardize bounded Codex branch flow, proof discipline, and recovery order for new chats
+- Added `docs/PROJECT_STATE_AT_A_GLANCE.md` so future chats and agents can recover the live repo posture quickly without rereading the full branch history
+- Established explicit repo-memory rules: every structural branch updates `docs/SESSION_LOG.md`, and structural truth changes also update `docs/PROJECT_STATE_AT_A_GLANCE.md`

@@ -1,0 +1,72 @@
+# Project State at a Glance
+
+## Current phase
+
+Phase 2 build solidification and trust-surface hardening.
+
+## Current runtime spine
+
+`signal-gateway -> herald-service -> session-engine -> eidon-orchestrator`
+
+## Current service topology truth
+
+Declared in:
+- `config/service_topology_manifest.json`
+
+Current ports:
+- `signal-gateway` -> `8000`
+- `session-engine` -> `8001`
+- `herald-service` -> `8002`
+- `eidon-orchestrator` -> `8003`
+
+## Current dependency truth
+
+Declared in:
+- `config/phase2_python_dependency_truth.json`
+
+Current shared critical pin:
+- `pydantic==2.13.3` across the four Phase 2 services and `packages/common-schemas/python`
+
+## Current gate posture
+
+Gate entry:
+- `scripts/run_phase2_gate.ps1`
+
+Current gate validation surfaces include:
+- dependency pin validation
+- service topology manifest validation
+- topology consistency validation
+- PostgreSQL bootstrap and schema checks
+- health verification
+- governance gate
+
+## Current governance posture
+
+Declared in:
+- `config/governance_rules_manifest.json`
+- validator and fixture coverage under `scripts/`
+
+## Current runner posture
+
+- self-hosted Windows runner
+- workflow: `.github/workflows/phase2-gate.yml`
+- trust contract: `docs/PHASE_2_RUNNER_TRUST_CONTRACT.md`
+
+## Current repo-memory surfaces
+
+- `AGENTS.md`
+- `docs/CODEX_WORKFLOW.md`
+- `docs/PROJECT_STATE_AT_A_GLANCE.md`
+- `docs/SESSION_LOG.md`
+
+## Current operating rules
+
+- one bounded branch at a time
+- update local after every merge
+- prove the branch before claiming it done
+- document branch work inside the repo
+- prefer one declared truth source per control surface
+
+## Current open hardening direction
+
+Keep reducing duplicated truth and turn recurring manual workflows into bounded, documented, repo-carried operating surfaces.
