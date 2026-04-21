@@ -1071,3 +1071,9 @@
 - Added scripts/validate_codex_surfaces.ps1 to validate the repo-carried Codex operating surfaces the build now depends on.
 - Integrated Codex surface validation into scripts/run_phase2_gate.ps1 so Codex operating-surface drift is caught inside the standard Phase 2 proof path.
 - Updated AGENTS, Codex workflow, scripts, and project-state docs to record Codex surface validation.
+
+## 2026-04-21
+- Created branch `phase-2/gate-surface-truth-source`
+- Added config/phase2_gate_surface_manifest.json as the declared truth source for Phase 2 gate validation order.
+- Added scripts/validate_phase2_gate_surface_manifest.ps1 and reworked scripts/run_phase2_gate.ps1 to consume the gate-surface truth source.
+- Updated scripts and project-state docs to record the gate-surface truth source.
