@@ -1020,3 +1020,8 @@
 - Created branch `phase-2/automation-helper-hardening`
 - Hardened cleanup and dependency automation helpers so dirty-tree failures happen before pull and no-op dependency paths stay idempotent.
 - Hardened the session-log helper so multiple notes bind cleanly through powershell -File.
+
+## 2026-04-21
+- Created branch `phase-2/automation-helper-validation-surface`
+- Added scripts/validate_automation_helpers.ps1 to prove the local helper layer for branch flow, merged-branch cleanup, gate capture, session-log append behavior, dependency sync, and no-op dependency-wave idempotence.
+- Updated scripts and Codex docs to make automation-helper validation a declared proof surface.

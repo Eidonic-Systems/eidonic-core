@@ -84,3 +84,7 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 ## Current dependency-wave automation surface
 
 - `scripts/absorb_phase2_dependency_wave.ps1`
+
+## Current automation helper validation surface
+
+- `scripts/validate_automation_helpers.ps1`
