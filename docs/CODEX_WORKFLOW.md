@@ -86,3 +86,16 @@ The repo now includes bounded PowerShell helpers for recurring local workflow st
 - `scripts/append_session_log_entry.ps1`
 
 These exist to reduce repeated manual branch churn and keep proof and session-log discipline more consistent.
+
+## Automation helper validation rule
+
+When changing any of these surfaces:
+- `scripts/start_bounded_branch.ps1`
+- `scripts/finish_merged_branch.ps1`
+- `scripts/run_phase2_gate_with_capture.ps1`
+- `scripts/append_session_log_entry.ps1`
+- `scripts/sync_phase2_dependency_truth.ps1`
+- `scripts/absorb_phase2_dependency_wave.ps1`
+
+run:
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_automation_helpers.ps1`

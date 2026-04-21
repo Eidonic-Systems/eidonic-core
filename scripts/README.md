@@ -197,3 +197,12 @@ Current hardening expectations:
 - `absorb_phase2_dependency_wave.ps1` must not dirty the dependency truth file on a no-op approved version path
 - `append_session_log_entry.ps1` should accept multiple note arguments cleanly through `powershell -File`
 
+
+## validate_automation_helpers.ps1
+
+Validates the local workflow automation helper layer for bounded branch flow, merged-branch cleanup, gate capture, session-log append behavior, dependency truth sync, and no-op dependency-wave idempotence.
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_automation_helpers.ps1
+```
