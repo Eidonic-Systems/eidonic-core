@@ -127,3 +127,9 @@ Current gate validation surfaces also include:
 
 - `scripts/validate_codex_surfaces.ps1` validates `AGENTS.md`, `.codex/config.toml`, repo skill manifests, and Codex recovery docs
 - `scripts/run_phase2_gate.ps1` includes Codex surface validation before downstream runtime checks
+
+## Current gate truth source posture
+
+- validation order is declared in `config/phase2_gate_surface_manifest.json`
+- `scripts/validate_phase2_gate_surface_manifest.ps1` validates that truth source
+- `scripts/run_phase2_gate.ps1` consumes the gate-surface truth source before downstream runtime checks

@@ -1,0 +1,29 @@
+{
+  "manifest_version": "phase-2-gate-surface-v1",
+  "validation_steps": [
+    {
+      "label": "Validating service topology manifest",
+      "script_path": "scripts/validate_service_topology_manifest.ps1"
+    },
+    {
+      "label": "Validating Phase 2 dependency pins",
+      "script_path": "scripts/validate_phase2_dependency_pins.ps1"
+    },
+    {
+      "label": "Validating automation helpers",
+      "script_path": "scripts/validate_automation_helpers.ps1"
+    },
+    {
+      "label": "Validating Phase 2 workflow surface",
+      "script_path": "scripts/validate_phase2_workflow_surface.ps1"
+    },
+    {
+      "label": "Validating Codex surfaces",
+      "script_path": "scripts/validate_codex_surfaces.ps1"
+    },
+    {
+      "label": "Validating Phase 2 topology consistency",
+      "script_path": "scripts/validate_phase2_topology_consistency.ps1"
+    }
+  ]
+}

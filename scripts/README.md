@@ -272,3 +272,24 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_codex_surfaces.ps1
 ## Codex surface validation note
 
 The current Phase 2 gate surface now also validates the repo-carried Codex operating surfaces before downstream runtime startup and gate checks.
+
+## validate_phase2_gate_surface_manifest.ps1
+
+Validates the declared Phase 2 gate validation truth source at `config/phase2_gate_surface_manifest.json`.
+
+Checks include:
+- manifest version presence
+- non-empty validation step list
+- unique validation labels
+- unique validation script paths
+- validation script paths resolve to PowerShell scripts under `scripts/`
+- validation scripts exist on disk
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_phase2_gate_surface_manifest.ps1
+```
+
+## Gate surface truth source note
+
+The Phase 2 validation order is now declared in `config/phase2_gate_surface_manifest.json` and consumed by `scripts/run_phase2_gate.ps1` instead of being retyped only inside the gate script.

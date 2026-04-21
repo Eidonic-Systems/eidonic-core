@@ -5,6 +5,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $RepoRoot = Split-Path -Parent $PSScriptRoot
+$GateSurfaceManifestPath = Join-Path $RepoRoot "config\phase2_gate_surface_manifest.json"
 
 function Run-Step {
     param(
@@ -24,21 +25,38 @@ function Run-Step {
     }
 }
 
-Run-Step -Label "Validating service topology manifest" -Action {
-    powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\validate_service_topology_manifest.ps1') -RepoRoot $RepoRoot
+function Invoke-GateValidationSteps {
+    param(
+        [string]$ManifestPath,
+        [string]$RepoRootPath
+    )
+
+    $manifest = Get-Content $ManifestPath -Raw | ConvertFrom-Json
+    $validationSteps = @($manifest.validation_steps)
+
+    foreach ($step in $validationSteps) {
+        $label = [string]$step.label
+        $relativeScriptPath = [string]$step.script_path
+
+        if ([string]::IsNullOrWhiteSpace($label)) {
+            throw "Gate surface manifest contains a validation step with no label."
+        }
+
+        if ([string]::IsNullOrWhiteSpace($relativeScriptPath)) {
+            throw ("Gate surface manifest step '{0}' has no script_path." -f $label)
+        }
+
+        Run-Step -Label $label -Action {
+            powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRootPath $relativeScriptPath) -RepoRoot $RepoRootPath
+        }
+    }
 }
 
-Run-Step -Label "Validating Phase 2 dependency pins" -Action {
-    powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\validate_phase2_dependency_pins.ps1') -RepoRoot $RepoRoot
+Run-Step -Label "Validating Phase 2 gate surface manifest" -Action {
+    powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\validate_phase2_gate_surface_manifest.ps1') -RepoRoot $RepoRoot
 }
 
-Run-Step -Label "Validating automation helpers" -Action {
-    powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\validate_automation_helpers.ps1') -RepoRoot $RepoRoot
-}
-
-Run-Step -Label "Validating Phase 2 topology consistency" -Action {
-    powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\validate_phase2_topology_consistency.ps1') -RepoRoot $RepoRoot
-}
+Invoke-GateValidationSteps -ManifestPath $GateSurfaceManifestPath -RepoRootPath $RepoRoot
 
 if (-not $SkipStackStart) {
     Run-Step -Label "Starting standard Phase 2 stack" -Action {
@@ -94,5 +112,3 @@ Run-Step -Label "Running governance gate" -Action {
 
 Write-Host ""
 Write-Host "Phase 2 gate surface passed." -ForegroundColor Green
-
-
