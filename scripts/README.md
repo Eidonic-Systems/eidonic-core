@@ -143,7 +143,7 @@ Appends a standard branch-scoped entry to `docs/SESSION_LOG.md` and supports dry
 
 ### Run from repository root
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\append_session_log_entry.ps1 -BranchName phase-2/example-branch -Notes "Did the thing."
+powershell -ExecutionPolicy Bypass -File .\scripts\append_session_log_entry.ps1 -BranchName phase-2/example-branch -NotesText "Did the thing."
 ```
 
 ## sync_phase2_dependency_truth.ps1
@@ -176,3 +176,24 @@ Supports:
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\absorb_phase2_dependency_wave.ps1 -PackageName pydantic -NewVersion 2.13.3 -ExpectedCurrentVersion 2.13.3 -DryRun
 ```
+
+## Automation helper hardening note
+
+The automation helpers are expected to be idempotent and fail early on dirty working trees.
+
+Current hardening expectations:
+- `finish_merged_branch.ps1` must refuse cleanup before pull if the working tree is dirty
+- `sync_phase2_dependency_truth.ps1` must not rewrite already aligned files
+- `absorb_phase2_dependency_wave.ps1` must not dirty the dependency truth file on a no-op approved version path
+- `append_session_log_entry.ps1` should accept multiple note arguments cleanly through `powershell -File`
+
+## Automation helper hardening note
+
+The automation helpers are expected to be idempotent and fail early on dirty working trees.
+
+Current hardening expectations:
+- `finish_merged_branch.ps1` must refuse cleanup before pull if the working tree is dirty
+- `sync_phase2_dependency_truth.ps1` must not rewrite already aligned files
+- `absorb_phase2_dependency_wave.ps1` must not dirty the dependency truth file on a no-op approved version path
+- `append_session_log_entry.ps1` should accept multiple note arguments cleanly through `powershell -File`
+

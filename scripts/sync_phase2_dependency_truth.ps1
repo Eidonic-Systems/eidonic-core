@@ -14,6 +14,56 @@ function Write-Section {
     Write-Host ("==> {0}" -f $Label) -ForegroundColor Yellow
 }
 
+function Normalize-Text {
+    param(
+        [string]$Text
+    )
+
+    if ($null -eq $Text) {
+        return ""
+    }
+
+    return ($Text -replace "`r?`n", "`r`n")
+}
+
+function Get-NormalizedRequirementLines {
+    param(
+        [string]$Text
+    )
+
+    if ([string]::IsNullOrWhiteSpace($Text)) {
+        return @()
+    }
+
+    return @(
+        $Text -split "(`r`n|`n|`r)" |
+        Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+        ForEach-Object { $_.Trim() }
+    )
+}
+
+function Test-RequirementContentAligned {
+    param(
+        [string]$CurrentText,
+        [string]$TargetText
+    )
+
+    $currentLines = @(Get-NormalizedRequirementLines -Text $CurrentText | Sort-Object)
+    $targetLines = @(Get-NormalizedRequirementLines -Text $TargetText | Sort-Object)
+
+    if ($currentLines.Count -ne $targetLines.Count) {
+        return $false
+    }
+
+    for ($i = 0; $i -lt $currentLines.Count; $i++) {
+        if ($currentLines[$i] -ne $targetLines[$i]) {
+            return $false
+        }
+    }
+
+    return $true
+}
+
 $resolvedRepoRoot = (Resolve-Path $RepoRoot).Path
 $truthPath = Join-Path $resolvedRepoRoot "config\phase2_python_dependency_truth.json"
 
@@ -61,16 +111,28 @@ foreach ($entry in $serviceRequirements) {
         throw "Missing requirements target for service '$serviceName' at $targetPath"
     }
 
-    $lines = @($editableCommonSchemasLine) + $requiredPins
-    $content = ($lines -join "`r`n") + "`r`n"
+    $targetLines = @($editableCommonSchemasLine) + $requiredPins
+    $targetContent = ($targetLines -join "`r`n") + "`r`n"
+    $currentContent = Get-Content $targetPath -Raw
+    $isAligned = Test-RequirementContentAligned -CurrentText $currentContent -TargetText $targetContent
 
     if ($DryRun) {
-        Write-Host ("[DRY-RUN] would sync {0} -> {1}" -f $serviceName, $targetPath) -ForegroundColor Cyan
-        Write-Host $content
+        if ($isAligned) {
+            Write-Host ("[DRY-RUN] {0} already aligned -> {1}" -f $serviceName, $targetPath) -ForegroundColor Cyan
+        }
+        else {
+            Write-Host ("[DRY-RUN] would sync {0} -> {1}" -f $serviceName, $targetPath) -ForegroundColor Cyan
+            Write-Host $targetContent
+        }
     }
     else {
-        Set-Content -Path $targetPath -Value $content -NoNewline
-        Write-Host ("Synced {0} -> {1}" -f $serviceName, $targetPath) -ForegroundColor Green
+        if ($isAligned) {
+            Write-Host ("Already aligned {0} -> {1}" -f $serviceName, $targetPath) -ForegroundColor Green
+        }
+        else {
+            Set-Content -Path $targetPath -Value $targetContent -NoNewline
+            Write-Host ("Synced {0} -> {1}" -f $serviceName, $targetPath) -ForegroundColor Green
+        }
     }
 }
 
@@ -118,13 +180,25 @@ $updatedPyprojectText = [regex]::Replace(
     1
 )
 
+$isSharedAligned = (Normalize-Text $pyprojectText) -eq (Normalize-Text $updatedPyprojectText)
+
 if ($DryRun) {
-    Write-Host ("[DRY-RUN] would sync shared package -> {0}" -f $pyprojectPath) -ForegroundColor Cyan
-    Write-Host $dependencyBlock
+    if ($isSharedAligned) {
+        Write-Host ("[DRY-RUN] shared package already aligned -> {0}" -f $pyprojectPath) -ForegroundColor Cyan
+    }
+    else {
+        Write-Host ("[DRY-RUN] would sync shared package -> {0}" -f $pyprojectPath) -ForegroundColor Cyan
+        Write-Host $dependencyBlock
+    }
 }
 else {
-    Set-Content -Path $pyprojectPath -Value $updatedPyprojectText -NoNewline
-    Write-Host ("Synced shared package -> {0}" -f $pyprojectPath) -ForegroundColor Green
+    if ($isSharedAligned) {
+        Write-Host ("Already aligned shared package -> {0}" -f $pyprojectPath) -ForegroundColor Green
+    }
+    else {
+        Set-Content -Path $pyprojectPath -Value $updatedPyprojectText -NoNewline
+        Write-Host ("Synced shared package -> {0}" -f $pyprojectPath) -ForegroundColor Green
+    }
 }
 
 Write-Host ""

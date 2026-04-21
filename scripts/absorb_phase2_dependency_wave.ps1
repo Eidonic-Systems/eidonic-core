@@ -45,7 +45,8 @@ Require-Path $validateScriptPath
 Require-Path $gateWrapperPath
 Require-Path $sessionLogHelperPath
 
-$truth = Get-Content $truthPath -Raw | ConvertFrom-Json
+$truthText = Get-Content $truthPath -Raw
+$truth = $truthText | ConvertFrom-Json
 
 if ([string]::IsNullOrWhiteSpace([string]$truth.manifest_version)) {
     throw "Dependency truth file missing manifest_version."
@@ -62,6 +63,7 @@ $replacementPin = ('{0}=={1}' -f $PackageName, $NewVersion)
 $serviceUpdateCount = 0
 $sharedUpdateCount = 0
 $affectedServices = [System.Collections.ArrayList]::new()
+$pinsToReplace = [System.Collections.ArrayList]::new()
 
 Write-Section -Label ("Updating dependency truth for {0}" -f $PackageName)
 
@@ -84,6 +86,9 @@ foreach ($entry in $serviceRequirements) {
         if ($currentVersion -ne $NewVersion) {
             $entry.required_pins[$i] = $replacementPin
             $serviceUpdateCount++
+            if ($pin -notin $pinsToReplace) {
+                [void]$pinsToReplace.Add($pin)
+            }
         }
 
         if ($serviceName -notin $affectedServices) {
@@ -113,6 +118,9 @@ for ($i = 0; $i -lt $sharedPins.Count; $i++) {
     if ($currentVersion -ne $NewVersion) {
         $sharedPackage.required_dependency_pins[$i] = $replacementPin
         $sharedUpdateCount++
+        if ($pin -notin $pinsToReplace) {
+            [void]$pinsToReplace.Add($pin)
+        }
     }
 }
 
@@ -129,12 +137,29 @@ $summary = [ordered]@{
 Write-Host ($summary | ConvertTo-Json -Depth 8)
 
 if ($DryRun) {
-    Write-Host ""
-    Write-Host ("[DRY-RUN] would update dependency truth file at {0}" -f $truthPath) -ForegroundColor Cyan
+    if (($serviceUpdateCount + $sharedUpdateCount) -eq 0) {
+        Write-Host ""
+        Write-Host "[DRY-RUN] dependency truth already at approved version. No truth-file rewrite needed." -ForegroundColor Cyan
+    }
+    else {
+        Write-Host ""
+        Write-Host ("[DRY-RUN] would update dependency truth file at {0}" -f $truthPath) -ForegroundColor Cyan
+    }
 }
 else {
-    $truth | ConvertTo-Json -Depth 10 | Set-Content $truthPath
-    Write-Host ("Updated dependency truth file at {0}" -f $truthPath) -ForegroundColor Green
+    if (($serviceUpdateCount + $sharedUpdateCount) -eq 0) {
+        Write-Host ("Dependency truth already at approved version in {0}" -f $truthPath) -ForegroundColor Green
+    }
+    else {
+        foreach ($oldPin in $pinsToReplace) {
+            $pattern = ('"{0}"' -f [regex]::Escape($oldPin))
+            $replacement = ('"{0}"' -f $replacementPin)
+            $truthText = [regex]::Replace($truthText, $pattern, $replacement)
+        }
+
+        Set-Content $truthPath $truthText -NoNewline
+        Write-Host ("Updated dependency truth file at {0}" -f $truthPath) -ForegroundColor Green
+    }
 }
 
 Write-Section -Label "Syncing dependency truth to dependent files"
@@ -196,13 +221,12 @@ if ($AppendSessionLog) {
         "Synced dependent files from `config/phase2_python_dependency_truth.json` and re-ran dependency validation."
     )
 
-    if ($DryRun) {
-        & $sessionLogHelperPath -BranchName ("phase-2/{0}-{1}-wave" -f $PackageName, ($NewVersion -replace '\.', '-')) -Notes $notes -DryRun
-    }
-    else {
-        & $sessionLogHelperPath -BranchName ("phase-2/{0}-{1}-wave" -f $PackageName, ($NewVersion -replace '\.', '-')) -Notes $notes
+    & powershell -ExecutionPolicy Bypass -File $sessionLogHelperPath -BranchName ("phase-2/{0}-{1}-wave" -f $PackageName, ($NewVersion -replace '\.', '-')) -NotesText ($notes -join "`n")
+    if ($LASTEXITCODE -ne 0) {
+        throw "Session log append failed."
     }
 }
 
 Write-Host ""
 Write-Host "Phase 2 dependency wave automation completed." -ForegroundColor Green
+
