@@ -1,92 +1,90 @@
 # AGENTS.md
 
-This repository is built in narrow, proven phases.
+This file defines how coding agents should operate inside `eidonic-core`.
 
-## Rules
-- Do not invent architecture beyond the current proven phase.
-- Prefer small pull requests.
-- Do not add dependencies casually.
-- Preserve typed schemas and version fields.
-- Keep persistence, provenance, readiness, failure surfaces, and eval surfaces explicit.
-- Add tests for behavior changes and new retrieval surfaces.
-- After every merge, update local first.
-- Prove changes from `main`, not only from the feature branch.
-- Keep implementation grounded in current repo documents and current passing behavior.
+## Core rule
 
-## Current build truth
-Phase 2 scaffold is live and proven.
+Do not improvise repo truth.
 
-Current live chain:
-- `signal-gateway`
-- `herald-service`
-- `session-engine`
-- `eidon-orchestrator`
+Read the declared truth surfaces first, then make the smallest bounded change that satisfies the task.
 
-Current verified persistence:
-- `SignalRecord` via PostgreSQL
-- `ThresholdRecord` via PostgreSQL
-- `SessionRecord` via PostgreSQL
-- `EidonArtifactRecord` via PostgreSQL
-- `ArtifactLineageRecord` via PostgreSQL
+## Current repo posture
 
-Current verified provider/runtime surface:
-- local Ollama-backed provider adapter
-- persisted provider provenance
-- persisted provider failure semantics
-- explicit provider warmup and readiness
-- startup-enforced provider warmup
-- startup-enforced runtime preflight
-- local provider eval surface
-- pinned local provider eval baseline
-- isolated candidate comparison workflow
+- Phase 2 repo with manifest-backed topology, governance, dependency, and gate surfaces
+- Local-first operating model
+- Windows PowerShell is the primary operator path
+- Self-hosted Windows runner used for the Phase 2 GitHub Actions gate
 
-## Model-family policy
-Primary local model family:
-- `Gemma`
+## Priority truth surfaces
 
-Current default live model:
-- `gemma3n:e4b`
+Read these before making structural changes:
+- `README.md`
+- `SECURITY.md`
+- `docs/PROJECT_STATE_AT_A_GLANCE.md`
+- `docs/SESSION_LOG.md`
+- `config/service_topology_manifest.json`
+- `config/governance_rules_manifest.json`
+- `config/phase2_python_dependency_truth.json`
+- `scripts/run_phase2_gate.ps1`
+- `scripts/start_phase_2_stack.ps1`
+- `scripts/validate_*.ps1`
 
-Model classes:
-- default live model
-- Gemma-family candidates
-- non-Gemma tooling probes
+## Branch discipline
 
-Policy:
-- the system is Gemma-family-centered unless evidence forces a change
-- Gemma-family variants are the normal candidates for future comparison
-- non-Gemma models may be used to validate eval or comparison tooling, but they are not the default architectural direction
-- no default-model change happens without a written decision and evidence from the eval and comparison surfaces
+- one bounded branch at a time
+- no branch spray
+- no hidden helper rewrites outside branch scope
+- merge on GitHub, then update local first
+- do not leave branch work undocumented
 
-Fallback persistence still available:
-- `LocalJsonSignalStore`
-- `LocalJsonThresholdStore`
-- `LocalJsonSessionStore`
-- `LocalJsonArtifactStore`
-- `LocalJsonArtifactLineageStore`
+## Required docs updates
 
-Current discipline:
-- terminal-only for local build and test steps
-- GitHub web UI for PR creation and merge
-- one real change per branch
-- update local after every merge
-- local model in runtime is allowed and now proven
-- routing, second-model support, and training come after reliability and measurement surfaces are hardened
+Every Codex-driven structural branch must update:
+- `docs/SESSION_LOG.md`
 
-## Current working sequence
-1. contract surface
-2. persistence surface
-3. retrieval surface
-4. integration proof
-5. provider boundary
-6. provider provenance
-7. provider failure semantics
-8. provider warmup and readiness
-9. startup and preflight discipline
-10. eval surface
-11. eval baseline
-12. candidate comparison
-13. written decision
-14. truth sync
+Update `docs/PROJECT_STATE_AT_A_GLANCE.md` whenever any of these change:
+- service topology truth
+- gate surfaces
+- dependency truth source
+- governance posture
+- runner trust posture
+- Codex operating rules
 
-Do not skip ahead to fake future systems.
+## Proof rule
+
+Do not claim completion without running the smallest relevant proof.
+
+Preferred proof order:
+- targeted validator first
+- then broader gate only if the branch touches gate-relevant surfaces
+
+Common proofs:
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_service_topology_manifest.ps1`
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_phase2_topology_consistency.ps1`
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_phase2_dependency_pins.ps1`
+- `powershell -ExecutionPolicy Bypass -File .\scripts\run_phase2_gate.ps1`
+
+## Do-not rules
+
+- do not invent new truth sources when one already exists
+- do not hardcode versions into validators when they belong in a manifest or truth file
+- do not merge split dependency PRs one by one when they represent one shared dependency wave
+- do not treat self-hosted runner behavior as ephemeral unless the repo explicitly proves it
+- do not update docs after the fact; update them inside the branch
+
+## Repo-specific operating expectations
+
+- topology truth lives in `config/service_topology_manifest.json`
+- dependency truth lives in `config/phase2_python_dependency_truth.json`
+- gate entry point is `scripts/run_phase2_gate.ps1`
+- startup entry point is `scripts/start_phase_2_stack.ps1`
+- shared package truth for schemas lives in `packages/common-schemas/python/pyproject.toml`
+
+## Done means
+
+A branch is done only when:
+- the bounded change is implemented
+- the relevant validator or gate passes
+- `docs/SESSION_LOG.md` is updated
+- `docs/PROJECT_STATE_AT_A_GLANCE.md` is updated if structural truth changed
+- the PR description states what changed, why, and what proof passed
