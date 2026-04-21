@@ -112,3 +112,8 @@ Current gate validation surfaces also include:
 
 - `scripts/validate_automation_helpers.ps1` proves ignored local proof artifacts do not change git status
 - `scripts/validate_automation_helpers.ps1` proves merged-branch cleanup still includes temp-file pre-clean behavior
+
+## Current workflow validation posture
+
+- `scripts/validate_phase2_workflow_surface.ps1` validates `.github/workflows/phase2-gate.yml`
+- `scripts/run_phase2_gate.ps1` includes workflow surface validation before downstream runtime checks
