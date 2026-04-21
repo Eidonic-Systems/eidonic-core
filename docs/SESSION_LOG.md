@@ -991,3 +991,10 @@
 - Added `docs/CODEX_WORKFLOW.md` to standardize bounded Codex branch flow, proof discipline, and recovery order for new chats
 - Added `docs/PROJECT_STATE_AT_A_GLANCE.md` so future chats and agents can recover the live repo posture quickly without rereading the full branch history
 - Established explicit repo-memory rules: every structural branch updates `docs/SESSION_LOG.md`, and structural truth changes also update `docs/PROJECT_STATE_AT_A_GLANCE.md`
+
+## 2026-04-20
+- Created branch `phase-2/codex-project-config-surface`
+- Added project-scoped Codex config at `.codex/config.toml`
+- Added repo-scoped Codex skills under `.agents/skills/` for standard Phase 2 branch flow and coordinated dependency-wave absorption
+- Updated `docs/CODEX_WORKFLOW.md` and `docs/PROJECT_STATE_AT_A_GLANCE.md` to record the actual Codex config and skill locations
+- Kept the branch bounded to Codex project configuration, repo skills, and repo-memory documentation

@@ -2,7 +2,7 @@
 
 ## Current phase
 
-Phase 2 build solidification and trust-surface hardening.
+Phase 2 build solidification, trust-surface hardening, and Codex operating-surface setup.
 
 ## Current runtime spine
 
@@ -55,6 +55,9 @@ Declared in:
 ## Current repo-memory surfaces
 
 - `AGENTS.md`
+- `.codex/config.toml`
+- `.agents/skills/phase2-branch-flow/SKILL.md`
+- `.agents/skills/phase2-dependency-wave/SKILL.md`
 - `docs/CODEX_WORKFLOW.md`
 - `docs/PROJECT_STATE_AT_A_GLANCE.md`
 - `docs/SESSION_LOG.md`

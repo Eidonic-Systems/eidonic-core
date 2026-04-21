@@ -12,6 +12,12 @@ Codex should be used for bounded implementation, validation, documentation, and 
 
 Codex should not be used as a substitute for repo truth, architectural judgment, or uncontrolled multi-branch experimentation.
 
+## Repo Codex surfaces
+
+- project config: `.codex/config.toml`
+- repo skills: `.agents/skills/`
+- repo instructions: `AGENTS.md`
+
 ## Standard branch flow
 
 1. update local `main`
