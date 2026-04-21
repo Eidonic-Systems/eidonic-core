@@ -187,16 +187,6 @@ Current hardening expectations:
 - `absorb_phase2_dependency_wave.ps1` must not dirty the dependency truth file on a no-op approved version path
 - `append_session_log_entry.ps1` should accept multiple note arguments cleanly through `powershell -File`
 
-## Automation helper hardening note
-
-The automation helpers are expected to be idempotent and fail early on dirty working trees.
-
-Current hardening expectations:
-- `finish_merged_branch.ps1` must refuse cleanup before pull if the working tree is dirty
-- `sync_phase2_dependency_truth.ps1` must not rewrite already aligned files
-- `absorb_phase2_dependency_wave.ps1` must not dirty the dependency truth file on a no-op approved version path
-- `append_session_log_entry.ps1` should accept multiple note arguments cleanly through `powershell -File`
-
 
 ## validate_automation_helpers.ps1
 
@@ -217,9 +207,9 @@ This keeps failure output reviewable without depending on raw step log reconstru
 
 Known local proof artifacts are ignored by git and pre-cleaned by `scripts/finish_merged_branch.ps1` before dirty-tree refusal.
 
-Current local proof artifact paths:
-- `tmp_phase2_gate_output.txt`
-- `tmp_test_full_chain_output.txt`
+Current local proof artifact patterns:
+- `tmp_phase2_gate_output*.txt`
+- `tmp_test_full_chain_output*.txt`
 
 ## Cleanup idempotence note
 
@@ -286,4 +276,3 @@ The Phase 2 validation order is now declared in `config/phase2_gate_surface_mani
 `config/phase2_gate_surface_manifest.json` is the declared truth source for gate validation order.
 
 This README should reference that manifest instead of manually restating the full gate validation sequence in prose.
-
