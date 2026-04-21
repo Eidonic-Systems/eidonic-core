@@ -145,3 +145,17 @@ Appends a standard branch-scoped entry to `docs/SESSION_LOG.md` and supports dry
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\append_session_log_entry.ps1 -BranchName phase-2/example-branch -Notes "Did the thing."
 ```
+
+## sync_phase2_dependency_truth.ps1
+
+Syncs the current Phase 2 Python dependency surfaces from the declared truth source in `config/phase2_python_dependency_truth.json`.
+
+Supports:
+- rewriting each Phase 2 service `requirements.txt` from the truth file
+- rewriting the shared package dependency block in `packages/common-schemas/python/pyproject.toml` from the truth file
+- dry-run preview mode
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\sync_phase2_dependency_truth.ps1
+```
