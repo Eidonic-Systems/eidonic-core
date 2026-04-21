@@ -117,3 +117,8 @@ Current gate validation surfaces also include:
 
 - `scripts/validate_phase2_workflow_surface.ps1` validates `.github/workflows/phase2-gate.yml`
 - `scripts/run_phase2_gate.ps1` includes workflow surface validation before downstream runtime checks
+
+## Current capture-wrapper output posture
+
+- `scripts/run_phase2_gate_with_capture.ps1` uses a unique default local gate-output path per run
+- `.gitignore` and cleanup hygiene cover wildcard gate-output temp artifacts

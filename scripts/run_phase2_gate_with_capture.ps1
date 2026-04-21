@@ -1,5 +1,5 @@
 param(
-    [string]$OutputPath = "tmp_phase2_gate_output.txt",
+    [string]$OutputPath,
     [switch]$SkipStackStart,
     [switch]$DryRun
 )
@@ -8,10 +8,27 @@ $ErrorActionPreference = "Stop"
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 Set-Location $RepoRoot
 
-$resolvedOutputPath = if ([System.IO.Path]::IsPathRooted($OutputPath)) {
-    $OutputPath
-} else {
-    Join-Path $RepoRoot $OutputPath
+function Get-DefaultOutputPath {
+    param(
+        [string]$RootPath
+    )
+
+    $timestamp = Get-Date -Format "yyyyMMdd_HHmmss_fff"
+    $fileName = "tmp_phase2_gate_output_{0}_{1}.txt" -f $timestamp, $PID
+    return (Join-Path $RootPath $fileName)
+}
+
+if ([string]::IsNullOrWhiteSpace($OutputPath)) {
+    $resolvedOutputPath = Get-DefaultOutputPath -RootPath $RepoRoot
+    $usingGeneratedPath = $true
+}
+elseif ([System.IO.Path]::IsPathRooted($OutputPath)) {
+    $resolvedOutputPath = $OutputPath
+    $usingGeneratedPath = $false
+}
+else {
+    $resolvedOutputPath = Join-Path $RepoRoot $OutputPath
+    $usingGeneratedPath = $false
 }
 
 $gateArgs = @(
@@ -28,6 +45,15 @@ if ($DryRun) {
     Write-Host "Dry run for captured Phase 2 gate wrapper:" -ForegroundColor Yellow
     Write-Host ("powershell {0} *> {1}" -f ($gateArgs -join " "), $resolvedOutputPath) -ForegroundColor Cyan
     return
+}
+
+if ((-not $usingGeneratedPath) -and (Test-Path $resolvedOutputPath)) {
+    try {
+        Remove-Item $resolvedOutputPath -Force -ErrorAction Stop
+    }
+    catch {
+        throw ("Could not clear existing output file before captured gate run: {0}" -f $resolvedOutputPath)
+    }
 }
 
 & powershell @gateArgs *> $resolvedOutputPath
