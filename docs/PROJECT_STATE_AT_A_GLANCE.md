@@ -98,3 +98,8 @@ Current gate validation surfaces also include:
 
 - `.github/workflows/phase2-gate.yml` runs `scripts/run_phase2_gate_with_capture.ps1`
 - the workflow uploads captured Phase 2 gate output as a workflow artifact
+
+## Current temp-file hygiene surface
+
+- `.gitignore` ignores local proof artifact files
+- `scripts/finish_merged_branch.ps1` pre-cleans known temp output files before dirty-tree refusal

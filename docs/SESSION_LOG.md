@@ -1036,3 +1036,9 @@
 - Updated .github/workflows/phase2-gate.yml to run scripts/run_phase2_gate_with_capture.ps1 instead of calling the gate directly.
 - Added workflow artifact upload for the captured Phase 2 gate output so failures remain reviewable after the run.
 - Updated scripts and project-state docs to record the workflow gate capture surface.
+
+## 2026-04-21
+- Created branch `phase-2/temp-file-hygiene-surface`
+- Added git-ignore coverage for local proof artifact files so tmp gate output does not pollute working-tree status.
+- Hardened finish_merged_branch.ps1 so it pre-cleans known temp output files before dirty-tree refusal.
+- Updated scripts and project-state docs to record the temp-file hygiene surface.

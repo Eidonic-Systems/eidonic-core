@@ -34,7 +34,25 @@ function Run-GitStep {
 }
 
 function Get-DirtyWorkingTree {
-    return @((git status --short | Out-String).Trim().Split([Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries))
+    return @(
+        (git status --short | Out-String).Trim().Split(
+            [Environment]::NewLine,
+            [System.StringSplitOptions]::RemoveEmptyEntries
+        )
+    )
+}
+
+Write-Host ""
+Write-Host "==> Pre-cleaning known temp output files" -ForegroundColor Yellow
+foreach ($tempFile in $TempFiles) {
+    $tempPath = Join-Path $RepoRoot $tempFile
+
+    if ($DryRun) {
+        Write-Host ("[DRY-RUN] remove-item {0}" -f $tempPath) -ForegroundColor Cyan
+        continue
+    }
+
+    Remove-Item $tempPath -Force -ErrorAction SilentlyContinue
 }
 
 if (-not $DryRun) {
@@ -51,17 +69,6 @@ Run-GitStep -Label "Switching to main" -GitArgs @("switch", "main")
 Run-GitStep -Label "Pulling latest main" -GitArgs @("pull", "--ff-only")
 Run-GitStep -Label "Pruning remote refs" -GitArgs @("fetch", "--prune")
 Run-GitStep -Label "Showing repo status" -GitArgs @("status")
-
-foreach ($tempFile in $TempFiles) {
-    $tempPath = Join-Path $RepoRoot $tempFile
-
-    if ($DryRun) {
-        Write-Host ("[DRY-RUN] remove-item {0}" -f $tempPath) -ForegroundColor Cyan
-        continue
-    }
-
-    Remove-Item $tempPath -ErrorAction SilentlyContinue
-}
 
 $deleteFlag = if ($ForceDelete) { "-D" } else { "-d" }
 Run-GitStep -Label ("Deleting local branch {0}" -f $BranchName) -GitArgs @("branch", $deleteFlag, $BranchName)
