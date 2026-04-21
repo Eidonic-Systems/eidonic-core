@@ -33,6 +33,20 @@ function Run-GitStep {
     }
 }
 
+function Get-DirtyWorkingTree {
+    return @((git status --short | Out-String).Trim().Split([Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries))
+}
+
+if (-not $DryRun) {
+    $dirtyLines = Get-DirtyWorkingTree
+    if ($dirtyLines.Count -gt 0) {
+        Write-Host ""
+        Write-Host "Working tree is dirty. Refusing merged-branch cleanup before pull." -ForegroundColor Red
+        $dirtyLines | ForEach-Object { Write-Host $_ }
+        throw "Working tree is not clean. Commit, restore, or stash changes before running finish_merged_branch.ps1."
+    }
+}
+
 Run-GitStep -Label "Switching to main" -GitArgs @("switch", "main")
 Run-GitStep -Label "Pulling latest main" -GitArgs @("pull", "--ff-only")
 Run-GitStep -Label "Pruning remote refs" -GitArgs @("fetch", "--prune")

@@ -1015,3 +1015,8 @@
 - Added scripts/absorb_phase2_dependency_wave.ps1 to automate approved dependency version updates through the dependency truth source, sync surface, and validation surface.
 - Updated the dependency-wave skill and repo docs to record the new dependency-wave automation surface.
 - Kept proof bounded by using a no-op approved version for dry-run and execution checks rather than introducing new dependency churn.
+
+## 2026-04-20
+- Created branch `phase-2/automation-helper-hardening`
+- Hardened cleanup and dependency automation helpers so dirty-tree failures happen before pull and no-op dependency paths stay idempotent.
+- Hardened the session-log helper so multiple notes bind cleanly through powershell -File.

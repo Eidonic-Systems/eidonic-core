@@ -2,7 +2,7 @@ param(
     [Parameter(Mandatory = $true)]
     [string]$BranchName,
     [Parameter(Mandatory = $true)]
-    [string[]]$Notes,
+    [string]$NotesText,
     [switch]$DryRun
 )
 
@@ -21,16 +21,16 @@ $entryLines = [System.Collections.ArrayList]::new()
 [void]$entryLines.Add("## $dateStamp")
 [void]$entryLines.Add(('- Created branch `' + $BranchName + '`'))
 
-foreach ($note in $Notes) {
-    if ([string]::IsNullOrWhiteSpace($note)) {
-        continue
-    }
+$notes = @($NotesText -split "(`r`n|`n|`r)" | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
 
-    if ($note.StartsWith("- ")) {
-        [void]$entryLines.Add($note)
+foreach ($note in $notes) {
+    $trimmed = $note.Trim()
+
+    if ($trimmed.StartsWith("- ")) {
+        [void]$entryLines.Add($trimmed)
     }
     else {
-        [void]$entryLines.Add("- $note")
+        [void]$entryLines.Add("- $trimmed")
     }
 }
 
