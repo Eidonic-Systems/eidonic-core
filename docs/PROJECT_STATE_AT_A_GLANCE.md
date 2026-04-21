@@ -107,3 +107,8 @@ Current gate validation surfaces also include:
 ## Current cleanup idempotence posture
 
 - `scripts/finish_merged_branch.ps1` treats an already-absent local branch as an idempotent cleanup outcome
+
+## Current temp-hygiene validation posture
+
+- `scripts/validate_automation_helpers.ps1` proves ignored local proof artifacts do not change git status
+- `scripts/validate_automation_helpers.ps1` proves merged-branch cleanup still includes temp-file pre-clean behavior
