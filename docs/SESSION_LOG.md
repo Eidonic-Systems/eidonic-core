@@ -970,3 +970,10 @@
 - Added `docs/PHASE_2_RUNNER_TRUST_CONTRACT.md` to define the minimum operating contract for the self-hosted Phase 2 runner
 - Updated `SECURITY.md` to link the runner trust contract and make the runner boundary more explicit at the repo security surface
 - Kept the branch bounded to runner trust documentation and governance hygiene
+
+## 2026-04-20
+- Created branch `phase-2/pydantic-2-13-3-absorption`
+- Absorbed the coordinated `pydantic` update from `2.13.2` to `2.13.3` across the four Phase 2 services and `packages/common-schemas/python`
+- Updated `scripts/validate_phase2_dependency_pins.ps1` so the dependency pin validator reflects the new shared `pydantic==2.13.3` truth
+- Re-proved the dependency pin validation surface and Phase 2 gate after the coordinated update
+- Confirmed again that duplicated dependency truth surfaces create avoidable maintenance drag and should be collapsed into one source of truth next
