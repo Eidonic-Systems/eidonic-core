@@ -24,8 +24,16 @@ function Run-Step {
     }
 }
 
+Run-Step -Label "Validating service topology manifest" -Action {
+    powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\validate_service_topology_manifest.ps1') -RepoRoot $RepoRoot
+}
+
 Run-Step -Label "Validating Phase 2 dependency pins" -Action {
     powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\validate_phase2_dependency_pins.ps1') -RepoRoot $RepoRoot
+}
+
+Run-Step -Label "Validating automation helpers" -Action {
+    powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\validate_automation_helpers.ps1') -RepoRoot $RepoRoot
 }
 
 Run-Step -Label "Validating Phase 2 topology consistency" -Action {
@@ -86,5 +94,3 @@ Run-Step -Label "Running governance gate" -Action {
 
 Write-Host ""
 Write-Host "Phase 2 gate surface passed." -ForegroundColor Green
-
-

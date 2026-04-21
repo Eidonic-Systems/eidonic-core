@@ -1025,3 +1025,8 @@
 - Created branch `phase-2/automation-helper-validation-surface`
 - Added scripts/validate_automation_helpers.ps1 to prove the local helper layer for branch flow, merged-branch cleanup, gate capture, session-log append behavior, dependency sync, and no-op dependency-wave idempotence.
 - Updated scripts and Codex docs to make automation-helper validation a declared proof surface.
+
+## 2026-04-21
+- Created branch `phase-2/automation-helper-gate-integration`
+- Integrated automation helper validation into scripts/run_phase2_gate.ps1 so helper regressions are caught inside the standard Phase 2 proof path.
+- Updated scripts and project-state docs to record automation helper validation as part of the gate surface.

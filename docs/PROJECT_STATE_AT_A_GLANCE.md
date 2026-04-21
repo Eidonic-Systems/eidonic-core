@@ -88,3 +88,8 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 ## Current automation helper validation surface
 
 - `scripts/validate_automation_helpers.ps1`
+
+## Current gate posture update
+
+Current gate validation surfaces also include:
+- automation helper validation
