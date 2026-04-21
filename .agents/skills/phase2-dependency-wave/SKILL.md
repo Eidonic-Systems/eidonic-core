@@ -5,9 +5,9 @@ description: Use when Eidonic Core receives multiple dependency PRs that represe
 
 1. Do not merge split bot PRs one by one if they affect one shared dependency truth.
 2. Create one bounded manual absorption branch.
-3. Update all affected service requirement files and the shared package together.
-4. Update `config/phase2_python_dependency_truth.json` if the approved version changes.
-5. Update validator surfaces only if they consume the truth source and need logic changes, not because version truth is hardcoded again.
+3. Update `config/phase2_python_dependency_truth.json` or use `scripts/absorb_phase2_dependency_wave.ps1` to update the approved version once.
+4. Sync dependent files with `scripts/sync_phase2_dependency_truth.ps1`.
+5. Keep validator surfaces consuming the truth source instead of hardcoding version truth again.
 6. Run dependency pin validation first.
 7. Run the Phase 2 gate after dependency validation passes.
 8. Update `docs/SESSION_LOG.md` and mention why the wave was absorbed as one branch.
@@ -15,6 +15,9 @@ description: Use when Eidonic Core receives multiple dependency PRs that represe
 
 Repo-specific dependency truth:
 - Truth file: `config/phase2_python_dependency_truth.json`
+- Sync surface: `scripts/sync_phase2_dependency_truth.ps1`
+- Validation surface: `scripts/validate_phase2_dependency_pins.ps1`
+- Automation surface: `scripts/absorb_phase2_dependency_wave.ps1`
 - Shared package: `packages/common-schemas/python/pyproject.toml`
 - Gate proof: `powershell -ExecutionPolicy Bypass -File .\scripts\run_phase2_gate.ps1`
 
