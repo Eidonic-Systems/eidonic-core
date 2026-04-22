@@ -142,6 +142,7 @@ if ([string]::IsNullOrWhiteSpace([string]$manifest.manifest_version)) {
 
 Test-SurfaceChecks -Checks @($manifest.codex_surface_checks) -Label 'codex_surface_checks' -RepoRootPath $resolvedRepoRoot -Failures $failures
 Test-SurfaceChecks -Checks @($manifest.root_doc_surface_checks) -Label 'root_doc_surface_checks' -RepoRootPath $resolvedRepoRoot -Failures $failures
+Test-SurfaceChecks -Checks @($manifest.authoritative_status_surface_checks) -Label 'authoritative_status_surface_checks' -RepoRootPath $resolvedRepoRoot -Failures $failures
 
 Test-UniquePathArray -Values @($manifest.project_state_required_references) -Label 'project_state_required_references' -RepoRootPath $resolvedRepoRoot -Failures $failures
 Test-UniqueHeadingArray -Values @($manifest.project_state_required_sections) -Label 'project_state_required_sections' -Failures $failures
@@ -154,6 +155,7 @@ $summary = [ordered]@{
     manifest_version = [string]$manifest.manifest_version
     codex_surface_check_count = @($manifest.codex_surface_checks).Count
     root_doc_surface_check_count = @($manifest.root_doc_surface_checks).Count
+    authoritative_status_surface_check_count = @($manifest.authoritative_status_surface_checks).Count
     project_state_required_reference_count = @($manifest.project_state_required_references).Count
     project_state_required_section_count = @($manifest.project_state_required_sections).Count
     scripts_readme_required_reference_count = @($manifest.scripts_readme_required_references).Count

@@ -61,7 +61,8 @@
         "scripts[\\\\/]validate_recovery_surface_manifest\\.ps1",
         "scripts[\\\\/]validate_untracked_repo_files\\.ps1",
         "scripts[\\\\/]validate_scripts_readme_surface\\.ps1",
-        "scripts[\\\\/]validate_root_doc_surfaces\\.ps1"
+        "scripts[\\\\/]validate_root_doc_surfaces\\.ps1",
+        "scripts[\\\\/]validate_authoritative_status_surfaces\\.ps1"
       ]
     },
     {
@@ -78,7 +79,8 @@
         "scripts[\\\\/]validate_recovery_surface_manifest\\.ps1",
         "scripts[\\\\/]validate_untracked_repo_files\\.ps1",
         "scripts[\\\\/]validate_scripts_readme_surface\\.ps1",
-        "scripts[\\\\/]validate_root_doc_surfaces\\.ps1"
+        "scripts[\\\\/]validate_root_doc_surfaces\\.ps1",
+        "scripts[\\\\/]validate_authoritative_status_surfaces\\.ps1"
       ]
     },
     {
@@ -110,7 +112,8 @@
     "scripts/validate_session_log_surface.ps1",
     "scripts/validate_untracked_repo_files.ps1",
     "scripts/validate_scripts_readme_surface.ps1",
-    "scripts/validate_root_doc_surfaces.ps1"
+    "scripts/validate_root_doc_surfaces.ps1",
+    "scripts/validate_authoritative_status_surfaces.ps1"
   ],
   "project_state_required_sections": [
     "## Current gate posture",
@@ -122,7 +125,8 @@
     "## Current session-log validation surface",
     "## Current untracked-file guard surface",
     "## Current scripts-readme validation surface",
-    "## Current root-doc validation surface"
+    "## Current root-doc validation surface",
+    "## Current authoritative-status validation surface"
   ],
   "scripts_readme_required_references": [
     "config/service_topology_manifest.json",
@@ -172,6 +176,65 @@
         "docs[\\\\/]PHASE_2_RUNNER_TRUST_CONTRACT\\.md",
         "\\.github[\\\\/]workflows[\\\\/]phase2-gate\\.yml",
         "scripts[\\\\/]run_phase2_gate\\.ps1"
+      ]
+    }
+  ],
+  "authoritative_status_surface_checks": [
+    {
+      "path": "README.md",
+      "required_patterns": [
+        "## Authoritative status surfaces",
+        "docs[\\\\/]PHASE_2_STATUS\\.md",
+        "docs[\\\\/]PHASE_2_MILESTONE_100_MERGED_PRS\\.md",
+        "services[\\\\/]eidon-orchestrator[\\\\/]README\\.md",
+        "docs[\\\\/]PHASE_2_GOVERNANCE_GATE_SURFACE\\.md",
+        "docs[\\\\/]PHASE_2_STATE_GATE_SURFACE\\.md",
+        "docs[\\\\/]PHASE_2_POSTGRES_BOOTSTRAP_SURFACE\\.md",
+        "docs[\\\\/]PHASE_2_POSTGRES_SCHEMA_BOOTSTRAP_SURFACE\\.md",
+        "docs[\\\\/]PHASE_2_POSTGRES_SCHEMA_DRIFT_SURFACE\\.md",
+        "docs[\\\\/]PHASE_2_STARTUP_STATE_BOOTSTRAP_SURFACE\\.md",
+        "docs[\\\\/]PHASE_2_STARTUP_READINESS_SURFACE\\.md",
+        "docs[\\\\/]RUNNER_BOOTSTRAP\\.md"
+      ]
+    },
+    {
+      "path": "docs/PHASE_2_STATUS.md",
+      "required_patterns": [
+        "^# Phase 2 Status",
+        "## Current architecture",
+        "## Current control and routing position",
+        "## Governance status",
+        "## Manifest-backed governance pilot",
+        "## Current truth",
+        "governance",
+        "routing",
+        "provider"
+      ]
+    },
+    {
+      "path": "docs/PHASE_2_MILESTONE_100_MERGED_PRS.md",
+      "required_patterns": [
+        "^# Phase 2 Milestone: 100 Merged Pull Requests",
+        "## Why this milestone matters",
+        "## What existed by this milestone",
+        "## What it does mean",
+        "## Current decision",
+        "governance",
+        "routing"
+      ]
+    },
+    {
+      "path": "services/eidon-orchestrator/README.md",
+      "required_patterns": [
+        "^# Eidon Orchestrator",
+        "## Responsibility",
+        "## Current provider surface",
+        "## Current governance surface",
+        "## Current state surface",
+        "## Current truth",
+        "provider",
+        "governance",
+        "PostgreSQL"
       ]
     }
   ]
