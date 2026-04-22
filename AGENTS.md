@@ -22,9 +22,12 @@ Read these before making structural changes:
 - `SECURITY.md`
 - `docs/PROJECT_STATE_AT_A_GLANCE.md`
 - `docs/SESSION_LOG.md`
+- `docs/CODEX_WORKFLOW.md`
 - `config/service_topology_manifest.json`
 - `config/governance_rules_manifest.json`
 - `config/phase2_python_dependency_truth.json`
+- `config/phase2_gate_surface_manifest.json`
+- `config/recovery_surface_manifest.json`
 - `scripts/run_phase2_gate.ps1`
 - `scripts/start_phase_2_stack.ps1`
 - `scripts/validate_*.ps1`
@@ -62,6 +65,8 @@ Common proofs:
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_service_topology_manifest.ps1`
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_phase2_topology_consistency.ps1`
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_phase2_dependency_pins.ps1`
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_phase2_gate_surface_manifest.ps1`
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_recovery_surface_manifest.ps1`
 - `powershell -ExecutionPolicy Bypass -File .\scripts\run_phase2_gate.ps1`
 
 ## Do-not rules
@@ -76,6 +81,8 @@ Common proofs:
 
 - topology truth lives in `config/service_topology_manifest.json`
 - dependency truth lives in `config/phase2_python_dependency_truth.json`
+- gate validation order lives in `config/phase2_gate_surface_manifest.json`
+- recovery-surface references live in `config/recovery_surface_manifest.json`
 - gate entry point is `scripts/run_phase2_gate.ps1`
 - startup entry point is `scripts/start_phase_2_stack.ps1`
 - shared package truth for schemas lives in `packages/common-schemas/python/pyproject.toml`
@@ -107,3 +114,4 @@ A branch is done only when:
 ## Recovery-surface proof
 
 - `scripts/validate_recovery_surface_manifest.ps1`
+

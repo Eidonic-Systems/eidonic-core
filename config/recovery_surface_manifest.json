@@ -13,7 +13,13 @@
         "scripts[\\\\/]validate_codex_surfaces\\.ps1",
         "scripts[\\\\/]validate_recovery_surface_manifest\\.ps1",
         "Do not claim completion without running the smallest relevant proof",
-        "scripts[\\\\/]validate_untracked_repo_files\\.ps1"
+        "scripts[\\\\/]validate_untracked_repo_files\\.ps1",
+        "README\\.md",
+        "SECURITY\\.md",
+        "docs[\\\\/]CODEX_WORKFLOW\\.md",
+        "config[\\\\/]governance_rules_manifest\\.json",
+        "config[\\\\/]phase2_gate_surface_manifest\\.json",
+        "scripts[\\\\/]validate_phase2_gate_surface_manifest\\.ps1"
       ]
     },
     {
