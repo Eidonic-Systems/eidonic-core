@@ -1087,3 +1087,8 @@
 - Created branch `phase-2/scripts-readme-hygiene-surface`
 - Removed duplicated automation-helper hardening prose from scripts/README.md.
 - Updated the temp-file hygiene note in scripts/README.md so it reflects wildcard local proof-artifact coverage instead of exact filenames.
+
+## 2026-04-21
+- Created branch `phase-2/codex-workflow-hygiene-surface`
+- Removed the duplicated 'Codex surface validation rule' block from docs/CODEX_WORKFLOW.md after the drift scan found that heading twice.
+- Kept the fix bounded to Codex workflow documentation hygiene.
