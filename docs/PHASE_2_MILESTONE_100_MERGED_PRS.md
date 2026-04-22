@@ -76,7 +76,7 @@ Absorbed updates:
 - `httpx==0.28.1`
 - `uvicorn==0.44.0`
 - `fastapi==0.136.0`
-- `pydantic==2.13.2`
+- `pydantic==2.13.3`
 
 Critical correction:
 - the `pydantic` move required shared-package alignment in `packages/common-schemas/python` before the service environment resolver could succeed cleanly
@@ -86,3 +86,4 @@ Proof after absorption:
 - gate passed
 - governance manifest validation passed
 - governance rule fixtures passed
+

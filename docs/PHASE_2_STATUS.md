@@ -48,6 +48,8 @@ Governance runtime truth:
 - provider failure persists `fallback`
 - explicit impersonation-style requests persist `refuse`
 - explicit materially ambiguous command input persists `hold`
+- explicit scope-drift requests can persist `reshape`
+- explicit human-review events can persist `handoff`
 
 ## Manifest-backed governance pilot
 Governance pilot rules are now visible in:
@@ -93,7 +95,7 @@ Current proved dependency position:
 - `httpx==0.28.1`
 - `uvicorn==0.44.0`
 - `fastapi==0.136.0`
-- `pydantic==2.13.2`
+- `pydantic==2.13.3`
 
 Important truth:
 - the isolated `pydantic` service batch was not the real blocker
@@ -104,3 +106,4 @@ Main proof after the dependency wave:
 - `scripts/restart_phase_2_stack.ps1 -RunGate` passed
 - `scripts/validate_governance_rules_manifest.ps1` passed
 - `scripts/test_governance_rule_fixtures.ps1` passed
+

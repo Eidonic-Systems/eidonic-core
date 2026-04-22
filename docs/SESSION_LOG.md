@@ -1174,3 +1174,8 @@
 - Created branch `phase-2/agents-priority-truth-alignment`
 - Aligned AGENTS.md so the priority truth surface list and repo-specific operating expectations explicitly name the current gate and recovery manifests.
 - Updated the recovery-surface manifest so Codex validation now expects AGENTS.md to reflect the current truth-source architecture.
+
+## 2026-04-22
+- Created branch `phase-2/authoritative-status-truth-alignment`
+- Strengthened scripts/validate_authoritative_status_surfaces.ps1 so it now checks status-surface truth against the current dependency truth, governance manifest outcomes, and operator-surface gate posture.
+- Updated docs/PHASE_2_STATUS.md, docs/PHASE_2_MILESTONE_100_MERGED_PRS.md, and docs/PROJECT_STATE_AT_A_GLANCE.md to remove stale pydantic and gate-posture drift.
