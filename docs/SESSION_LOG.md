@@ -1144,3 +1144,8 @@
 - Created branch `phase-2/scripts-readme-gate-integration`
 - Integrated scripts/validate_scripts_readme_surface.ps1 into config/phase2_gate_surface_manifest.json so the standard Phase 2 gate validates the scripts README recovery surface before downstream runtime checks.
 - Updated scripts README, Codex workflow docs, and the project-state doc to record scripts-readme gate integration.
+
+## 2026-04-22
+- Created branch `phase-2/operator-surface-doc-consolidation`
+- Consolidated operator-facing documentation so scripts/README.md, docs/CODEX_WORKFLOW.md, and docs/PROJECT_STATE_AT_A_GLANCE.md point to config/phase2_gate_surface_manifest.json and config/recovery_surface_manifest.json instead of stacking one gate-integration note per surface.
+- Trimmed stale operator-surface prose blocks that duplicated truth already declared in the gate and recovery manifests.
