@@ -22,6 +22,10 @@
       "script_path": "scripts/validate_codex_surfaces.ps1"
     },
     {
+      "label": "Validating project-state surface",
+      "script_path": "scripts/validate_project_state_surface.ps1"
+    },
+    {
       "label": "Validating Phase 2 topology consistency",
       "script_path": "scripts/validate_phase2_topology_consistency.ps1"
     }

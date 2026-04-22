@@ -285,3 +285,7 @@ Validates `docs/PROJECT_STATE_AT_A_GLANCE.md` against the declared repo truth su
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\validate_project_state_surface.ps1
 ```
+
+## Project-state gate integration note
+
+`config/phase2_gate_surface_manifest.json` now includes `scripts/validate_project_state_surface.ps1`, so the standard Phase 2 gate validates the repo recovery surface before downstream runtime checks.

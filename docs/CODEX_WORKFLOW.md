@@ -117,3 +117,7 @@ run:
 
 When changing `docs/PROJECT_STATE_AT_A_GLANCE.md`, run:
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_project_state_surface.ps1`
+
+## Project-state gate integration rule
+
+`docs/PROJECT_STATE_AT_A_GLANCE.md` now has a dedicated validator and that validator is included in the standard Phase 2 gate through `config/phase2_gate_surface_manifest.json`.
