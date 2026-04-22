@@ -113,32 +113,13 @@ run:
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_codex_surfaces.ps1`
 
 
-## Project-state surface validation rule
-
-When changing `docs/PROJECT_STATE_AT_A_GLANCE.md`, run:
-- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_project_state_surface.ps1`
-
 ## Project-state gate integration rule
 
 `docs/PROJECT_STATE_AT_A_GLANCE.md` now has a dedicated validator and that validator is included in the standard Phase 2 gate through `config/phase2_gate_surface_manifest.json`.
 
-## Session-log surface validation rule
-
-When changing `docs/SESSION_LOG.md`, run:
-- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_session_log_surface.ps1`
-
 ## Session-log gate integration rule
 
 `docs/SESSION_LOG.md` now has a dedicated validator and that validator is included in the standard Phase 2 gate through `config/phase2_gate_surface_manifest.json`.
-
-## Recovery-surface truth source rule
-
-Recovery-surface references are declared in `config/recovery_surface_manifest.json`.
-
-When changing that manifest, run:
-- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_recovery_surface_manifest.ps1`
-- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_codex_surfaces.ps1`
-- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_project_state_surface.ps1`
 
 ## Untracked-file guard rule
 
@@ -150,3 +131,14 @@ Do this before final proof and commit so new repo files do not sit untracked unt
 ## Untracked-file gate integration rule
 
 `scripts/validate_untracked_repo_files.ps1` is now included in the standard Phase 2 gate through `config/phase2_gate_surface_manifest.json`.
+
+## Recovery-surface validation rule
+
+`config/recovery_surface_manifest.json` is the declared truth source for recovery-surface references.
+
+When changing recovery-surface docs or the recovery-surface manifest, run:
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_recovery_surface_manifest.ps1`
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_codex_surfaces.ps1`
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_project_state_surface.ps1`
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_session_log_surface.ps1`
+

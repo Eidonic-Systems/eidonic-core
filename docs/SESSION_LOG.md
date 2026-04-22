@@ -1129,3 +1129,8 @@
 - Created branch `phase-2/untracked-file-gate-integration`
 - Integrated scripts/validate_untracked_repo_files.ps1 into config/phase2_gate_surface_manifest.json so the standard Phase 2 gate catches untracked files before downstream runtime checks.
 - Updated scripts README, Codex workflow docs, and the project-state doc to record untracked-file gate integration.
+
+## 2026-04-21
+- Created branch `phase-2/recovery-doc-consolidation-surface`
+- Consolidated recovery-surface documentation so AGENTS, docs/CODEX_WORKFLOW.md, and docs/PROJECT_STATE_AT_A_GLANCE.md point to config/recovery_surface_manifest.json instead of retyping recovery-surface rules in multiple places.
+- Trimmed stale recovery-surface prose blocks that duplicated truth already declared in the recovery-surface manifest.
