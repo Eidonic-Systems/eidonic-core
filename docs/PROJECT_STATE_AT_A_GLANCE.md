@@ -182,3 +182,7 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 - `scripts/validate_provider_readiness_invariants.ps1` is declared in `config/phase2_gate_surface_manifest.json` under `post_start_runtime_steps`
 - the standard Phase 2 gate now proves warmup and health agreement after startup and baseline health checks
 
+
+## Current orchestration provenance invariant surface
+
+- `scripts/validate_orchestration_provenance_invariants.ps1` proves one real orchestration call persists matching provider and governance provenance across artifact and lineage retrieval surfaces

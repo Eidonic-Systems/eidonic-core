@@ -411,3 +411,20 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_provider_readiness_i
 
 `scripts/validate_provider_readiness_invariants.ps1` is declared in `post_start_runtime_steps` because it requires a live Orchestrator and validates warmup and health agreement after startup.
 
+
+## validate_orchestration_provenance_invariants.ps1
+
+Validates a real orchestration call against the persisted artifact and lineage retrieval surfaces.
+
+Checks include:
+- provider warmup succeeds before orchestration proof
+- one real `POST /orchestrate` call returns persisted artifact and lineage identifiers
+- `GET /artifacts/{artifact_id}` and `GET /lineage/{artifact_id}` both return the persisted records
+- artifact and lineage records agree on provider provenance fields
+- artifact and lineage records agree on governance provenance fields
+- manifest-backed default governance truth is persisted on the normal success path
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_orchestration_provenance_invariants.ps1
+```

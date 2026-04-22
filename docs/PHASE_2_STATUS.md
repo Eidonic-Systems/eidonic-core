@@ -107,3 +107,7 @@ Main proof after the dependency wave:
 - `scripts/validate_governance_rules_manifest.ps1` passed
 - `scripts/test_governance_rule_fixtures.ps1` passed
 
+
+## Orchestration provenance invariant proof
+
+- `scripts/validate_orchestration_provenance_invariants.ps1` proves one real orchestration call persists matching provider and governance provenance across artifact and lineage retrieval surfaces

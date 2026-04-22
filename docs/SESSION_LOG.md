@@ -1200,3 +1200,8 @@
 - Split config/phase2_gate_surface_manifest.json into pre-start validation_steps and post-start post_start_runtime_steps so provider readiness validation can run against a live Orchestrator.
 - Updated scripts/validate_phase2_gate_surface_manifest.ps1 and scripts/run_phase2_gate.ps1 to consume the split gate structure, then integrated scripts/validate_provider_readiness_invariants.ps1 into the post-start runtime step group.
 - Updated the scripts README, startup readiness doc, project-state doc, and session log to record provider readiness gate integration.
+
+## 2026-04-22
+- Created branch `phase-2/orchestration-provenance-invariant-surface`
+- Added scripts/validate_orchestration_provenance_invariants.ps1 to prove one real orchestration call persists matching provider and governance provenance across artifact and lineage retrieval surfaces.
+- Updated the scripts README, Orchestrator README, Phase 2 status doc, and project-state doc to record the new orchestration provenance invariant proof surface.
