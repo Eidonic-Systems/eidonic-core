@@ -146,3 +146,7 @@ When a branch creates new repo files, stage them early and run:
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_untracked_repo_files.ps1`
 
 Do this before final proof and commit so new repo files do not sit untracked until the end of the branch.
+
+## Untracked-file gate integration rule
+
+`scripts/validate_untracked_repo_files.ps1` is now included in the standard Phase 2 gate through `config/phase2_gate_surface_manifest.json`.

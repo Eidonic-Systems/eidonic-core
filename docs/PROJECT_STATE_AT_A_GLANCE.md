@@ -153,3 +153,8 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 
 - `scripts/validate_untracked_repo_files.ps1` detects untracked files before final proof and commit
 - known temp artifacts stay excluded through git ignore rules
+
+## Current untracked-file gate posture
+
+- `scripts/validate_untracked_repo_files.ps1` is included in `config/phase2_gate_surface_manifest.json`
+- the standard Phase 2 gate now catches untracked files before downstream runtime checks
