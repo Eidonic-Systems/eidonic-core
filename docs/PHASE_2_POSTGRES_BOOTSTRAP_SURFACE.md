@@ -28,3 +28,8 @@ It does not:
 - install PostgreSQL
 - pull Ollama models
 - change runtime behavior
+
+## PostgreSQL bootstrap idempotence surface
+
+The local PostgreSQL bootstrap path now has an explicit repeated-run proof surface:
+- `scripts/validate_phase2_postgres_bootstrap_idempotence.ps1`

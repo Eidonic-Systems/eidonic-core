@@ -1179,3 +1179,8 @@
 - Created branch `phase-2/authoritative-status-truth-alignment`
 - Strengthened scripts/validate_authoritative_status_surfaces.ps1 so it now checks status-surface truth against the current dependency truth, governance manifest outcomes, and operator-surface gate posture.
 - Updated docs/PHASE_2_STATUS.md, docs/PHASE_2_MILESTONE_100_MERGED_PRS.md, and docs/PROJECT_STATE_AT_A_GLANCE.md to remove stale pydantic and gate-posture drift.
+
+## 2026-04-22
+- Created branch `phase-2/postgres-bootstrap-idempotence-surface`
+- Added scripts/validate_phase2_postgres_bootstrap_idempotence.ps1 to prove repeated Phase 2 PostgreSQL database bootstrap, repeated schema bootstrap, and post-repeat schema-drift validation stay clean.
+- Updated the scripts README, PostgreSQL bootstrap docs, and project-state doc to record the new PostgreSQL bootstrap idempotence proof surface.
