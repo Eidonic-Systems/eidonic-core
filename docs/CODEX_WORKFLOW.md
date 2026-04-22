@@ -126,3 +126,7 @@ When changing `docs/PROJECT_STATE_AT_A_GLANCE.md`, run:
 
 When changing `docs/SESSION_LOG.md`, run:
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_session_log_surface.ps1`
+
+## Session-log gate integration rule
+
+`docs/SESSION_LOG.md` now has a dedicated validator and that validator is included in the standard Phase 2 gate through `config/phase2_gate_surface_manifest.json`.

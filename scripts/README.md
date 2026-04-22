@@ -305,3 +305,7 @@ Checks include:
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\validate_session_log_surface.ps1
 ```
+
+## Session-log gate integration note
+
+`config/phase2_gate_surface_manifest.json` now includes `scripts/validate_session_log_surface.ps1`, so the standard Phase 2 gate validates the session-log recovery surface before downstream runtime checks.
