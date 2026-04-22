@@ -1139,3 +1139,8 @@
 - Created branch `phase-2/scripts-readme-validation-surface`
 - Added scripts/validate_scripts_readme_surface.ps1 to validate scripts/README.md against the declared recovery-surface truth source.
 - Updated the recovery-surface manifest, scripts README, Codex workflow docs, project-state docs, and session log to record the new scripts-readme validation surface.
+
+## 2026-04-22
+- Created branch `phase-2/scripts-readme-gate-integration`
+- Integrated scripts/validate_scripts_readme_surface.ps1 into config/phase2_gate_surface_manifest.json so the standard Phase 2 gate validates the scripts README recovery surface before downstream runtime checks.
+- Updated scripts README, Codex workflow docs, and the project-state doc to record scripts-readme gate integration.

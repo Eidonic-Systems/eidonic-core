@@ -350,3 +350,7 @@ Validates `scripts/README.md` against the declared recovery-surface truth source
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\validate_scripts_readme_surface.ps1
 ```
+
+## Scripts-README gate integration note
+
+`config/phase2_gate_surface_manifest.json` now includes `scripts/validate_scripts_readme_surface.ps1`, so the standard Phase 2 gate validates the scripts README recovery surface before downstream runtime checks.

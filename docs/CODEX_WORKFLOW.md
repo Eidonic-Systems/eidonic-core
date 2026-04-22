@@ -147,3 +147,7 @@ When changing recovery-surface docs or the recovery-surface manifest, run:
 
 When changing `scripts/README.md`, run:
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_scripts_readme_surface.ps1`
+
+## Scripts-README gate integration rule
+
+`scripts/validate_scripts_readme_surface.ps1` is now included in the standard Phase 2 gate through `config/phase2_gate_surface_manifest.json`.
