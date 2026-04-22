@@ -1,4 +1,5 @@
 param(
+    [string]$RepoRoot = ".",
     [string]$EidonBaseUrl = "http://127.0.0.1:8003"
 )
 
@@ -196,3 +197,4 @@ if ($summary.status -ne "passed") {
 
 Write-Host ""
 Write-Host "Provider readiness invariant validation passed." -ForegroundColor Green
+

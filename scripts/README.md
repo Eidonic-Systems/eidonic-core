@@ -404,3 +404,10 @@ Checks include:
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\validate_provider_readiness_invariants.ps1
 ```
+
+## Provider readiness gate integration note
+
+`config/phase2_gate_surface_manifest.json` now separates pre-start `validation_steps` from post-start `post_start_runtime_steps`.
+
+`scripts/validate_provider_readiness_invariants.ps1` is declared in `post_start_runtime_steps` because it requires a live Orchestrator and validates warmup and health agreement after startup.
+

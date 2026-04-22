@@ -75,3 +75,10 @@ It does not:
 
 The startup and warmup surfaces now have an explicit provider-readiness proof surface:
 - `scripts/validate_provider_readiness_invariants.ps1`
+
+## Gate integration
+
+- `config/phase2_gate_surface_manifest.json` now declares post-start runtime validation in `post_start_runtime_steps`
+- `scripts/validate_provider_readiness_invariants.ps1` is included there because it requires a live Orchestrator
+- the standard Phase 2 gate now proves warmup and health agreement after startup and health checks
+

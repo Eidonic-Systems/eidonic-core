@@ -25,21 +25,18 @@ function Run-Step {
     }
 }
 
-function Invoke-GateValidationSteps {
+function Invoke-GateStepGroup {
     param(
-        [string]$ManifestPath,
+        [object[]]$Steps,
         [string]$RepoRootPath
     )
 
-    $manifest = Get-Content $ManifestPath -Raw | ConvertFrom-Json
-    $validationSteps = @($manifest.validation_steps)
-
-    foreach ($step in $validationSteps) {
+    foreach ($step in @($Steps)) {
         $label = [string]$step.label
         $relativeScriptPath = [string]$step.script_path
 
         if ([string]::IsNullOrWhiteSpace($label)) {
-            throw "Gate surface manifest contains a validation step with no label."
+            throw "Gate surface manifest contains a step with no label."
         }
 
         if ([string]::IsNullOrWhiteSpace($relativeScriptPath)) {
@@ -56,7 +53,9 @@ Run-Step -Label "Validating Phase 2 gate surface manifest" -Action {
     powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\validate_phase2_gate_surface_manifest.ps1') -RepoRoot $RepoRoot
 }
 
-Invoke-GateValidationSteps -ManifestPath $GateSurfaceManifestPath -RepoRootPath $RepoRoot
+$gateManifest = Get-Content $GateSurfaceManifestPath -Raw | ConvertFrom-Json
+
+Invoke-GateStepGroup -Steps @($gateManifest.validation_steps) -RepoRootPath $RepoRoot
 
 if (-not $SkipStackStart) {
     Run-Step -Label "Starting standard Phase 2 stack" -Action {
@@ -105,6 +104,8 @@ Run-Step -Label "Checking Phase 2 health" -Action {
 
     $health | ConvertTo-Json -Depth 12
 }
+
+Invoke-GateStepGroup -Steps @($gateManifest.post_start_runtime_steps) -RepoRootPath $RepoRoot
 
 Run-Step -Label "Running governance gate" -Action {
     powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\run_governance_gate.ps1') -SkipStackStart

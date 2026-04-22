@@ -38,7 +38,7 @@ Gate validation truth source:
 Gate manifest validator:
 - `scripts/validate_phase2_gate_surface_manifest.ps1`
 
-The gate consumes the declared validation order from the manifest before downstream runtime startup, database, health, and governance checks.
+The gate consumes declared pre-start validation order from `validation_steps`, then consumes declared post-start runtime validation order from `post_start_runtime_steps` after startup, state checks, warmup, and health.
 
 ## Current governance posture
 
@@ -176,3 +176,9 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 ## Current provider readiness invariant surface
 
 - `scripts/validate_provider_readiness_invariants.ps1` proves the warmup and health surfaces agree on provider-ready truth across repeated warmup
+
+## Current provider readiness gate posture
+
+- `scripts/validate_provider_readiness_invariants.ps1` is declared in `config/phase2_gate_surface_manifest.json` under `post_start_runtime_steps`
+- the standard Phase 2 gate now proves warmup and health agreement after startup and baseline health checks
+
