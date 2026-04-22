@@ -428,3 +428,10 @@ Checks include:
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\validate_orchestration_provenance_invariants.ps1
 ```
+
+## Orchestration provenance gate integration note
+
+`config/phase2_gate_surface_manifest.json` now includes `scripts/validate_orchestration_provenance_invariants.ps1` under `post_start_runtime_steps`.
+
+That means the standard Phase 2 gate proves one real orchestration call persists matching provider and governance provenance across artifact and lineage retrieval surfaces after startup, warmup, and health.
+

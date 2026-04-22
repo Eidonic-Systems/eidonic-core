@@ -182,3 +182,9 @@ The Orchestrator now sits inside a stricter Phase 2 spine:
 ## Orchestration provenance invariant proof
 
 - `scripts/validate_orchestration_provenance_invariants.ps1` proves one real orchestration call persists matching provider and governance provenance across artifact and lineage retrieval surfaces
+
+## Gate-integrated provenance proof
+
+- `scripts/validate_orchestration_provenance_invariants.ps1` is declared in `config/phase2_gate_surface_manifest.json` under `post_start_runtime_steps`
+- the standard Phase 2 gate now proves one real orchestration call persists matching provider and governance provenance across artifact and lineage retrieval surfaces
+
