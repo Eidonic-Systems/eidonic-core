@@ -154,3 +154,4 @@ When changing `README.md` or `SECURITY.md`, run:
 
 When changing the authoritative status surfaces named in `README.md`, run:
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_authoritative_status_surfaces.ps1`
+

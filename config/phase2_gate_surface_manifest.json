@@ -38,6 +38,10 @@
       "script_path": "scripts/validate_scripts_readme_surface.ps1"
     },
     {
+      "label": "Validating authoritative status surfaces",
+      "script_path": "scripts/validate_authoritative_status_surfaces.ps1"
+    },
+    {
       "label": "Validating root doc surfaces",
       "script_path": "scripts/validate_root_doc_surfaces.ps1"
     },

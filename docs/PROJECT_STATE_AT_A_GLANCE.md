@@ -164,3 +164,4 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 ## Current authoritative-status validation surface
 
 - `scripts/validate_authoritative_status_surfaces.ps1` validates the authoritative status surfaces declared in `README.md` against the recovery-surface truth source
+
