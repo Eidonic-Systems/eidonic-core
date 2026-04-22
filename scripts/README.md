@@ -388,3 +388,19 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_phase2_postgres_boot
 
 `config/phase2_gate_surface_manifest.json` now includes `scripts/validate_phase2_postgres_bootstrap_idempotence.ps1`, so the standard Phase 2 gate proves repeated local PostgreSQL bootstrap, repeated schema bootstrap, and post-repeat schema-drift validation before downstream runtime checks.
 
+
+## validate_provider_readiness_invariants.ps1
+
+Validates provider warmup and readiness invariants against a running local Eidon Orchestrator.
+
+Checks include:
+- baseline health surface is reachable and state stores are healthy
+- first warm call returns `status=warmed` and `provider.ready=true`
+- health after warm reports `provider.status=ok` and `provider.ready=true`
+- second warm call stays clean and does not regress ready truth
+- warm and health payloads agree on provider ready truth after repeated warmup
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_provider_readiness_invariants.ps1
+```

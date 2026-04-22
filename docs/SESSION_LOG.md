@@ -1189,3 +1189,8 @@
 - Created branch `phase-2/postgres-bootstrap-idempotence-gate-integration`
 - Integrated scripts/validate_phase2_postgres_bootstrap_idempotence.ps1 into config/phase2_gate_surface_manifest.json so the standard Phase 2 gate proves repeated local PostgreSQL bootstrap and schema-bootstrap behavior before downstream runtime checks.
 - Updated the scripts README, PostgreSQL state gate doc, PostgreSQL bootstrap doc, and project-state doc to record PostgreSQL bootstrap idempotence gate integration.
+
+## 2026-04-22
+- Created branch `phase-2/provider-readiness-invariant-surface`
+- Added scripts/validate_provider_readiness_invariants.ps1 to prove POST /provider/warm and GET /health agree on provider-ready truth across repeated warmup.
+- Updated the scripts README, startup readiness doc, Orchestrator README, and project-state doc to record the new provider readiness invariant proof surface.

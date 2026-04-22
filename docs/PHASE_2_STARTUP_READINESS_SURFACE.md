@@ -70,3 +70,8 @@ It does not:
 
 \- expand CI behavior
 
+
+## Provider readiness invariant proof
+
+The startup and warmup surfaces now have an explicit provider-readiness proof surface:
+- `scripts/validate_provider_readiness_invariants.ps1`
