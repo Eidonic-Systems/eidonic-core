@@ -112,3 +112,8 @@ When changing any of these surfaces:
 run:
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_codex_surfaces.ps1`
 
+
+## Project-state surface validation rule
+
+When changing `docs/PROJECT_STATE_AT_A_GLANCE.md`, run:
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_project_state_surface.ps1`
