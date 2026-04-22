@@ -1159,3 +1159,8 @@
 - Created branch `phase-2/root-doc-gate-integration`
 - Integrated scripts/validate_root_doc_surfaces.ps1 into config/phase2_gate_surface_manifest.json so the standard Phase 2 gate validates README.md and SECURITY.md before downstream runtime checks.
 - Updated scripts README, Codex workflow docs, and the project-state doc to record root-doc gate integration.
+
+## 2026-04-22
+- Created branch `phase-2/authoritative-status-surface-validation`
+- Added scripts/validate_authoritative_status_surfaces.ps1 to validate the authoritative status surfaces declared in README.md against the recovery-surface truth source.
+- Updated the recovery-surface manifest, recovery-manifest validator, scripts README, Codex workflow docs, project-state docs, and session log to record the new authoritative-status validation surface.

@@ -149,3 +149,8 @@ When changing `README.md` or `SECURITY.md`, run:
 ## Root-doc gate integration rule
 
 `scripts/validate_root_doc_surfaces.ps1` is now included in the standard Phase 2 gate through `config/phase2_gate_surface_manifest.json`.
+
+## Authoritative-status surface validation rule
+
+When changing the authoritative status surfaces named in `README.md`, run:
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_authoritative_status_surfaces.ps1`
