@@ -129,3 +129,8 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 ## Current project-state validation surface
 
 - `scripts/validate_project_state_surface.ps1` validates `docs/PROJECT_STATE_AT_A_GLANCE.md` against the declared repo truth surfaces it should reference
+
+## Current project-state gate posture
+
+- `scripts/validate_project_state_surface.ps1` is included in `config/phase2_gate_surface_manifest.json`
+- the standard Phase 2 gate now validates the project-state recovery surface before downstream runtime checks

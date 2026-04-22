@@ -1097,3 +1097,8 @@
 - Created branch `phase-2/project-state-validation-surface`
 - Added scripts/validate_project_state_surface.ps1 to validate docs/PROJECT_STATE_AT_A_GLANCE.md against the declared repo truth surfaces the recovery doc should reference.
 - Updated scripts README, Codex workflow docs, and the project-state doc to record the new project-state validation surface.
+
+## 2026-04-21
+- Created branch `phase-2/project-state-gate-integration`
+- Integrated scripts/validate_project_state_surface.ps1 into config/phase2_gate_surface_manifest.json so project-state recovery validation runs inside the standard Phase 2 gate.
+- Updated scripts README, Codex workflow docs, and the project-state doc to record project-state gate integration.
