@@ -13,6 +13,78 @@ function Add-Failure {
     [void]$Failures.Add($Message)
 }
 
+function Test-UniquePathArray {
+    param(
+        [object[]]$Values,
+        [string]$Label,
+        [string]$RepoRootPath,
+        [System.Collections.ArrayList]$Failures
+    )
+
+    if (@($Values).Count -eq 0) {
+        Add-Failure -Failures $Failures -Message ("recovery-surface manifest has no {0}" -f $Label)
+        return
+    }
+
+    $seen = [System.Collections.ArrayList]::new()
+
+    foreach ($value in @($Values)) {
+        $text = [string]$value
+
+        if ([string]::IsNullOrWhiteSpace($text)) {
+            Add-Failure -Failures $Failures -Message ("{0} contains an empty entry" -f $Label)
+            continue
+        }
+
+        if ($text -in $seen) {
+            Add-Failure -Failures $Failures -Message ("duplicate {0} '{1}'" -f $Label.TrimEnd('s'), $text)
+        }
+        else {
+            [void]$seen.Add($text)
+        }
+
+        $absolutePath = Join-Path $RepoRootPath $text
+        if (-not (Test-Path $absolutePath)) {
+            Add-Failure -Failures $Failures -Message ("{0} missing on disk: '{1}'" -f $Label.TrimEnd('s'), $text)
+        }
+    }
+}
+
+function Test-UniqueHeadingArray {
+    param(
+        [object[]]$Values,
+        [string]$Label,
+        [System.Collections.ArrayList]$Failures
+    )
+
+    if (@($Values).Count -eq 0) {
+        Add-Failure -Failures $Failures -Message ("recovery-surface manifest has no {0}" -f $Label)
+        return
+    }
+
+    $seen = [System.Collections.ArrayList]::new()
+
+    foreach ($value in @($Values)) {
+        $text = [string]$value
+
+        if ([string]::IsNullOrWhiteSpace($text)) {
+            Add-Failure -Failures $Failures -Message ("{0} contains an empty entry" -f $Label)
+            continue
+        }
+
+        if ($text -in $seen) {
+            Add-Failure -Failures $Failures -Message ("duplicate {0} '{1}'" -f $Label.TrimEnd('s'), $text)
+        }
+        else {
+            [void]$seen.Add($text)
+        }
+
+        if ($text -notmatch '^## ') {
+            Add-Failure -Failures $Failures -Message ("{0} must be a level-2 heading: '{1}'" -f $Label.TrimEnd('s'), $text)
+        }
+    }
+}
+
 $resolvedRepoRoot = (Resolve-Path $RepoRoot).Path
 $manifestPath = Join-Path $resolvedRepoRoot "config\recovery_surface_manifest.json"
 
@@ -35,7 +107,6 @@ if ($codexSurfaceChecks.Count -eq 0) {
 $pathsSeen = [System.Collections.ArrayList]::new()
 foreach ($surfaceCheck in $codexSurfaceChecks) {
     $relativePath = [string]$surfaceCheck.path
-    $requiredPatterns = @($surfaceCheck.required_patterns)
 
     if ([string]::IsNullOrWhiteSpace($relativePath)) {
         Add-Failure -Failures $failures -Message "codex surface check missing path"
@@ -59,66 +130,20 @@ foreach ($surfaceCheck in $codexSurfaceChecks) {
     }
 }
 
-$projectStateRequiredReferences = @($manifest.project_state_required_references)
-if ($projectStateRequiredReferences.Count -eq 0) {
-    Add-Failure -Failures $failures -Message "recovery-surface manifest has no project_state_required_references"
-}
-
-$projectReferenceSeen = [System.Collections.ArrayList]::new()
-foreach ($relativePath in $projectStateRequiredReferences) {
-    $pathText = [string]$relativePath
-
-    if ([string]::IsNullOrWhiteSpace($pathText)) {
-        Add-Failure -Failures $failures -Message "project_state_required_references contains an empty entry"
-        continue
-    }
-
-    if ($pathText -in $projectReferenceSeen) {
-        Add-Failure -Failures $failures -Message ("duplicate project_state_required_reference '{0}'" -f $pathText)
-    }
-    else {
-        [void]$projectReferenceSeen.Add($pathText)
-    }
-
-    $absolutePath = Join-Path $resolvedRepoRoot $pathText
-    if (-not (Test-Path $absolutePath)) {
-        Add-Failure -Failures $failures -Message ("project-state required reference missing on disk: '{0}'" -f $pathText)
-    }
-}
-
-$projectStateRequiredSections = @($manifest.project_state_required_sections)
-if ($projectStateRequiredSections.Count -eq 0) {
-    Add-Failure -Failures $failures -Message "recovery-surface manifest has no project_state_required_sections"
-}
-
-$sectionSeen = [System.Collections.ArrayList]::new()
-foreach ($sectionHeading in $projectStateRequiredSections) {
-    $headingText = [string]$sectionHeading
-
-    if ([string]::IsNullOrWhiteSpace($headingText)) {
-        Add-Failure -Failures $failures -Message "project_state_required_sections contains an empty entry"
-        continue
-    }
-
-    if ($headingText -in $sectionSeen) {
-        Add-Failure -Failures $failures -Message ("duplicate project_state_required_section '{0}'" -f $headingText)
-    }
-    else {
-        [void]$sectionSeen.Add($headingText)
-    }
-
-    if ($headingText -notmatch '^## ') {
-        Add-Failure -Failures $failures -Message ("project_state_required_section must be a level-2 heading: '{0}'" -f $headingText)
-    }
-}
+Test-UniquePathArray -Values @($manifest.project_state_required_references) -Label 'project_state_required_references' -RepoRootPath $resolvedRepoRoot -Failures $failures
+Test-UniqueHeadingArray -Values @($manifest.project_state_required_sections) -Label 'project_state_required_sections' -Failures $failures
+Test-UniquePathArray -Values @($manifest.scripts_readme_required_references) -Label 'scripts_readme_required_references' -RepoRootPath $resolvedRepoRoot -Failures $failures
+Test-UniqueHeadingArray -Values @($manifest.scripts_readme_required_sections) -Label 'scripts_readme_required_sections' -Failures $failures
 
 $summary = [ordered]@{
     status = $(if ($failures.Count -eq 0) { "passed" } else { "failed" })
     manifest_path = $manifestPath
     manifest_version = [string]$manifest.manifest_version
     codex_surface_check_count = $codexSurfaceChecks.Count
-    project_state_required_reference_count = $projectStateRequiredReferences.Count
-    project_state_required_section_count = $projectStateRequiredSections.Count
+    project_state_required_reference_count = @($manifest.project_state_required_references).Count
+    project_state_required_section_count = @($manifest.project_state_required_sections).Count
+    scripts_readme_required_reference_count = @($manifest.scripts_readme_required_references).Count
+    scripts_readme_required_section_count = @($manifest.scripts_readme_required_sections).Count
     failures = @($failures)
 }
 
