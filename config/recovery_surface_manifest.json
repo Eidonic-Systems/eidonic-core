@@ -12,7 +12,8 @@
         "scripts[\\\\/]run_phase2_gate\\.ps1",
         "scripts[\\\\/]validate_codex_surfaces\\.ps1",
         "scripts[\\\\/]validate_recovery_surface_manifest\\.ps1",
-        "Do not claim completion without running the smallest relevant proof"
+        "Do not claim completion without running the smallest relevant proof",
+        "scripts[\\\\/]validate_untracked_repo_files\\.ps1"
       ]
     },
     {
@@ -57,7 +58,8 @@
         "scripts[\\\\/]validate_codex_surfaces\\.ps1",
         "scripts[\\\\/]validate_project_state_surface\\.ps1",
         "scripts[\\\\/]validate_session_log_surface\\.ps1",
-        "scripts[\\\\/]validate_recovery_surface_manifest\\.ps1"
+        "scripts[\\\\/]validate_recovery_surface_manifest\\.ps1",
+        "scripts[\\\\/]validate_untracked_repo_files\\.ps1"
       ]
     },
     {
@@ -71,7 +73,8 @@
         "scripts[\\\\/]validate_codex_surfaces\\.ps1",
         "scripts[\\\\/]validate_project_state_surface\\.ps1",
         "scripts[\\\\/]validate_session_log_surface\\.ps1",
-        "scripts[\\\\/]validate_recovery_surface_manifest\\.ps1"
+        "scripts[\\\\/]validate_recovery_surface_manifest\\.ps1",
+        "scripts[\\\\/]validate_untracked_repo_files\\.ps1"
       ]
     },
     {
@@ -100,7 +103,8 @@
     "scripts/validate_phase2_workflow_surface.ps1",
     "scripts/validate_codex_surfaces.ps1",
     "scripts/validate_project_state_surface.ps1",
-    "scripts/validate_session_log_surface.ps1"
+    "scripts/validate_session_log_surface.ps1",
+    "scripts/validate_untracked_repo_files.ps1"
   ],
   "project_state_required_sections": [
     "## Current gate posture",
@@ -109,6 +113,7 @@
     "## Current repo-memory surfaces",
     "## Current recovery-surface truth source",
     "## Current project-state validation surface",
-    "## Current session-log validation surface"
+    "## Current session-log validation surface",
+    "## Current untracked-file guard surface"
   ]
 }

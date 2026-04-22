@@ -102,3 +102,7 @@ A branch is done only when:
 ## Recovery-surface proof
 
 - `scripts/validate_recovery_surface_manifest.ps1`
+
+## Untracked file guard
+
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_untracked_repo_files.ps1`

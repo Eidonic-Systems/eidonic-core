@@ -1119,3 +1119,8 @@
 - Added config/recovery_surface_manifest.json as the declared truth source for Codex-surface references and project-state recovery references.
 - Added scripts/validate_recovery_surface_manifest.ps1 and reworked scripts/validate_codex_surfaces.ps1 plus scripts/validate_project_state_surface.ps1 to consume the recovery-surface manifest.
 - Updated AGENTS, scripts README, Codex workflow docs, project-state docs, and the gate manifest to record the recovery-surface truth source.
+
+## 2026-04-21
+- Created branch `phase-2/untracked-file-guard-surface`
+- Added scripts/validate_untracked_repo_files.ps1 to catch untracked files before final proof and commit while relying on git ignore rules to exclude known temp artifacts.
+- Updated the recovery-surface manifest, AGENTS, scripts README, Codex workflow docs, and project-state docs to record the new untracked-file guard surface.

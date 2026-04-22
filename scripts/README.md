@@ -324,3 +324,16 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_recovery_surface_man
 `config/recovery_surface_manifest.json` is the declared truth source for Codex surface references and project-state recovery references.
 
 `scripts/validate_codex_surfaces.ps1` and `scripts/validate_project_state_surface.ps1` now consume that manifest instead of hardcoding the same recovery-surface lists separately.
+
+## validate_untracked_repo_files.ps1
+
+Validates that the working tree has no untracked files before proof and commit, while relying on git ignore rules to exclude known temp artifacts.
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_untracked_repo_files.ps1
+```
+
+## Untracked-file guard note
+
+When a branch creates real new repo files, stage them early and run `scripts/validate_untracked_repo_files.ps1` before final proof and commit.
