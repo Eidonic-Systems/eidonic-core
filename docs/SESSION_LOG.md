@@ -1108,3 +1108,8 @@
 - Added scripts/validate_session_log_surface.ps1 to validate docs/SESSION_LOG.md as a repo recovery surface.
 - Updated project-state validation, scripts README, Codex workflow docs, and project-state docs to record the new session-log validation surface.
 
+
+## 2026-04-21
+- Created branch `phase-2/session-log-gate-integration`
+- Integrated scripts/validate_session_log_surface.ps1 into config/phase2_gate_surface_manifest.json so session-log recovery validation runs inside the standard Phase 2 gate.
+- Updated scripts README, Codex workflow docs, and the project-state doc to record session-log gate integration.

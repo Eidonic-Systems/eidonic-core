@@ -22,6 +22,10 @@
       "script_path": "scripts/validate_codex_surfaces.ps1"
     },
     {
+      "label": "Validating session-log surface",
+      "script_path": "scripts/validate_session_log_surface.ps1"
+    },
+    {
       "label": "Validating project-state surface",
       "script_path": "scripts/validate_project_state_surface.ps1"
     },
