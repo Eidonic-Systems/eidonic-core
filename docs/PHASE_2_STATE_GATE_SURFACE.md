@@ -13,6 +13,7 @@ The top-level Phase 2 gate now runs:
 - PostgreSQL database bootstrap
 - PostgreSQL schema bootstrap
 - PostgreSQL schema drift validation
+- PostgreSQL bootstrap idempotence validation
 
 before continuing to the rest of the normal proof path.
 
@@ -29,3 +30,4 @@ It does not:
 - add new persistence fields
 - widen governance behavior
 - expand CI behavior
+

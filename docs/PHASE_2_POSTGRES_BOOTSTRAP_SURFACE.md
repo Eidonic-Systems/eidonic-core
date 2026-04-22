@@ -33,3 +33,9 @@ It does not:
 
 The local PostgreSQL bootstrap path now has an explicit repeated-run proof surface:
 - `scripts/validate_phase2_postgres_bootstrap_idempotence.ps1`
+
+## Gate integration
+
+- `scripts/validate_phase2_postgres_bootstrap_idempotence.ps1` is included in `config/phase2_gate_surface_manifest.json`
+- the standard Phase 2 gate now proves repeated local PostgreSQL bootstrap behavior before downstream runtime checks
+

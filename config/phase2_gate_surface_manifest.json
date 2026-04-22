@@ -52,6 +52,10 @@
     {
       "label": "Validating Phase 2 topology consistency",
       "script_path": "scripts/validate_phase2_topology_consistency.ps1"
+    },
+    {
+      "label": "Validating Phase 2 PostgreSQL bootstrap idempotence",
+      "script_path": "scripts/validate_phase2_postgres_bootstrap_idempotence.ps1"
     }
   ]
 }
