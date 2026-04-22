@@ -166,3 +166,7 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 - `scripts/validate_authoritative_status_surfaces.ps1` validates the authoritative status surfaces declared in `README.md` against the recovery-surface truth source
 
 
+
+## Current PostgreSQL bootstrap idempotence surface
+
+- `scripts/validate_phase2_postgres_bootstrap_idempotence.ps1` proves repeated database bootstrap, repeated schema bootstrap, and schema-drift validation stay clean on the local Phase 2 state layer

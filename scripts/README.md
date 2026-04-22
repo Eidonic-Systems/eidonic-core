@@ -367,3 +367,19 @@ Validates the authoritative status surfaces declared in `README.md` against the 
 powershell -ExecutionPolicy Bypass -File .\scripts\validate_authoritative_status_surfaces.ps1
 ```
 
+
+## validate_phase2_postgres_bootstrap_idempotence.ps1
+
+Validates repeated Phase 2 PostgreSQL bootstrap and schema-bootstrap runs against the local state layer.
+
+Checks include:
+- first database bootstrap run passes
+- second database bootstrap run settles to `already_exists`
+- first schema bootstrap run passes
+- second schema bootstrap run passes
+- schema drift validation still passes after repeated bootstrap
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_phase2_postgres_bootstrap_idempotence.ps1
+```

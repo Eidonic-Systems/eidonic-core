@@ -30,3 +30,8 @@ It does not:
 - widen governance behavior
 - add CI behavior
 - replace the existing database bootstrap script
+
+## Repeated-run proof
+
+The repeated local bootstrap path is now proved by:
+- `scripts/validate_phase2_postgres_bootstrap_idempotence.ps1`
