@@ -187,7 +187,6 @@ Current hardening expectations:
 - `absorb_phase2_dependency_wave.ps1` must not dirty the dependency truth file on a no-op approved version path
 - `append_session_log_entry.ps1` should accept multiple note arguments cleanly through `powershell -File`
 
-
 ## validate_automation_helpers.ps1
 
 Validates the local workflow automation helper layer for bounded branch flow, merged-branch cleanup, gate capture, session-log append behavior, dependency truth sync, and no-op dependency-wave idempotence.
@@ -286,10 +285,6 @@ Validates `docs/PROJECT_STATE_AT_A_GLANCE.md` against the declared repo truth su
 powershell -ExecutionPolicy Bypass -File .\scripts\validate_project_state_surface.ps1
 ```
 
-## Project-state gate integration note
-
-`config/phase2_gate_surface_manifest.json` now includes `scripts/validate_project_state_surface.ps1`, so the standard Phase 2 gate validates the repo recovery surface before downstream runtime checks.
-
 ## validate_session_log_surface.ps1
 
 Validates `docs/SESSION_LOG.md` as a repo recovery surface.
@@ -305,10 +300,6 @@ Checks include:
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\validate_session_log_surface.ps1
 ```
-
-## Session-log gate integration note
-
-`config/phase2_gate_surface_manifest.json` now includes `scripts/validate_session_log_surface.ps1`, so the standard Phase 2 gate validates the session-log recovery surface before downstream runtime checks.
 
 ## validate_recovery_surface_manifest.ps1
 
@@ -338,10 +329,6 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_untracked_repo_files
 
 When a branch creates real new repo files, stage them early and run `scripts/validate_untracked_repo_files.ps1` before final proof and commit.
 
-## Untracked-file gate integration note
-
-`config/phase2_gate_surface_manifest.json` now includes `scripts/validate_untracked_repo_files.ps1`, so the standard Phase 2 gate catches untracked files before downstream runtime checks.
-
 ## validate_scripts_readme_surface.ps1
 
 Validates `scripts/README.md` against the declared recovery-surface truth source at `config/recovery_surface_manifest.json`.
@@ -351,6 +338,9 @@ Validates `scripts/README.md` against the declared recovery-surface truth source
 powershell -ExecutionPolicy Bypass -File .\scripts\validate_scripts_readme_surface.ps1
 ```
 
-## Scripts-README gate integration note
+## Operator-surface gate integration note
 
-`config/phase2_gate_surface_manifest.json` now includes `scripts/validate_scripts_readme_surface.ps1`, so the standard Phase 2 gate validates the scripts README recovery surface before downstream runtime checks.
+`config/phase2_gate_surface_manifest.json` is the declared truth source for operator-surface gate integration.
+
+Operator-facing recovery validators now integrate through that manifest instead of adding one separate gate-integration note per surface.
+

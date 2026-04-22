@@ -123,9 +123,6 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 - `scripts/validate_codex_surfaces.ps1` validates `AGENTS.md`, `.codex/config.toml`, repo skill manifests, and Codex recovery docs
 - gate inclusion order is declared in `config/phase2_gate_surface_manifest.json`
 
-
-
-
 ## Current project-state validation surface
 
 - `scripts/validate_project_state_surface.ps1` validates `docs/PROJECT_STATE_AT_A_GLANCE.md` against the declared repo truth surfaces it should reference
@@ -145,17 +142,12 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 - `scripts/validate_untracked_repo_files.ps1` detects untracked files before final proof and commit
 - known temp artifacts stay excluded through git ignore rules
 
-## Current untracked-file gate posture
-
-- `scripts/validate_untracked_repo_files.ps1` is included in `config/phase2_gate_surface_manifest.json`
-- the standard Phase 2 gate now catches untracked files before downstream runtime checks
-
-
 ## Current scripts-readme validation surface
 
 - `scripts/validate_scripts_readme_surface.ps1` validates `scripts/README.md` against the declared recovery-surface truth source
 
-## Current scripts-readme gate posture
+## Current operator-surface gate posture
 
-- `scripts/validate_scripts_readme_surface.ps1` is included in `config/phase2_gate_surface_manifest.json`
-- the standard Phase 2 gate now validates the scripts README recovery surface before downstream runtime checks
+- `config/phase2_gate_surface_manifest.json` declares operator-surface gate integration
+- the standard Phase 2 gate now validates project-state, session-log, untracked-file, and scripts-README recovery surfaces before downstream runtime checks
+

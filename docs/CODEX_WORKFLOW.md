@@ -112,25 +112,12 @@ When changing any of these surfaces:
 run:
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_codex_surfaces.ps1`
 
-
-## Project-state gate integration rule
-
-`docs/PROJECT_STATE_AT_A_GLANCE.md` now has a dedicated validator and that validator is included in the standard Phase 2 gate through `config/phase2_gate_surface_manifest.json`.
-
-## Session-log gate integration rule
-
-`docs/SESSION_LOG.md` now has a dedicated validator and that validator is included in the standard Phase 2 gate through `config/phase2_gate_surface_manifest.json`.
-
 ## Untracked-file guard rule
 
 When a branch creates new repo files, stage them early and run:
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_untracked_repo_files.ps1`
 
 Do this before final proof and commit so new repo files do not sit untracked until the end of the branch.
-
-## Untracked-file gate integration rule
-
-`scripts/validate_untracked_repo_files.ps1` is now included in the standard Phase 2 gate through `config/phase2_gate_surface_manifest.json`.
 
 ## Recovery-surface validation rule
 
@@ -142,12 +129,14 @@ When changing recovery-surface docs or the recovery-surface manifest, run:
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_project_state_surface.ps1`
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_session_log_surface.ps1`
 
-
 ## Scripts-README surface validation rule
 
 When changing `scripts/README.md`, run:
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_scripts_readme_surface.ps1`
 
-## Scripts-README gate integration rule
+## Operator-surface gate integration rule
 
-`scripts/validate_scripts_readme_surface.ps1` is now included in the standard Phase 2 gate through `config/phase2_gate_surface_manifest.json`.
+`config/phase2_gate_surface_manifest.json` is the declared truth source for operator-surface gate integration.
+
+When operator-facing recovery validators are integrated into the standard Phase 2 gate, update that manifest and prove the result with gate-manifest validation and the normal gate run.
+
