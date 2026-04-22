@@ -341,3 +341,12 @@ When a branch creates real new repo files, stage them early and run `scripts/val
 ## Untracked-file gate integration note
 
 `config/phase2_gate_surface_manifest.json` now includes `scripts/validate_untracked_repo_files.ps1`, so the standard Phase 2 gate catches untracked files before downstream runtime checks.
+
+## validate_scripts_readme_surface.ps1
+
+Validates `scripts/README.md` against the declared recovery-surface truth source at `config/recovery_surface_manifest.json`.
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_scripts_readme_surface.ps1
+```

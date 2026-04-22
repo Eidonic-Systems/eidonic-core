@@ -1134,3 +1134,8 @@
 - Created branch `phase-2/recovery-doc-consolidation-surface`
 - Consolidated recovery-surface documentation so AGENTS, docs/CODEX_WORKFLOW.md, and docs/PROJECT_STATE_AT_A_GLANCE.md point to config/recovery_surface_manifest.json instead of retyping recovery-surface rules in multiple places.
 - Trimmed stale recovery-surface prose blocks that duplicated truth already declared in the recovery-surface manifest.
+
+## 2026-04-22
+- Created branch `phase-2/scripts-readme-validation-surface`
+- Added scripts/validate_scripts_readme_surface.ps1 to validate scripts/README.md against the declared recovery-surface truth source.
+- Updated the recovery-surface manifest, scripts README, Codex workflow docs, project-state docs, and session log to record the new scripts-readme validation surface.

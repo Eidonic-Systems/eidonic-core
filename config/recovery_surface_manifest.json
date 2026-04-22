@@ -59,7 +59,8 @@
         "scripts[\\\\/]validate_project_state_surface\\.ps1",
         "scripts[\\\\/]validate_session_log_surface\\.ps1",
         "scripts[\\\\/]validate_recovery_surface_manifest\\.ps1",
-        "scripts[\\\\/]validate_untracked_repo_files\\.ps1"
+        "scripts[\\\\/]validate_untracked_repo_files\\.ps1",
+        "scripts[\\\\/]validate_scripts_readme_surface\\.ps1"
       ]
     },
     {
@@ -74,7 +75,8 @@
         "scripts[\\\\/]validate_project_state_surface\\.ps1",
         "scripts[\\\\/]validate_session_log_surface\\.ps1",
         "scripts[\\\\/]validate_recovery_surface_manifest\\.ps1",
-        "scripts[\\\\/]validate_untracked_repo_files\\.ps1"
+        "scripts[\\\\/]validate_untracked_repo_files\\.ps1",
+        "scripts[\\\\/]validate_scripts_readme_surface\\.ps1"
       ]
     },
     {
@@ -104,7 +106,8 @@
     "scripts/validate_codex_surfaces.ps1",
     "scripts/validate_project_state_surface.ps1",
     "scripts/validate_session_log_surface.ps1",
-    "scripts/validate_untracked_repo_files.ps1"
+    "scripts/validate_untracked_repo_files.ps1",
+    "scripts/validate_scripts_readme_surface.ps1"
   ],
   "project_state_required_sections": [
     "## Current gate posture",
@@ -114,6 +117,33 @@
     "## Current recovery-surface truth source",
     "## Current project-state validation surface",
     "## Current session-log validation surface",
-    "## Current untracked-file guard surface"
+    "## Current untracked-file guard surface",
+    "## Current scripts-readme validation surface"
+  ],
+  "scripts_readme_required_references": [
+    "config/service_topology_manifest.json",
+    "config/phase2_python_dependency_truth.json",
+    "config/phase2_gate_surface_manifest.json",
+    "config/recovery_surface_manifest.json",
+    "scripts/run_phase2_gate.ps1",
+    "scripts/start_phase_2_stack.ps1",
+    "scripts/validate_service_topology_manifest.ps1",
+    "scripts/validate_phase2_dependency_pins.ps1",
+    "scripts/validate_phase2_topology_consistency.ps1",
+    "scripts/validate_automation_helpers.ps1",
+    "scripts/validate_phase2_workflow_surface.ps1",
+    "scripts/validate_codex_surfaces.ps1",
+    "scripts/validate_recovery_surface_manifest.ps1",
+    "scripts/validate_project_state_surface.ps1",
+    "scripts/validate_session_log_surface.ps1",
+    "scripts/validate_untracked_repo_files.ps1",
+    "scripts/validate_scripts_readme_surface.ps1"
+  ],
+  "scripts_readme_required_sections": [
+    "## run_phase2_gate.ps1",
+    "## validate_recovery_surface_manifest.ps1",
+    "## validate_scripts_readme_surface.ps1",
+    "## Gate documentation rule",
+    "## Recovery-surface truth source note"
   ]
 }

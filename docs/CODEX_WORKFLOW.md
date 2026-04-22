@@ -142,3 +142,8 @@ When changing recovery-surface docs or the recovery-surface manifest, run:
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_project_state_surface.ps1`
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_session_log_surface.ps1`
 
+
+## Scripts-README surface validation rule
+
+When changing `scripts/README.md`, run:
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_scripts_readme_surface.ps1`

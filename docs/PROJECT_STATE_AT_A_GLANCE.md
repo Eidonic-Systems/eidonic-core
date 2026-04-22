@@ -150,3 +150,7 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 - `scripts/validate_untracked_repo_files.ps1` is included in `config/phase2_gate_surface_manifest.json`
 - the standard Phase 2 gate now catches untracked files before downstream runtime checks
 
+
+## Current scripts-readme validation surface
+
+- `scripts/validate_scripts_readme_surface.ps1` validates `scripts/README.md` against the declared recovery-surface truth source
