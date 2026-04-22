@@ -1184,3 +1184,8 @@
 - Created branch `phase-2/postgres-bootstrap-idempotence-surface`
 - Added scripts/validate_phase2_postgres_bootstrap_idempotence.ps1 to prove repeated Phase 2 PostgreSQL database bootstrap, repeated schema bootstrap, and post-repeat schema-drift validation stay clean.
 - Updated the scripts README, PostgreSQL bootstrap docs, and project-state doc to record the new PostgreSQL bootstrap idempotence proof surface.
+
+## 2026-04-22
+- Created branch `phase-2/postgres-bootstrap-idempotence-gate-integration`
+- Integrated scripts/validate_phase2_postgres_bootstrap_idempotence.ps1 into config/phase2_gate_surface_manifest.json so the standard Phase 2 gate proves repeated local PostgreSQL bootstrap and schema-bootstrap behavior before downstream runtime checks.
+- Updated the scripts README, PostgreSQL state gate doc, PostgreSQL bootstrap doc, and project-state doc to record PostgreSQL bootstrap idempotence gate integration.

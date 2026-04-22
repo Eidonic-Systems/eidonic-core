@@ -383,3 +383,8 @@ Checks include:
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\validate_phase2_postgres_bootstrap_idempotence.ps1
 ```
+
+## PostgreSQL state gate integration note
+
+`config/phase2_gate_surface_manifest.json` now includes `scripts/validate_phase2_postgres_bootstrap_idempotence.ps1`, so the standard Phase 2 gate proves repeated local PostgreSQL bootstrap, repeated schema bootstrap, and post-repeat schema-drift validation before downstream runtime checks.
+

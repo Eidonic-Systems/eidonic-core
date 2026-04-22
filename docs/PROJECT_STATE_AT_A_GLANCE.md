@@ -151,7 +151,6 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 - `config/phase2_gate_surface_manifest.json` declares operator-surface gate integration
 - the standard Phase 2 gate now validates project-state, session-log, untracked-file, scripts-README, root-doc, and authoritative-status surfaces before downstream runtime checks
 
-
 ## Current root-doc validation surface
 
 - `scripts/validate_root_doc_surfaces.ps1` validates `README.md` and `SECURITY.md` against the declared recovery-surface truth source
@@ -165,8 +164,11 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 
 - `scripts/validate_authoritative_status_surfaces.ps1` validates the authoritative status surfaces declared in `README.md` against the recovery-surface truth source
 
-
-
 ## Current PostgreSQL bootstrap idempotence surface
 
-- `scripts/validate_phase2_postgres_bootstrap_idempotence.ps1` proves repeated database bootstrap, repeated schema bootstrap, and schema-drift validation stay clean on the local Phase 2 state layer
+- `scripts/validate_phase2_postgres_bootstrap_idempotence.ps1` proves repeated database bootstrap, repeated schema bootstrap, and post-repeat schema-drift validation stay clean on the local Phase 2 state layer
+
+## Current PostgreSQL state gate posture
+
+- `scripts/validate_phase2_postgres_bootstrap_idempotence.ps1` is included in `config/phase2_gate_surface_manifest.json`
+- the standard Phase 2 gate now proves repeated local PostgreSQL bootstrap behavior before downstream runtime checks
