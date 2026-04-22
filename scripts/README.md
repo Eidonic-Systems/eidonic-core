@@ -337,3 +337,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_untracked_repo_files
 ## Untracked-file guard note
 
 When a branch creates real new repo files, stage them early and run `scripts/validate_untracked_repo_files.ps1` before final proof and commit.
+
+## Untracked-file gate integration note
+
+`config/phase2_gate_surface_manifest.json` now includes `scripts/validate_untracked_repo_files.ps1`, so the standard Phase 2 gate catches untracked files before downstream runtime checks.

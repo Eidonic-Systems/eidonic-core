@@ -30,6 +30,10 @@
       "script_path": "scripts/validate_session_log_surface.ps1"
     },
     {
+      "label": "Validating untracked-file guard surface",
+      "script_path": "scripts/validate_untracked_repo_files.ps1"
+    },
+    {
       "label": "Validating project-state surface",
       "script_path": "scripts/validate_project_state_surface.ps1"
     },

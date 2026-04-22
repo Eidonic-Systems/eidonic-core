@@ -1124,3 +1124,8 @@
 - Created branch `phase-2/untracked-file-guard-surface`
 - Added scripts/validate_untracked_repo_files.ps1 to catch untracked files before final proof and commit while relying on git ignore rules to exclude known temp artifacts.
 - Updated the recovery-surface manifest, AGENTS, scripts README, Codex workflow docs, and project-state docs to record the new untracked-file guard surface.
+
+## 2026-04-21
+- Created branch `phase-2/untracked-file-gate-integration`
+- Integrated scripts/validate_untracked_repo_files.ps1 into config/phase2_gate_surface_manifest.json so the standard Phase 2 gate catches untracked files before downstream runtime checks.
+- Updated scripts README, Codex workflow docs, and the project-state doc to record untracked-file gate integration.
