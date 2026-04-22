@@ -103,13 +103,13 @@
 - Next step: open PR for the first real service-to-service link in the core spine
 
 ## 2026-04-07
-- Created branch phase-2/full-chain-integration-test
+- Created branch `phase-2/full-chain-integration-test`
 - Added 	ests/integration/test_full_chain.ps1
 - Added 	ests/README.md
 - Next step: open PR for the first automated full-chain integration test
 
 ## 2026-04-07
-- Created branch phase-2/full-chain-integration-test
+- Created branch `phase-2/full-chain-integration-test`
 - Added 	ests/integration/test_full_chain.ps1
 - Added 	ests/README.md
 - Next step: open PR for the first automated full-chain integration test
@@ -1102,3 +1102,9 @@
 - Created branch `phase-2/project-state-gate-integration`
 - Integrated scripts/validate_project_state_surface.ps1 into config/phase2_gate_surface_manifest.json so project-state recovery validation runs inside the standard Phase 2 gate.
 - Updated scripts README, Codex workflow docs, and the project-state doc to record project-state gate integration.
+
+## 2026-04-21
+- Created branch `phase-2/session-log-validation-surface`
+- Added scripts/validate_session_log_surface.ps1 to validate docs/SESSION_LOG.md as a repo recovery surface.
+- Updated project-state validation, scripts README, Codex workflow docs, and project-state docs to record the new session-log validation surface.
+
