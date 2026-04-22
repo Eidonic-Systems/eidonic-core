@@ -125,3 +125,7 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 
 
 
+
+## Current project-state validation surface
+
+- `scripts/validate_project_state_surface.ps1` validates `docs/PROJECT_STATE_AT_A_GLANCE.md` against the declared repo truth surfaces it should reference

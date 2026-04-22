@@ -276,3 +276,12 @@ The Phase 2 validation order is now declared in `config/phase2_gate_surface_mani
 `config/phase2_gate_surface_manifest.json` is the declared truth source for gate validation order.
 
 This README should reference that manifest instead of manually restating the full gate validation sequence in prose.
+
+## validate_project_state_surface.ps1
+
+Validates `docs/PROJECT_STATE_AT_A_GLANCE.md` against the declared repo truth surfaces the recovery doc is expected to reference.
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_project_state_surface.ps1
+```

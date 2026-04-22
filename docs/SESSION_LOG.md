@@ -1092,3 +1092,8 @@
 - Created branch `phase-2/codex-workflow-hygiene-surface`
 - Removed the duplicated 'Codex surface validation rule' block from docs/CODEX_WORKFLOW.md after the drift scan found that heading twice.
 - Kept the fix bounded to Codex workflow documentation hygiene.
+
+## 2026-04-21
+- Created branch `phase-2/project-state-validation-surface`
+- Added scripts/validate_project_state_surface.ps1 to validate docs/PROJECT_STATE_AT_A_GLANCE.md against the declared repo truth surfaces the recovery doc should reference.
+- Updated scripts README, Codex workflow docs, and the project-state doc to record the new project-state validation surface.
