@@ -151,3 +151,7 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 - `config/phase2_gate_surface_manifest.json` declares operator-surface gate integration
 - the standard Phase 2 gate now validates project-state, session-log, untracked-file, and scripts-README recovery surfaces before downstream runtime checks
 
+
+## Current root-doc validation surface
+
+- `scripts/validate_root_doc_surfaces.ps1` validates `README.md` and `SECURITY.md` against the declared recovery-surface truth source

@@ -60,7 +60,8 @@
         "scripts[\\\\/]validate_session_log_surface\\.ps1",
         "scripts[\\\\/]validate_recovery_surface_manifest\\.ps1",
         "scripts[\\\\/]validate_untracked_repo_files\\.ps1",
-        "scripts[\\\\/]validate_scripts_readme_surface\\.ps1"
+        "scripts[\\\\/]validate_scripts_readme_surface\\.ps1",
+        "scripts[\\\\/]validate_root_doc_surfaces\\.ps1"
       ]
     },
     {
@@ -76,7 +77,8 @@
         "scripts[\\\\/]validate_session_log_surface\\.ps1",
         "scripts[\\\\/]validate_recovery_surface_manifest\\.ps1",
         "scripts[\\\\/]validate_untracked_repo_files\\.ps1",
-        "scripts[\\\\/]validate_scripts_readme_surface\\.ps1"
+        "scripts[\\\\/]validate_scripts_readme_surface\\.ps1",
+        "scripts[\\\\/]validate_root_doc_surfaces\\.ps1"
       ]
     },
     {
@@ -107,7 +109,8 @@
     "scripts/validate_project_state_surface.ps1",
     "scripts/validate_session_log_surface.ps1",
     "scripts/validate_untracked_repo_files.ps1",
-    "scripts/validate_scripts_readme_surface.ps1"
+    "scripts/validate_scripts_readme_surface.ps1",
+    "scripts/validate_root_doc_surfaces.ps1"
   ],
   "project_state_required_sections": [
     "## Current gate posture",
@@ -118,7 +121,8 @@
     "## Current project-state validation surface",
     "## Current session-log validation surface",
     "## Current untracked-file guard surface",
-    "## Current scripts-readme validation surface"
+    "## Current scripts-readme validation surface",
+    "## Current root-doc validation surface"
   ],
   "scripts_readme_required_references": [
     "config/service_topology_manifest.json",
@@ -145,5 +149,30 @@
     "## validate_scripts_readme_surface.ps1",
     "## Gate documentation rule",
     "## Recovery-surface truth source note"
+  ],
+  "root_doc_surface_checks": [
+    {
+      "path": "README.md",
+      "required_patterns": [
+        "SECURITY\\.md",
+        "docs[\\\\/]PROJECT_STATE_AT_A_GLANCE\\.md",
+        "docs[\\\\/]SESSION_LOG\\.md",
+        "scripts[\\\\/]run_phase2_gate\\.ps1",
+        "config[\\\\/]phase2_gate_surface_manifest\\.json",
+        "config[\\\\/]recovery_surface_manifest\\.json",
+        "## Authoritative status surfaces"
+      ]
+    },
+    {
+      "path": "SECURITY.md",
+      "required_patterns": [
+        "## Reporting a vulnerability",
+        "## Current security posture",
+        "## Runner trust contract",
+        "docs[\\\\/]PHASE_2_RUNNER_TRUST_CONTRACT\\.md",
+        "\\.github[\\\\/]workflows[\\\\/]phase2-gate\\.yml",
+        "scripts[\\\\/]run_phase2_gate\\.ps1"
+      ]
+    }
   ]
 }

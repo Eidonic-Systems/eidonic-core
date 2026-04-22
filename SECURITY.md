@@ -37,3 +37,9 @@ That document defines the current repo-level expectations for:
 
 ## Disclosure expectations
 Please allow time for validation and remediation before public disclosure.
+
+## Related security control surfaces
+
+- `.github/workflows/phase2-gate.yml`
+- `scripts/run_phase2_gate.ps1`
+- `docs/PHASE_2_RUNNER_TRUST_CONTRACT.md`
