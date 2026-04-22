@@ -1149,3 +1149,8 @@
 - Created branch `phase-2/operator-surface-doc-consolidation`
 - Consolidated operator-facing documentation so scripts/README.md, docs/CODEX_WORKFLOW.md, and docs/PROJECT_STATE_AT_A_GLANCE.md point to config/phase2_gate_surface_manifest.json and config/recovery_surface_manifest.json instead of stacking one gate-integration note per surface.
 - Trimmed stale operator-surface prose blocks that duplicated truth already declared in the gate and recovery manifests.
+
+## 2026-04-22
+- Created branch `phase-2/root-doc-surface-validation`
+- Added scripts/validate_root_doc_surfaces.ps1 to validate README.md and SECURITY.md against the declared recovery-surface truth source.
+- Updated the recovery-surface manifest, recovery-manifest validator, root docs, scripts README, Codex workflow docs, project-state docs, and session log to record the new root-doc validation surface.

@@ -156,3 +156,15 @@ Eidonic Core is now a disciplined local orchestration build with:
 - visible rules
 - explicit rule provenance
 - fail-fast startup and gate discipline
+
+## Operator recovery surfaces
+
+- `SECURITY.md`
+- `docs/PROJECT_STATE_AT_A_GLANCE.md`
+- `docs/SESSION_LOG.md`
+
+## Gate and recovery truth sources
+
+- `scripts/run_phase2_gate.ps1`
+- `config/phase2_gate_surface_manifest.json`
+- `config/recovery_surface_manifest.json`

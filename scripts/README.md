@@ -344,3 +344,12 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_scripts_readme_surfa
 
 Operator-facing recovery validators now integrate through that manifest instead of adding one separate gate-integration note per surface.
 
+
+## validate_root_doc_surfaces.ps1
+
+Validates `README.md` and `SECURITY.md` against the declared recovery-surface truth source at `config/recovery_surface_manifest.json`.
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_root_doc_surfaces.ps1
+```

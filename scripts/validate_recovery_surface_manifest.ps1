@@ -85,6 +85,47 @@ function Test-UniqueHeadingArray {
     }
 }
 
+function Test-SurfaceChecks {
+    param(
+        [object[]]$Checks,
+        [string]$Label,
+        [string]$RepoRootPath,
+        [System.Collections.ArrayList]$Failures
+    )
+
+    if (@($Checks).Count -eq 0) {
+        Add-Failure -Failures $Failures -Message ("recovery-surface manifest has no {0}" -f $Label)
+        return
+    }
+
+    $pathsSeen = [System.Collections.ArrayList]::new()
+
+    foreach ($surfaceCheck in @($Checks)) {
+        $relativePath = [string]$surfaceCheck.path
+
+        if ([string]::IsNullOrWhiteSpace($relativePath)) {
+            Add-Failure -Failures $Failures -Message ("{0} contains a check with no path" -f $Label)
+            continue
+        }
+
+        if ($relativePath -in $pathsSeen) {
+            Add-Failure -Failures $Failures -Message ("duplicate {0} path '{1}'" -f $Label.TrimEnd('s'), $relativePath)
+        }
+        else {
+            [void]$pathsSeen.Add($relativePath)
+        }
+
+        $absolutePath = Join-Path $RepoRootPath $relativePath
+        if (-not (Test-Path $absolutePath)) {
+            Add-Failure -Failures $Failures -Message ("{0} path missing on disk: '{1}'" -f $Label.TrimEnd('s'), $relativePath)
+        }
+
+        if ($null -eq $surfaceCheck.required_patterns) {
+            Add-Failure -Failures $Failures -Message ("{0} '{1}' missing required_patterns" -f $Label.TrimEnd('s'), $relativePath)
+        }
+    }
+}
+
 $resolvedRepoRoot = (Resolve-Path $RepoRoot).Path
 $manifestPath = Join-Path $resolvedRepoRoot "config\recovery_surface_manifest.json"
 
@@ -99,36 +140,8 @@ if ([string]::IsNullOrWhiteSpace([string]$manifest.manifest_version)) {
     Add-Failure -Failures $failures -Message "recovery-surface manifest missing manifest_version"
 }
 
-$codexSurfaceChecks = @($manifest.codex_surface_checks)
-if ($codexSurfaceChecks.Count -eq 0) {
-    Add-Failure -Failures $failures -Message "recovery-surface manifest has no codex_surface_checks"
-}
-
-$pathsSeen = [System.Collections.ArrayList]::new()
-foreach ($surfaceCheck in $codexSurfaceChecks) {
-    $relativePath = [string]$surfaceCheck.path
-
-    if ([string]::IsNullOrWhiteSpace($relativePath)) {
-        Add-Failure -Failures $failures -Message "codex surface check missing path"
-        continue
-    }
-
-    if ($relativePath -in $pathsSeen) {
-        Add-Failure -Failures $failures -Message ("duplicate codex surface path '{0}'" -f $relativePath)
-    }
-    else {
-        [void]$pathsSeen.Add($relativePath)
-    }
-
-    $absolutePath = Join-Path $resolvedRepoRoot $relativePath
-    if (-not (Test-Path $absolutePath)) {
-        Add-Failure -Failures $failures -Message ("codex surface path missing on disk: '{0}'" -f $relativePath)
-    }
-
-    if ($null -eq $surfaceCheck.required_patterns) {
-        Add-Failure -Failures $failures -Message ("codex surface check '{0}' missing required_patterns" -f $relativePath)
-    }
-}
+Test-SurfaceChecks -Checks @($manifest.codex_surface_checks) -Label 'codex_surface_checks' -RepoRootPath $resolvedRepoRoot -Failures $failures
+Test-SurfaceChecks -Checks @($manifest.root_doc_surface_checks) -Label 'root_doc_surface_checks' -RepoRootPath $resolvedRepoRoot -Failures $failures
 
 Test-UniquePathArray -Values @($manifest.project_state_required_references) -Label 'project_state_required_references' -RepoRootPath $resolvedRepoRoot -Failures $failures
 Test-UniqueHeadingArray -Values @($manifest.project_state_required_sections) -Label 'project_state_required_sections' -Failures $failures
@@ -139,7 +152,8 @@ $summary = [ordered]@{
     status = $(if ($failures.Count -eq 0) { "passed" } else { "failed" })
     manifest_path = $manifestPath
     manifest_version = [string]$manifest.manifest_version
-    codex_surface_check_count = $codexSurfaceChecks.Count
+    codex_surface_check_count = @($manifest.codex_surface_checks).Count
+    root_doc_surface_check_count = @($manifest.root_doc_surface_checks).Count
     project_state_required_reference_count = @($manifest.project_state_required_references).Count
     project_state_required_section_count = @($manifest.project_state_required_sections).Count
     scripts_readme_required_reference_count = @($manifest.scripts_readme_required_references).Count
