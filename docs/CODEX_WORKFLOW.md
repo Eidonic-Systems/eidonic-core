@@ -130,3 +130,12 @@ When changing `docs/SESSION_LOG.md`, run:
 ## Session-log gate integration rule
 
 `docs/SESSION_LOG.md` now has a dedicated validator and that validator is included in the standard Phase 2 gate through `config/phase2_gate_surface_manifest.json`.
+
+## Recovery-surface truth source rule
+
+Recovery-surface references are declared in `config/recovery_surface_manifest.json`.
+
+When changing that manifest, run:
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_recovery_surface_manifest.ps1`
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_codex_surfaces.ps1`
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_project_state_surface.ps1`

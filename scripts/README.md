@@ -309,3 +309,18 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_session_log_surface.
 ## Session-log gate integration note
 
 `config/phase2_gate_surface_manifest.json` now includes `scripts/validate_session_log_surface.ps1`, so the standard Phase 2 gate validates the session-log recovery surface before downstream runtime checks.
+
+## validate_recovery_surface_manifest.ps1
+
+Validates `config/recovery_surface_manifest.json` as the declared truth source for recovery-surface references.
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_recovery_surface_manifest.ps1
+```
+
+## Recovery-surface truth source note
+
+`config/recovery_surface_manifest.json` is the declared truth source for Codex surface references and project-state recovery references.
+
+`scripts/validate_codex_surfaces.ps1` and `scripts/validate_project_state_surface.ps1` now consume that manifest instead of hardcoding the same recovery-surface lists separately.

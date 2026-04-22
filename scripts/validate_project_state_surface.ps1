@@ -15,32 +15,19 @@ function Add-Failure {
 
 $resolvedRepoRoot = (Resolve-Path $RepoRoot).Path
 $projectStatePath = Join-Path $resolvedRepoRoot "docs\PROJECT_STATE_AT_A_GLANCE.md"
+$manifestPath = Join-Path $resolvedRepoRoot "config\recovery_surface_manifest.json"
 
 if (-not (Test-Path $projectStatePath)) {
     throw "Missing project-state surface at $projectStatePath"
 }
 
-$requiredTruthSurfaces = @(
-    "config/service_topology_manifest.json",
-    "config/phase2_python_dependency_truth.json",
-    "config/phase2_gate_surface_manifest.json",
-    "scripts/run_phase2_gate.ps1",
-    "scripts/validate_phase2_gate_surface_manifest.ps1",
-    "config/governance_rules_manifest.json",
-    ".github/workflows/phase2-gate.yml",
-    "docs/PHASE_2_RUNNER_TRUST_CONTRACT.md",
-    "AGENTS.md",
-    ".codex/config.toml",
-    ".agents/skills/phase2-branch-flow/SKILL.md",
-    ".agents/skills/phase2-dependency-wave/SKILL.md",
-    "docs/CODEX_WORKFLOW.md",
-    "docs/SESSION_LOG.md",
-    "scripts/validate_automation_helpers.ps1",
-    "scripts/validate_phase2_workflow_surface.ps1",
-    "scripts/validate_codex_surfaces.ps1",
-    "scripts/validate_project_state_surface.ps1",
-    "scripts/validate_session_log_surface.ps1"
-)
+if (-not (Test-Path $manifestPath)) {
+    throw "Missing recovery-surface manifest at $manifestPath"
+}
+
+$manifest = Get-Content $manifestPath -Raw | ConvertFrom-Json
+$requiredTruthSurfaces = @($manifest.project_state_required_references)
+$requiredSections = @($manifest.project_state_required_sections)
 
 foreach ($relativePath in $requiredTruthSurfaces) {
     $absolutePath = Join-Path $resolvedRepoRoot $relativePath
@@ -53,31 +40,27 @@ $projectStateText = Get-Content $projectStatePath -Raw
 $failures = [System.Collections.ArrayList]::new()
 
 foreach ($relativePath in $requiredTruthSurfaces) {
-    $escapedForward = [regex]::Escape($relativePath)
-    $backslashPath = $relativePath.Replace("/", "\")
-    $escapedBackslash = [regex]::Escape($backslashPath)
+    $forwardPattern = [regex]::Escape([string]$relativePath)
+    $backslashPattern = [regex]::Escape(([string]$relativePath).Replace("/", "\"))
 
-    if (($projectStateText -notmatch $escapedForward) -and ($projectStateText -notmatch $escapedBackslash)) {
+    if (($projectStateText -notmatch $forwardPattern) -and ($projectStateText -notmatch $backslashPattern)) {
         Add-Failure -Failures $failures -Message ("project-state surface missing truth reference '{0}'" -f $relativePath)
     }
 }
 
-foreach ($requiredPattern in @(
-    '## Current gate posture',
-    '## Current governance posture',
-    '## Current runner posture',
-    '## Current repo-memory surfaces',
-    '## Current project-state validation surface'
-)) {
-    if ($projectStateText -notmatch [regex]::Escape($requiredPattern)) {
-        Add-Failure -Failures $failures -Message ("project-state surface missing required section heading '{0}'" -f $requiredPattern)
+foreach ($sectionHeading in $requiredSections) {
+    $headingText = [string]$sectionHeading
+    if ($projectStateText -notmatch [regex]::Escape($headingText)) {
+        Add-Failure -Failures $failures -Message ("project-state surface missing required section heading '{0}'" -f $headingText)
     }
 }
 
 $summary = [ordered]@{
     status = $(if ($failures.Count -eq 0) { "passed" } else { "failed" })
+    recovery_surface_manifest_path = $manifestPath
     project_state_path = $projectStatePath
     required_truth_surface_count = $requiredTruthSurfaces.Count
+    required_section_count = $requiredSections.Count
     failures = @($failures)
 }
 
@@ -91,4 +74,3 @@ if ($summary.status -ne "passed") {
 
 Write-Host ""
 Write-Host "Project-state surface validation passed." -ForegroundColor Green
-

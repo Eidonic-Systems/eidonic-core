@@ -1113,3 +1113,9 @@
 - Created branch `phase-2/session-log-gate-integration`
 - Integrated scripts/validate_session_log_surface.ps1 into config/phase2_gate_surface_manifest.json so session-log recovery validation runs inside the standard Phase 2 gate.
 - Updated scripts README, Codex workflow docs, and the project-state doc to record session-log gate integration.
+
+## 2026-04-21
+- Created branch `phase-2/recovery-surface-truth-source`
+- Added config/recovery_surface_manifest.json as the declared truth source for Codex-surface references and project-state recovery references.
+- Added scripts/validate_recovery_surface_manifest.ps1 and reworked scripts/validate_codex_surfaces.ps1 plus scripts/validate_project_state_surface.ps1 to consume the recovery-surface manifest.
+- Updated AGENTS, scripts README, Codex workflow docs, project-state docs, and the gate manifest to record the recovery-surface truth source.

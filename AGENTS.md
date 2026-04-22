@@ -93,3 +93,12 @@ A branch is done only when:
 ## Codex validation proof
 
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_codex_surfaces.ps1`
+
+
+## Recovery-surface truth source
+
+- `config/recovery_surface_manifest.json`
+
+## Recovery-surface proof
+
+- `scripts/validate_recovery_surface_manifest.ps1`
