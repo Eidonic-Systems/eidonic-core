@@ -174,3 +174,7 @@ The Orchestrator now sits inside a stricter Phase 2 spine:
 - explicit state truth
 - startup readiness verification
 - fail-fast proof behavior
+
+## Provider readiness invariant proof
+
+- `scripts/validate_provider_readiness_invariants.ps1` proves `POST /provider/warm` and `GET /health` agree on provider-ready truth across repeated warmup

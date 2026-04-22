@@ -172,3 +172,7 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 
 - `scripts/validate_phase2_postgres_bootstrap_idempotence.ps1` is included in `config/phase2_gate_surface_manifest.json`
 - the standard Phase 2 gate now proves repeated local PostgreSQL bootstrap behavior before downstream runtime checks
+
+## Current provider readiness invariant surface
+
+- `scripts/validate_provider_readiness_invariants.ps1` proves the warmup and health surfaces agree on provider-ready truth across repeated warmup
