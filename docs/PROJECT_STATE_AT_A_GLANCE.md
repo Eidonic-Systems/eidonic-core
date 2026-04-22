@@ -130,24 +130,15 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 
 - `scripts/validate_project_state_surface.ps1` validates `docs/PROJECT_STATE_AT_A_GLANCE.md` against the declared repo truth surfaces it should reference
 
-## Current project-state gate posture
-
-- `scripts/validate_project_state_surface.ps1` is included in `config/phase2_gate_surface_manifest.json`
-- the standard Phase 2 gate now validates the project-state recovery surface before downstream runtime checks
-
 ## Current session-log validation surface
 
 - `scripts/validate_session_log_surface.ps1` validates `docs/SESSION_LOG.md` as a repo recovery surface
-
-## Current session-log gate posture
-
-- `scripts/validate_session_log_surface.ps1` is included in `config/phase2_gate_surface_manifest.json`
-- the standard Phase 2 gate now validates the session-log recovery surface before downstream runtime checks
 
 ## Current recovery-surface truth source
 
 - `config/recovery_surface_manifest.json` declares the repo recovery-surface references
 - `scripts/validate_recovery_surface_manifest.ps1` validates that truth source
+- recovery docs should point to that manifest instead of retyping the full recovery-surface list in prose
 
 ## Current untracked-file guard surface
 
@@ -158,3 +149,4 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 
 - `scripts/validate_untracked_repo_files.ps1` is included in `config/phase2_gate_surface_manifest.json`
 - the standard Phase 2 gate now catches untracked files before downstream runtime checks
+
