@@ -38,7 +38,8 @@ $requiredTruthSurfaces = @(
     "scripts/validate_automation_helpers.ps1",
     "scripts/validate_phase2_workflow_surface.ps1",
     "scripts/validate_codex_surfaces.ps1",
-    "scripts/validate_project_state_surface.ps1"
+    "scripts/validate_project_state_surface.ps1",
+    "scripts/validate_session_log_surface.ps1"
 )
 
 foreach ($relativePath in $requiredTruthSurfaces) {
@@ -90,3 +91,4 @@ if ($summary.status -ne "passed") {
 
 Write-Host ""
 Write-Host "Project-state surface validation passed." -ForegroundColor Green
+

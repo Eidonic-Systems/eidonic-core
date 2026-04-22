@@ -134,3 +134,7 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 
 - `scripts/validate_project_state_surface.ps1` is included in `config/phase2_gate_surface_manifest.json`
 - the standard Phase 2 gate now validates the project-state recovery surface before downstream runtime checks
+
+## Current session-log validation surface
+
+- `scripts/validate_session_log_surface.ps1` validates `docs/SESSION_LOG.md` as a repo recovery surface

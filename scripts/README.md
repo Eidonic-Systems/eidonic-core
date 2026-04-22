@@ -289,3 +289,19 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_project_state_surfac
 ## Project-state gate integration note
 
 `config/phase2_gate_surface_manifest.json` now includes `scripts/validate_project_state_surface.ps1`, so the standard Phase 2 gate validates the repo recovery surface before downstream runtime checks.
+
+## validate_session_log_surface.ps1
+
+Validates `docs/SESSION_LOG.md` as a repo recovery surface.
+
+Checks include:
+- dated section heading presence
+- valid `yyyy-MM-dd` heading format
+- no future-dated headings
+- at least one bullet line per dated section
+- valid created-branch entry format
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_session_log_surface.ps1
+```
