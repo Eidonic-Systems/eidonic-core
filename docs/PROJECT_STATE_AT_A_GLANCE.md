@@ -154,3 +154,8 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 ## Current scripts-readme validation surface
 
 - `scripts/validate_scripts_readme_surface.ps1` validates `scripts/README.md` against the declared recovery-surface truth source
+
+## Current scripts-readme gate posture
+
+- `scripts/validate_scripts_readme_surface.ps1` is included in `config/phase2_gate_surface_manifest.json`
+- the standard Phase 2 gate now validates the scripts README recovery surface before downstream runtime checks
