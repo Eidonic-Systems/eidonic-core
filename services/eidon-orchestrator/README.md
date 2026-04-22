@@ -178,3 +178,7 @@ The Orchestrator now sits inside a stricter Phase 2 spine:
 ## Provider readiness invariant proof
 
 - `scripts/validate_provider_readiness_invariants.ps1` proves `POST /provider/warm` and `GET /health` agree on provider-ready truth across repeated warmup
+
+## Orchestration provenance invariant proof
+
+- `scripts/validate_orchestration_provenance_invariants.ps1` proves one real orchestration call persists matching provider and governance provenance across artifact and lineage retrieval surfaces
