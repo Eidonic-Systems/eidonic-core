@@ -1169,3 +1169,8 @@
 - Created branch `phase-2/authoritative-status-gate-integration`
 - Integrated scripts/validate_authoritative_status_surfaces.ps1 into config/phase2_gate_surface_manifest.json so the standard Phase 2 gate validates the authoritative status surfaces declared in README.md before downstream runtime checks.
 - Updated the consolidated operator-surface docs so they point to the gate manifest instead of stacking one more separate gate-integration note.
+
+## 2026-04-22
+- Created branch `phase-2/agents-priority-truth-alignment`
+- Aligned AGENTS.md so the priority truth surface list and repo-specific operating expectations explicitly name the current gate and recovery manifests.
+- Updated the recovery-surface manifest so Codex validation now expects AGENTS.md to reflect the current truth-source architecture.
