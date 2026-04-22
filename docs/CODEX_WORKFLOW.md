@@ -139,3 +139,10 @@ When changing that manifest, run:
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_recovery_surface_manifest.ps1`
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_codex_surfaces.ps1`
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_project_state_surface.ps1`
+
+## Untracked-file guard rule
+
+When a branch creates new repo files, stage them early and run:
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_untracked_repo_files.ps1`
+
+Do this before final proof and commit so new repo files do not sit untracked until the end of the branch.

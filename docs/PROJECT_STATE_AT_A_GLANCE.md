@@ -148,3 +148,8 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 
 - `config/recovery_surface_manifest.json` declares the repo recovery-surface references
 - `scripts/validate_recovery_surface_manifest.ps1` validates that truth source
+
+## Current untracked-file guard surface
+
+- `scripts/validate_untracked_repo_files.ps1` detects untracked files before final proof and commit
+- known temp artifacts stay excluded through git ignore rules
