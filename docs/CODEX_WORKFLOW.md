@@ -145,3 +145,7 @@ When operator-facing recovery validators are integrated into the standard Phase 
 
 When changing `README.md` or `SECURITY.md`, run:
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_root_doc_surfaces.ps1`
+
+## Root-doc gate integration rule
+
+`scripts/validate_root_doc_surfaces.ps1` is now included in the standard Phase 2 gate through `config/phase2_gate_surface_manifest.json`.
