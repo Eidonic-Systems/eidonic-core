@@ -155,3 +155,8 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 ## Current root-doc validation surface
 
 - `scripts/validate_root_doc_surfaces.ps1` validates `README.md` and `SECURITY.md` against the declared recovery-surface truth source
+
+## Current root-doc gate posture
+
+- `scripts/validate_root_doc_surfaces.ps1` is included in `config/phase2_gate_surface_manifest.json`
+- the standard Phase 2 gate now validates `README.md` and `SECURITY.md` before downstream runtime checks

@@ -353,3 +353,7 @@ Validates `README.md` and `SECURITY.md` against the declared recovery-surface tr
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\validate_root_doc_surfaces.ps1
 ```
+
+## Root-doc gate integration note
+
+`config/phase2_gate_surface_manifest.json` now includes `scripts/validate_root_doc_surfaces.ps1`, so the standard Phase 2 gate validates `README.md` and `SECURITY.md` before downstream runtime checks.
