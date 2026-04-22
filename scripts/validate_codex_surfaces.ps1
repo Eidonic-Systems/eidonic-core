@@ -14,123 +14,57 @@ function Add-Failure {
 }
 
 $resolvedRepoRoot = (Resolve-Path $RepoRoot).Path
+$manifestPath = Join-Path $resolvedRepoRoot "config\recovery_surface_manifest.json"
 
-$agentsPath = Join-Path $resolvedRepoRoot "AGENTS.md"
-$codexConfigPath = Join-Path $resolvedRepoRoot ".codex\config.toml"
-$branchSkillPath = Join-Path $resolvedRepoRoot ".agents\skills\phase2-branch-flow\SKILL.md"
-$dependencySkillPath = Join-Path $resolvedRepoRoot ".agents\skills\phase2-dependency-wave\SKILL.md"
-$codexWorkflowPath = Join-Path $resolvedRepoRoot "docs\CODEX_WORKFLOW.md"
-$projectStatePath = Join-Path $resolvedRepoRoot "docs\PROJECT_STATE_AT_A_GLANCE.md"
-$sessionLogPath = Join-Path $resolvedRepoRoot "docs\SESSION_LOG.md"
+if (-not (Test-Path $manifestPath)) {
+    throw "Missing recovery-surface manifest at $manifestPath"
+}
 
-foreach ($requiredPath in @(
-    $agentsPath,
-    $codexConfigPath,
-    $branchSkillPath,
-    $dependencySkillPath,
-    $codexWorkflowPath,
-    $projectStatePath,
-    $sessionLogPath
-)) {
-    if (-not (Test-Path $requiredPath)) {
-        throw "Missing required Codex surface at $requiredPath"
-    }
+$manifest = Get-Content $manifestPath -Raw | ConvertFrom-Json
+$surfaceChecks = @($manifest.codex_surface_checks)
+
+if ($surfaceChecks.Count -eq 0) {
+    throw "Recovery-surface manifest has no codex_surface_checks."
 }
 
 $failures = [System.Collections.ArrayList]::new()
+$checkedSurfaces = [System.Collections.ArrayList]::new()
 
-$agentsText = Get-Content $agentsPath -Raw
-foreach ($pattern in @(
-    'docs/PROJECT_STATE_AT_A_GLANCE\.md',
-    'docs/SESSION_LOG\.md',
-    'config/service_topology_manifest\.json',
-    'config/phase2_python_dependency_truth\.json',
-    'scripts[\\/ ]run_phase2_gate\.ps1',
-    'Do not claim completion without running the smallest relevant proof',
-    'scripts[\\/ ]validate_codex_surfaces\.ps1'
-)) {
-    if ($agentsText -notmatch $pattern) {
-        Add-Failure -Failures $failures -Message ("AGENTS.md missing required pattern '{0}'" -f $pattern)
+foreach ($surfaceCheck in $surfaceChecks) {
+    $relativePath = [string]$surfaceCheck.path
+    $requiredPatterns = @($surfaceCheck.required_patterns)
+
+    if ([string]::IsNullOrWhiteSpace($relativePath)) {
+        Add-Failure -Failures $failures -Message "codex surface check missing path"
+        continue
     }
-}
 
-$codexConfigText = Get-Content $codexConfigPath -Raw
-foreach ($pattern in @(
-    'project_root_markers\s*=\s*\["\.git"\]',
-    'approval_policy\s*=\s*"on-request"',
-    '\[agents\]',
-    'max_threads\s*=\s*2',
-    'max_depth\s*=\s*1'
-)) {
-    if ($codexConfigText -notmatch $pattern) {
-        Add-Failure -Failures $failures -Message (".codex/config.toml missing required pattern '{0}'" -f $pattern)
+    $absolutePath = Join-Path $resolvedRepoRoot $relativePath
+    if (-not (Test-Path $absolutePath)) {
+        Add-Failure -Failures $failures -Message ("Missing required Codex surface at {0}" -f $absolutePath)
+        continue
     }
-}
 
-$branchSkillText = Get-Content $branchSkillPath -Raw
-foreach ($pattern in @(
-    'name:\s*phase2-branch-flow',
-    'description:',
-    'docs/SESSION_LOG\.md',
-    'docs/PROJECT_STATE_AT_A_GLANCE\.md',
-    'scripts[\\/ ]run_phase2_gate\.ps1'
-)) {
-    if ($branchSkillText -notmatch $pattern) {
-        Add-Failure -Failures $failures -Message ("phase2-branch-flow skill missing required pattern '{0}'" -f $pattern)
+    [void]$checkedSurfaces.Add($absolutePath)
+
+    if ($requiredPatterns.Count -eq 0) {
+        continue
     }
-}
 
-$dependencySkillText = Get-Content $dependencySkillPath -Raw
-foreach ($pattern in @(
-    'name:\s*phase2-dependency-wave',
-    'description:',
-    'config/phase2_python_dependency_truth\.json',
-    'scripts[\\/ ]sync_phase2_dependency_truth\.ps1',
-    'scripts[\\/ ]validate_phase2_dependency_pins\.ps1',
-    'scripts[\\/ ]absorb_phase2_dependency_wave\.ps1'
-)) {
-    if ($dependencySkillText -notmatch $pattern) {
-        Add-Failure -Failures $failures -Message ("phase2-dependency-wave skill missing required pattern '{0}'" -f $pattern)
-    }
-}
-
-$codexWorkflowText = Get-Content $codexWorkflowPath -Raw
-foreach ($pattern in @(
-    'AGENTS\.md',
-    '\.codex/config\.toml',
-    '\.agents/skills/',
-    'Recovery rule for new chats',
-    'scripts[\\/ ]validate_codex_surfaces\.ps1'
-)) {
-    if ($codexWorkflowText -notmatch $pattern) {
-        Add-Failure -Failures $failures -Message ("docs/CODEX_WORKFLOW.md missing required pattern '{0}'" -f $pattern)
-    }
-}
-
-$projectStateText = Get-Content $projectStatePath -Raw
-foreach ($pattern in @(
-    'AGENTS\.md',
-    '\.codex/config\.toml',
-    '\.agents/skills/phase2-branch-flow/SKILL\.md',
-    '\.agents/skills/phase2-dependency-wave/SKILL\.md',
-    'scripts[\\/ ]validate_codex_surfaces\.ps1'
-)) {
-    if ($projectStateText -notmatch $pattern) {
-        Add-Failure -Failures $failures -Message ("docs/PROJECT_STATE_AT_A_GLANCE.md missing required pattern '{0}'" -f $pattern)
+    $surfaceText = Get-Content $absolutePath -Raw
+    foreach ($pattern in $requiredPatterns) {
+        $patternText = [string]$pattern
+        if ($surfaceText -notmatch $patternText) {
+            Add-Failure -Failures $failures -Message ("{0} missing required pattern '{1}'" -f $relativePath, $patternText)
+        }
     }
 }
 
 $summary = [ordered]@{
     status = $(if ($failures.Count -eq 0) { "passed" } else { "failed" })
-    codex_surfaces = @(
-        $agentsPath,
-        $codexConfigPath,
-        $branchSkillPath,
-        $dependencySkillPath,
-        $codexWorkflowPath,
-        $projectStatePath,
-        $sessionLogPath
-    )
+    recovery_surface_manifest_path = $manifestPath
+    checked_surface_count = $checkedSurfaces.Count
+    checked_surfaces = @($checkedSurfaces)
     failures = @($failures)
 }
 

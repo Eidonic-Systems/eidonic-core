@@ -18,6 +18,10 @@
       "script_path": "scripts/validate_phase2_workflow_surface.ps1"
     },
     {
+      "label": "Validating recovery-surface manifest",
+      "script_path": "scripts/validate_recovery_surface_manifest.ps1"
+    },
+    {
       "label": "Validating Codex surfaces",
       "script_path": "scripts/validate_codex_surfaces.ps1"
     },

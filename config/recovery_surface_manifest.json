@@ -1,0 +1,114 @@
+{
+  "manifest_version": "recovery-surface-manifest-v1",
+  "codex_surface_checks": [
+    {
+      "path": "AGENTS.md",
+      "required_patterns": [
+        "docs[\\\\/]PROJECT_STATE_AT_A_GLANCE\\.md",
+        "docs[\\\\/]SESSION_LOG\\.md",
+        "config[\\\\/]service_topology_manifest\\.json",
+        "config[\\\\/]phase2_python_dependency_truth\\.json",
+        "config[\\\\/]recovery_surface_manifest\\.json",
+        "scripts[\\\\/]run_phase2_gate\\.ps1",
+        "scripts[\\\\/]validate_codex_surfaces\\.ps1",
+        "scripts[\\\\/]validate_recovery_surface_manifest\\.ps1",
+        "Do not claim completion without running the smallest relevant proof"
+      ]
+    },
+    {
+      "path": ".codex/config.toml",
+      "required_patterns": [
+        "project_root_markers\\s*=\\s*\\[\"\\.git\"\\]",
+        "approval_policy\\s*=\\s*\"on-request\"",
+        "\\[agents\\]",
+        "max_threads\\s*=\\s*2",
+        "max_depth\\s*=\\s*1"
+      ]
+    },
+    {
+      "path": ".agents/skills/phase2-branch-flow/SKILL.md",
+      "required_patterns": [
+        "name:\\s*phase2-branch-flow",
+        "description:",
+        "docs[\\\\/]SESSION_LOG\\.md",
+        "docs[\\\\/]PROJECT_STATE_AT_A_GLANCE\\.md",
+        "scripts[\\\\/]run_phase2_gate\\.ps1"
+      ]
+    },
+    {
+      "path": ".agents/skills/phase2-dependency-wave/SKILL.md",
+      "required_patterns": [
+        "name:\\s*phase2-dependency-wave",
+        "description:",
+        "config[\\\\/]phase2_python_dependency_truth\\.json",
+        "scripts[\\\\/]sync_phase2_dependency_truth\\.ps1",
+        "scripts[\\\\/]validate_phase2_dependency_pins\\.ps1",
+        "scripts[\\\\/]absorb_phase2_dependency_wave\\.ps1"
+      ]
+    },
+    {
+      "path": "docs/CODEX_WORKFLOW.md",
+      "required_patterns": [
+        "AGENTS\\.md",
+        "\\.codex/config\\.toml",
+        "\\.agents/skills/",
+        "config[\\\\/]recovery_surface_manifest\\.json",
+        "Recovery rule for new chats",
+        "scripts[\\\\/]validate_codex_surfaces\\.ps1",
+        "scripts[\\\\/]validate_project_state_surface\\.ps1",
+        "scripts[\\\\/]validate_session_log_surface\\.ps1",
+        "scripts[\\\\/]validate_recovery_surface_manifest\\.ps1"
+      ]
+    },
+    {
+      "path": "docs/PROJECT_STATE_AT_A_GLANCE.md",
+      "required_patterns": [
+        "AGENTS\\.md",
+        "\\.codex/config\\.toml",
+        "\\.agents/skills/phase2-branch-flow/SKILL\\.md",
+        "\\.agents/skills/phase2-dependency-wave/SKILL\\.md",
+        "config[\\\\/]recovery_surface_manifest\\.json",
+        "scripts[\\\\/]validate_codex_surfaces\\.ps1",
+        "scripts[\\\\/]validate_project_state_surface\\.ps1",
+        "scripts[\\\\/]validate_session_log_surface\\.ps1",
+        "scripts[\\\\/]validate_recovery_surface_manifest\\.ps1"
+      ]
+    },
+    {
+      "path": "docs/SESSION_LOG.md",
+      "required_patterns": []
+    }
+  ],
+  "project_state_required_references": [
+    "config/service_topology_manifest.json",
+    "config/phase2_python_dependency_truth.json",
+    "config/phase2_gate_surface_manifest.json",
+    "config/recovery_surface_manifest.json",
+    "scripts/run_phase2_gate.ps1",
+    "scripts/validate_phase2_gate_surface_manifest.ps1",
+    "scripts/validate_recovery_surface_manifest.ps1",
+    "config/governance_rules_manifest.json",
+    ".github/workflows/phase2-gate.yml",
+    "docs/PHASE_2_RUNNER_TRUST_CONTRACT.md",
+    "AGENTS.md",
+    ".codex/config.toml",
+    ".agents/skills/phase2-branch-flow/SKILL.md",
+    ".agents/skills/phase2-dependency-wave/SKILL.md",
+    "docs/CODEX_WORKFLOW.md",
+    "docs/SESSION_LOG.md",
+    "scripts/validate_automation_helpers.ps1",
+    "scripts/validate_phase2_workflow_surface.ps1",
+    "scripts/validate_codex_surfaces.ps1",
+    "scripts/validate_project_state_surface.ps1",
+    "scripts/validate_session_log_surface.ps1"
+  ],
+  "project_state_required_sections": [
+    "## Current gate posture",
+    "## Current governance posture",
+    "## Current runner posture",
+    "## Current repo-memory surfaces",
+    "## Current recovery-surface truth source",
+    "## Current project-state validation surface",
+    "## Current session-log validation surface"
+  ]
+}
