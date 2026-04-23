@@ -558,3 +558,10 @@ Checks include:
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\validate_routing_control_nonrouteable_provenance_invariants.ps1
 ```
+
+## Routing control nonrouteable provenance gate integration note
+
+`config/phase2_gate_surface_manifest.json` now includes `scripts/validate_routing_control_nonrouteable_provenance_invariants.ps1` under `post_start_runtime_steps`.
+
+That means the standard Phase 2 gate proves an explicitly non-routeable request stays on the control model and persists matching routing provenance across artifact and lineage retrieval surfaces after startup, warmup, and baseline runtime checks.
+

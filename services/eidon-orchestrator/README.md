@@ -232,3 +232,9 @@ The Orchestrator now sits inside a stricter Phase 2 spine:
 ## Routing control nonrouteable provenance invariant proof
 
 - `scripts/validate_routing_control_nonrouteable_provenance_invariants.ps1` proves an explicitly non-routeable request stays on the control model and persists matching routing provenance across artifact and lineage retrieval surfaces
+
+## Gate-integrated routing control nonrouteable provenance proof
+
+- `scripts/validate_routing_control_nonrouteable_provenance_invariants.ps1` is declared in `config/phase2_gate_surface_manifest.json` under `post_start_runtime_steps`
+- the standard Phase 2 gate now proves an explicitly non-routeable request stays on the control model and persists matching routing provenance across artifact and lineage retrieval surfaces
+
