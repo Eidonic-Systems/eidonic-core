@@ -531,3 +531,10 @@ Checks include:
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\validate_routing_candidate_success_provenance_invariants.ps1
 ```
+
+## Routing candidate success provenance gate integration note
+
+`config/phase2_gate_surface_manifest.json` now includes `scripts/validate_routing_candidate_success_provenance_invariants.ps1` under `post_start_runtime_steps`.
+
+That means the standard Phase 2 gate proves a route-eligible request can succeed through the candidate model and persist matching routing provenance across artifact and lineage retrieval surfaces after startup, warmup, and baseline runtime checks.
+
