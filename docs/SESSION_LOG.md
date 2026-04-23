@@ -1220,3 +1220,8 @@
 - Created branch `phase-2/provider-failure-provenance-gate-integration`
 - Integrated scripts/validate_provider_failure_provenance_invariants.ps1 into config/phase2_gate_surface_manifest.json under post_start_runtime_steps so the standard Phase 2 gate proves a forced provider failure path persists matching failure provenance across artifact and lineage retrieval surfaces.
 - Updated the scripts README, Orchestrator README, Phase 2 status doc, project-state doc, and session log to record provider failure provenance gate integration.
+
+## 2026-04-22
+- Created branch `phase-2/governance-rule-provenance-invariant-surface`
+- Added scripts/validate_governance_rule_provenance_invariants.ps1 to prove a real manifest-triggered governance short-circuit path persists matching governance provenance and short-circuit provider posture across artifact and lineage retrieval surfaces.
+- Updated the scripts README, Orchestrator README, Phase 2 status doc, and project-state doc to record the new governance rule provenance invariant proof surface.

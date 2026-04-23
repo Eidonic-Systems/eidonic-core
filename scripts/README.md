@@ -460,3 +460,20 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_provider_failure_pro
 
 That means the standard Phase 2 gate proves a forced provider failure path persists matching failure provenance across artifact and lineage retrieval surfaces after startup, warmup, and baseline runtime checks.
 
+
+## validate_governance_rule_provenance_invariants.ps1
+
+Validates a real manifest-triggered governance short-circuit path against persisted artifact and lineage retrieval surfaces.
+
+Checks include:
+- baseline health surface is reachable
+- one real `POST /orchestrate` call triggers a manifest-backed governance rule
+- `GET /artifacts/{artifact_id}` and `GET /lineage/{artifact_id}` both return the persisted records
+- artifact and lineage records agree on `governance_outcome`, `governance_reason`, `governance_rule_id`, and `governance_manifest_version`
+- artifact and lineage records agree on the governance short-circuit provider posture
+- the expected manifest rule response text is persisted on the short-circuit path
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_governance_rule_provenance_invariants.ps1
+```
