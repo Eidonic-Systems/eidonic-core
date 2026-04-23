@@ -565,3 +565,21 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_routing_control_nonr
 
 That means the standard Phase 2 gate proves an explicitly non-routeable request stays on the control model and persists matching routing provenance across artifact and lineage retrieval surfaces after startup, warmup, and baseline runtime checks.
 
+
+## validate_governance_rule_matrix_provenance_invariants.ps1
+
+Validates the enabled manifest-backed governance short-circuit rule matrix against persisted artifact and lineage retrieval surfaces.
+
+Checks include:
+- baseline health surface is reachable
+- every enabled governance rule has a positive fixture-backed live orchestration case
+- one real `POST /orchestrate` call is executed for each enabled rule trigger
+- `GET /artifacts/{artifact_id}` and `GET /lineage/{artifact_id}` both return the persisted records for each case
+- artifact and lineage records agree on `governance_outcome`, `governance_reason`, `governance_rule_id`, and `governance_manifest_version` for each exercised rule
+- provider posture stays `not_invoked`, `control`, and `control_default_no_routing` for each short-circuit case
+- the expected manifest rule response text is persisted for each exercised rule
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_governance_rule_matrix_provenance_invariants.ps1
+```

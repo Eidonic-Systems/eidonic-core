@@ -1260,3 +1260,8 @@
 - Created branch `phase-2/routing-control-nonrouteable-provenance-gate-integration`
 - Integrated scripts/validate_routing_control_nonrouteable_provenance_invariants.ps1 into config/phase2_gate_surface_manifest.json under post_start_runtime_steps so the standard Phase 2 gate proves an explicitly non-routeable request stays on the control model and persists matching routing provenance across artifact and lineage retrieval surfaces.
 - Updated the scripts README, Orchestrator README, Phase 2 status doc, project-state doc, and session log to record routing control nonrouteable provenance gate integration.
+
+## 2026-04-23
+- Created branch `phase-2/governance-rule-matrix-provenance-invariant-surface`
+- Added scripts/validate_governance_rule_matrix_provenance_invariants.ps1 to prove the enabled manifest-backed governance short-circuit rule matrix persists matching governance provenance and short-circuit provider posture across artifact and lineage retrieval surfaces.
+- Updated the scripts README, Orchestrator README, Phase 2 status doc, and project-state doc to record the new governance rule matrix provenance invariant proof surface.
