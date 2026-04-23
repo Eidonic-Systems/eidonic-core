@@ -435,3 +435,21 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_orchestration_proven
 
 That means the standard Phase 2 gate proves one real orchestration call persists matching provider and governance provenance across artifact and lineage retrieval surfaces after startup, warmup, and health.
 
+
+## validate_provider_failure_provenance_invariants.ps1
+
+Validates a forced provider failure path against persisted artifact and lineage retrieval surfaces.
+
+Checks include:
+- launches a temporary failure-mode Orchestrator on an alternate local port
+- forces a missing-model provider failure path
+- verifies `POST /provider/warm` returns `warm_failed` with provider error details
+- verifies one real `POST /orchestrate` call returns `provider_failed`
+- verifies `GET /artifacts/{artifact_id}` and `GET /lineage/{artifact_id}` return matching persisted failure records
+- verifies artifact and lineage records agree on provider failure provenance fields
+- verifies fallback governance truth is persisted on provider failure
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_provider_failure_provenance_invariants.ps1
+```
