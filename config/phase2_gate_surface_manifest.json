@@ -78,6 +78,10 @@
     {
       "label": "Validating routing fallback provenance invariants",
       "script_path": "scripts/validate_routing_fallback_provenance_invariants.ps1"
+    },
+    {
+      "label": "Validating routing candidate success provenance invariants",
+      "script_path": "scripts/validate_routing_candidate_success_provenance_invariants.ps1"
     }
   ]
 }
