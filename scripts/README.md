@@ -583,3 +583,10 @@ Checks include:
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\validate_governance_rule_matrix_provenance_invariants.ps1
 ```
+
+## Governance rule matrix provenance gate integration note
+
+`config/phase2_gate_surface_manifest.json` now includes `scripts/validate_governance_rule_matrix_provenance_invariants.ps1` under `post_start_runtime_steps`.
+
+That means the standard Phase 2 gate proves the enabled manifest-backed governance short-circuit rule matrix persists matching governance provenance and short-circuit provider posture across artifact and lineage retrieval surfaces after startup, warmup, and baseline runtime checks.
+
