@@ -538,3 +538,23 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_routing_candidate_su
 
 That means the standard Phase 2 gate proves a route-eligible request can succeed through the candidate model and persist matching routing provenance across artifact and lineage retrieval surfaces after startup, warmup, and baseline runtime checks.
 
+
+## validate_routing_control_nonrouteable_provenance_invariants.ps1
+
+Validates a non-routeable orchestration request that stays on the control model while routing is enabled.
+
+Checks include:
+- launches a temporary routing-enabled Orchestrator on an alternate local port
+- keeps both control and candidate models usable
+- verifies the candidate model is reported healthy in routing surfaces
+- sends one explicitly non-routeable `POST /orchestrate` request
+- verifies the request succeeds on the control model
+- verifies `GET /artifacts/{artifact_id}` and `GET /lineage/{artifact_id}` return matching persisted routing provenance
+- verifies `provider_route_mode` is `control`
+- verifies `provider_route_reason` is `control_non_routeable`
+- verifies the persisted selected model is the control model
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_routing_control_nonrouteable_provenance_invariants.ps1
+```

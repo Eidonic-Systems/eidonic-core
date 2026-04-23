@@ -157,3 +157,7 @@ Main proof after the dependency wave:
 - `scripts/validate_routing_candidate_success_provenance_invariants.ps1` is declared in `config/phase2_gate_surface_manifest.json` under `post_start_runtime_steps`
 - the standard Phase 2 gate now proves a route-eligible request can succeed through the candidate model and persist matching routing provenance across artifact and lineage retrieval surfaces
 
+
+## Routing control nonrouteable provenance invariant proof
+
+- `scripts/validate_routing_control_nonrouteable_provenance_invariants.ps1` proves an explicitly non-routeable request stays on the control model and persists matching routing provenance across artifact and lineage retrieval surfaces
