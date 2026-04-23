@@ -607,3 +607,10 @@ Checks include:
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\validate_governance_negative_matrix_provenance_invariants.ps1
 ```
+
+## Governance negative matrix provenance gate integration note
+
+`config/phase2_gate_surface_manifest.json` now includes `scripts/validate_governance_negative_matrix_provenance_invariants.ps1` under `post_start_runtime_steps`.
+
+That means the standard Phase 2 gate proves the negative governance fixture matrix falls through to normal orchestration and persists matching default-success governance provenance across artifact and lineage retrieval surfaces after startup, warmup, and baseline runtime checks.
+
