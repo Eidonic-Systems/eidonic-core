@@ -212,3 +212,9 @@ The Orchestrator now sits inside a stricter Phase 2 spine:
 ## Routing fallback provenance invariant proof
 
 - `scripts/validate_routing_fallback_provenance_invariants.ps1` proves a route-eligible request can succeed through control fallback after candidate-model failure and persist matching routing provenance across artifact and lineage retrieval surfaces
+
+## Gate-integrated routing fallback provenance proof
+
+- `scripts/validate_routing_fallback_provenance_invariants.ps1` is declared in `config/phase2_gate_surface_manifest.json` under `post_start_runtime_steps`
+- the standard Phase 2 gate now proves a route-eligible request can succeed through control fallback after candidate-model failure and persist matching routing provenance across artifact and lineage retrieval surfaces
+
