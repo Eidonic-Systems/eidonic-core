@@ -1240,3 +1240,8 @@
 - Created branch `phase-2/routing-fallback-provenance-gate-integration`
 - Integrated scripts/validate_routing_fallback_provenance_invariants.ps1 into config/phase2_gate_surface_manifest.json under post_start_runtime_steps so the standard Phase 2 gate proves a route-eligible request can succeed through control fallback after candidate-model failure and persist matching routing provenance across artifact and lineage retrieval surfaces.
 - Updated the scripts README, Orchestrator README, Phase 2 status doc, project-state doc, and session log to record routing fallback provenance gate integration.
+
+## 2026-04-22
+- Created branch `phase-2/routing-candidate-success-provenance-invariant-surface`
+- Added scripts/validate_routing_candidate_success_provenance_invariants.ps1 to prove a route-eligible request can succeed through the candidate model and persist matching routing provenance across artifact and lineage retrieval surfaces.
+- Updated the scripts README, Orchestrator README, Phase 2 status doc, and project-state doc to record the new routing candidate success provenance invariant proof surface.

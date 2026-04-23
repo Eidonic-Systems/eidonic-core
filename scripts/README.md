@@ -511,3 +511,23 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_routing_fallback_pro
 
 That means the standard Phase 2 gate proves a route-eligible request can succeed through control fallback after candidate-model failure and persist matching routing provenance across artifact and lineage retrieval surfaces after startup, warmup, and baseline runtime checks.
 
+
+## validate_routing_candidate_success_provenance_invariants.ps1
+
+Validates a route-eligible orchestration request that succeeds through the candidate model on the routing pilot.
+
+Checks include:
+- launches a temporary routing-enabled Orchestrator on an alternate local port
+- keeps both control and candidate models usable
+- verifies the candidate model is reported healthy in routing surfaces
+- sends one route-eligible `POST /orchestrate` request
+- verifies the request succeeds through the candidate route
+- verifies `GET /artifacts/{artifact_id}` and `GET /lineage/{artifact_id}` return matching persisted routing provenance
+- verifies `provider_route_mode` is `candidate`
+- verifies `provider_route_reason` is `candidate_domain_route`
+- verifies the persisted selected model is the candidate model
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_routing_candidate_success_provenance_invariants.ps1
+```
