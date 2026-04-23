@@ -590,3 +590,20 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_governance_rule_matr
 
 That means the standard Phase 2 gate proves the enabled manifest-backed governance short-circuit rule matrix persists matching governance provenance and short-circuit provider posture across artifact and lineage retrieval surfaces after startup, warmup, and baseline runtime checks.
 
+
+## validate_governance_negative_matrix_provenance_invariants.ps1
+
+Validates the negative governance fixture matrix against persisted artifact and lineage retrieval surfaces.
+
+Checks include:
+- baseline health and warmup surfaces are reachable
+- one real `POST /orchestrate` call is executed for each negative governance fixture
+- each negative fixture does not persist the corresponding rule outcome, reason, or rule id
+- each negative fixture persists default-success governance truth instead
+- `GET /artifacts/{artifact_id}` and `GET /lineage/{artifact_id}` both return the persisted records for each case
+- artifact and lineage records agree on persisted negative-case governance provenance
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_governance_negative_matrix_provenance_invariants.ps1
+```
