@@ -484,3 +484,23 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_governance_rule_prov
 
 That means the standard Phase 2 gate proves a real manifest-triggered governance short-circuit path persists matching governance provenance and short-circuit provider posture across artifact and lineage retrieval surfaces after startup, warmup, and baseline runtime checks.
 
+
+## validate_routing_fallback_provenance_invariants.ps1
+
+Validates a route-eligible orchestration request that succeeds through control fallback after candidate-model failure.
+
+Checks include:
+- launches a temporary routing-enabled Orchestrator on an alternate local port
+- keeps the control model usable while forcing a missing candidate model
+- verifies the candidate model is reported unavailable in routing surfaces
+- sends one route-eligible `POST /orchestrate` request
+- verifies the request succeeds through control fallback
+- verifies `GET /artifacts/{artifact_id}` and `GET /lineage/{artifact_id}` return matching persisted routing provenance
+- verifies `provider_route_mode` is `fallback`
+- verifies `provider_route_reason` is `control_fallback_after_candidate_failure`
+- verifies the persisted selected model is the control model after fallback
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_routing_fallback_provenance_invariants.ps1
+```
