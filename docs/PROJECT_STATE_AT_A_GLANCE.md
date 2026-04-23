@@ -196,3 +196,9 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 ## Current provider failure provenance invariant surface
 
 - `scripts/validate_provider_failure_provenance_invariants.ps1` proves a forced provider failure path persists matching failure provenance across artifact and lineage retrieval surfaces
+
+## Current provider failure provenance gate posture
+
+- `scripts/validate_provider_failure_provenance_invariants.ps1` is declared in `config/phase2_gate_surface_manifest.json` under `post_start_runtime_steps`
+- the standard Phase 2 gate now proves a forced provider failure path persists matching failure provenance across artifact and lineage retrieval surfaces
+
