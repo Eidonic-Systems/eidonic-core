@@ -202,3 +202,9 @@ The Orchestrator now sits inside a stricter Phase 2 spine:
 ## Governance rule provenance invariant proof
 
 - `scripts/validate_governance_rule_provenance_invariants.ps1` proves a real manifest-triggered governance path persists matching governance provenance and short-circuit provider posture across artifact and lineage retrieval surfaces
+
+## Gate-integrated governance rule provenance proof
+
+- `scripts/validate_governance_rule_provenance_invariants.ps1` is declared in `config/phase2_gate_surface_manifest.json` under `post_start_runtime_steps`
+- the standard Phase 2 gate now proves a real manifest-triggered governance short-circuit path persists matching governance provenance and short-circuit provider posture across artifact and lineage retrieval surfaces
+

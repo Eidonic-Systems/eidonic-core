@@ -70,6 +70,10 @@
     {
       "label": "Validating provider failure provenance invariants",
       "script_path": "scripts/validate_provider_failure_provenance_invariants.ps1"
+    },
+    {
+      "label": "Validating governance rule provenance invariants",
+      "script_path": "scripts/validate_governance_rule_provenance_invariants.ps1"
     }
   ]
 }
