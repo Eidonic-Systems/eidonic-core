@@ -76,6 +76,10 @@
       "script_path": "scripts/validate_governance_rule_provenance_invariants.ps1"
     },
     {
+      "label": "Validating governance rule matrix provenance invariants",
+      "script_path": "scripts/validate_governance_rule_matrix_provenance_invariants.ps1"
+    },
+    {
       "label": "Validating routing fallback provenance invariants",
       "script_path": "scripts/validate_routing_fallback_provenance_invariants.ps1"
     },
