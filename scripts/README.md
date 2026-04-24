@@ -639,3 +639,13 @@ Supports:
 powershell -ExecutionPolicy Bypass -File .\scripts\run_declared_runtime_proof.ps1 -ScriptPath scripts/validate_governance_negative_matrix_provenance_invariants.ps1
 ```
 
+## Runtime-proof stack discipline validation note
+
+`scripts/validate_automation_helpers.ps1` now validates the runtime-proof stack discipline surface.
+
+Checks now include:
+- `scripts/run_declared_runtime_proof.ps1` refuses undeclared scripts outside `post_start_runtime_steps`
+- `scripts/run_declared_runtime_proof.ps1` still advertises stack-start ownership for declared runtime proofs
+- `scripts/run_governance_gate.ps1` no longer references `scripts/start_phase_2_stack.ps1`
+- `scripts/run_governance_gate.ps1` no longer carries the dead `SkipStackStart` parameter surface
+

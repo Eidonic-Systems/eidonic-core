@@ -270,3 +270,9 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 - `scripts/run_phase2_gate.ps1` owns startup for full gate runs unless `-SkipStackStart` is used
 - `scripts/run_declared_runtime_proof.ps1` owns startup for manual single runtime-proof runs unless `-SkipStackStart` is used
 
+## Current runtime-proof stack discipline validation posture
+
+- `scripts/validate_automation_helpers.ps1` validates the runtime-proof stack discipline helper surface
+- undeclared runtime-proof scripts must be refused
+- `scripts/run_governance_gate.ps1` must remain free of direct startup ownership
+
