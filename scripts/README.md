@@ -702,3 +702,9 @@ That manifest declares:
 
 That means the standard Phase 2 gate validates the automation-helper surface manifest directly before downstream helper-surface validation depends on it.
 
+## Automation-helper surface manifest gate integration note
+
+`config/phase2_gate_surface_manifest.json` now includes `scripts/validate_automation_helper_surface_manifest.ps1` under `validation_steps` immediately before `scripts/validate_automation_helpers.ps1`.
+
+That means the standard Phase 2 gate validates the automation-helper surface manifest directly before downstream helper-surface validation depends on it.
+
