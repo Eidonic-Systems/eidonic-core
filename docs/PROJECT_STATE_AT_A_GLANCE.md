@@ -299,3 +299,4 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 - `config/automation_helper_surface_manifest.json` declares the helper scripts and supporting surfaces covered by `scripts/validate_automation_helpers.ps1`
 - helper coverage reporting should now come from that manifest instead of hardcoded lists inside the validator
 
+
