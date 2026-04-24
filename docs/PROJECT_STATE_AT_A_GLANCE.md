@@ -276,3 +276,9 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 - undeclared runtime-proof scripts must be refused
 - `scripts/run_governance_gate.ps1` must remain free of direct startup ownership
 
+## Current runtime stack startup idempotence posture
+
+- `scripts/start_phase_2_stack.ps1` reuses an already-healthy declared stack
+- repeated startup is expected to avoid duplicate service-window launches
+- `scripts/validate_runtime_stack_startup_idempotence.ps1` proves the second startup run reuses the declared stack instead of starting services again
+

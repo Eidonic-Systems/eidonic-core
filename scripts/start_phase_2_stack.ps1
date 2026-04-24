@@ -27,6 +27,50 @@ $Command
     Write-Host "Started $Name on port $Port" -ForegroundColor Green
 }
 
+function Test-ServiceHealth {
+    param(
+        [string]$Url,
+        [int]$TimeoutSec = 3
+    )
+
+    try {
+        $response = Invoke-RestMethod -Uri $Url -Method Get -TimeoutSec $TimeoutSec
+        return ($null -ne $response.status -and $response.status -eq 'ok')
+    }
+    catch {
+        return $false
+    }
+}
+
+function Test-TcpPortListening {
+    param(
+        [int]$Port,
+        [string]$TargetHost = '127.0.0.1',
+        [int]$TimeoutMilliseconds = 500
+    )
+
+    $client = $null
+    try {
+        $client = New-Object System.Net.Sockets.TcpClient
+        $async = $client.BeginConnect($TargetHost, $Port, $null, $null)
+
+        if (-not $async.AsyncWaitHandle.WaitOne($TimeoutMilliseconds)) {
+            return $false
+        }
+
+        $client.EndConnect($async)
+        return $true
+    }
+    catch {
+        return $false
+    }
+    finally {
+        if ($null -ne $client) {
+            $client.Close()
+        }
+    }
+}
+
 function Wait-For-Health {
     param(
         [string]$Name,
@@ -123,22 +167,50 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host ""
-Write-Host "Starting Phase 2 local stack from topology manifest..." -ForegroundColor Yellow
-Write-Host ""
+Write-Host "Checking for already-healthy declared services..." -ForegroundColor Yellow
+
+$servicesToStart = New-Object System.Collections.ArrayList
 
 foreach ($service in $services) {
     $serviceName = if ([string]::IsNullOrWhiteSpace([string]$service.startup_name)) { [string]$service.name } else { [string]$service.startup_name }
-    $workingDirectory = Join-Path $ResolvedRepoRoot ([string]$service.startup_workdir)
+    $healthUrl = [string]$service.health_url
+    $port = [int]$service.port
 
-    if (-not (Test-Path $workingDirectory)) {
-        throw "Startup working directory for '$serviceName' does not exist: $workingDirectory"
+    if (Test-ServiceHealth -Url $healthUrl) {
+        Write-Host "$serviceName already healthy. Reusing existing process." -ForegroundColor Cyan
+        continue
     }
 
-    Start-ServiceWindow `
-        -Name $serviceName `
-        -WorkingDirectory $workingDirectory `
-        -Command ([string]$service.startup_command) `
-        -Port ([int]$service.port)
+    if (Test-TcpPortListening -Port $port) {
+        Write-Host "$serviceName port $port is already listening. Waiting for health instead of spawning a duplicate." -ForegroundColor Yellow
+        continue
+    }
+
+    [void]$servicesToStart.Add($service)
+}
+
+Write-Host ""
+if ($servicesToStart.Count -gt 0) {
+    Write-Host "Starting Phase 2 local stack from topology manifest..." -ForegroundColor Yellow
+    Write-Host ""
+
+    foreach ($service in $servicesToStart) {
+        $serviceName = if ([string]::IsNullOrWhiteSpace([string]$service.startup_name)) { [string]$service.name } else { [string]$service.startup_name }
+        $workingDirectory = Join-Path $ResolvedRepoRoot ([string]$service.startup_workdir)
+
+        if (-not (Test-Path $workingDirectory)) {
+            throw "Startup working directory for '$serviceName' does not exist: $workingDirectory"
+        }
+
+        Start-ServiceWindow `
+            -Name $serviceName `
+            -WorkingDirectory $workingDirectory `
+            -Command ([string]$service.startup_command) `
+            -Port ([int]$service.port)
+    }
+}
+else {
+    Write-Host "All declared services already healthy. Reusing existing Phase 2 stack." -ForegroundColor Green
 }
 
 Write-Host ""
@@ -158,5 +230,5 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host ""
-Write-Host "Phase 2 startup sequence completed: topology validated, preflight passed, services started, health checks passed, provider warmed." -ForegroundColor Green
+Write-Host "Phase 2 startup sequence completed: topology validated, preflight passed, services started or reused, health checks passed, provider warmed." -ForegroundColor Green
 

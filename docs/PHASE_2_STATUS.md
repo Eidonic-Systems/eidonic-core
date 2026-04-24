@@ -202,3 +202,8 @@ Main proof after the dependency wave:
 - `scripts/run_governance_gate.ps1` must not reference `scripts/start_phase_2_stack.ps1`
 - `scripts/run_governance_gate.ps1` must not carry the dead `SkipStackStart` parameter surface
 
+## Runtime stack startup idempotence
+
+- `scripts/start_phase_2_stack.ps1` is now health-aware and reuses an already-healthy declared stack instead of opening duplicate service windows
+- `scripts/validate_runtime_stack_startup_idempotence.ps1` proves repeated startup reuses the declared stack and does not report new service starts on the second run
+
