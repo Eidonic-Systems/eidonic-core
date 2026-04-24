@@ -1330,3 +1330,8 @@
 - Created branch `phase-2/automation-helper-surface-manifest-validation-surface`
 - Added scripts/validate_automation_helper_surface_manifest.ps1 to validate config/automation_helper_surface_manifest.json directly.
 - Recorded the new automation-helper surface manifest validation posture in scripts README, Phase 2 status, project-state doc, and session log.
+
+## 2026-04-24
+- Created branch `phase-2/automation-helper-surface-manifest-gate-integration`
+- Integrated scripts/validate_automation_helper_surface_manifest.ps1 into config/phase2_gate_surface_manifest.json under validation_steps.
+- Updated scripts README, Phase 2 status, project-state doc, and session log to record automation-helper surface manifest gate integration.

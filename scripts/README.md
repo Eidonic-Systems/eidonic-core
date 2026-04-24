@@ -696,4 +696,9 @@ That manifest declares:
 - the supporting truth surfaces those helpers depend on
 - the helper list reported in the validator summary
 
+## Automation-helper surface manifest gate integration note
+
+`config/phase2_gate_surface_manifest.json` now includes `scripts/validate_automation_helper_surface_manifest.ps1` under `validation_steps`.
+
+That means the standard Phase 2 gate validates the automation-helper surface manifest directly before downstream helper-surface validation depends on it.
 
