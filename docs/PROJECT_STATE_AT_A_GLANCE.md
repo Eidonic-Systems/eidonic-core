@@ -87,14 +87,8 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 
 ## Current automation helper validation surface
 
-- `scripts/validate_automation_helpers.ps1`
-
-## Current workflow gate capture posture
-
-- `.github/workflows/phase2-gate.yml` runs `scripts/run_phase2_gate_with_capture.ps1`
-- the workflow uploads captured Phase 2 gate output as a workflow artifact
-
-## Current temp-file hygiene surface
+- `scripts/validate_automation_helper_surface_manifest.ps1`
+- `scripts/validate_automation_helpers.ps1`## Current temp-file hygiene surface
 
 - `.gitignore` ignores local proof artifact files
 - `scripts/finish_merged_branch.ps1` pre-cleans known temp output files before dirty-tree refusal
@@ -297,12 +291,12 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 ## Current automation-helper surface truth source
 
 - `config/automation_helper_surface_manifest.json` declares the helper scripts and supporting surfaces covered by `scripts/validate_automation_helpers.ps1`
-- helper coverage reporting should now come from that manifest instead of hardcoded lists inside the validator
+- helper coverage reporting should come from that manifest instead of hardcoded validator lists
 
-## Current automation-helper surface manifest gate posture
+## Current automation-helper surface manifest validation posture
 
-- `scripts/validate_automation_helper_surface_manifest.ps1` is declared in `config/phase2_gate_surface_manifest.json` under `validation_steps`
-- the standard Phase 2 gate now validates the automation-helper surface manifest before broader helper validation runs
+- `scripts/validate_automation_helper_surface_manifest.ps1` validates `config/automation_helper_surface_manifest.json` directly
+- automation-helper manifest drift should fail at the manifest surface before broader helper validation runs
 
 ## Current automation-helper surface manifest gate posture
 

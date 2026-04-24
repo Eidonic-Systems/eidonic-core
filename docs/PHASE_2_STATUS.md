@@ -217,15 +217,15 @@ Main proof after the dependency wave:
 - `scripts/validate_automation_helpers.ps1` now validates phase-aware helper behavior for `startup_authority_steps` and `post_start_runtime_steps`
 - undeclared scripts outside the allowed proof phases must be refused
 
-## Automation-helper surface manifest posture
+## Automation-helper surface truth-source posture
 
 - `config/automation_helper_surface_manifest.json` now declares the helper scripts and supporting surfaces covered by `scripts/validate_automation_helpers.ps1`
-- the helper validator summary now reports the declared helper set instead of a stale hardcoded subset
+- helper coverage reporting should come from that manifest instead of hardcoded validator lists
 
-## Automation-helper surface manifest gate posture
+## Automation-helper surface manifest validation
 
-- `scripts/validate_automation_helper_surface_manifest.ps1` is declared in `config/phase2_gate_surface_manifest.json` under `validation_steps`
-- the standard Phase 2 gate now validates the automation-helper surface manifest directly before downstream helper-surface validation depends on it
+- `scripts/validate_automation_helper_surface_manifest.ps1` validates `config/automation_helper_surface_manifest.json` directly
+- standalone and gate-path helper validation now depend on that manifest layer explicitly
 
 ## Automation-helper surface manifest gate posture
 
@@ -234,7 +234,6 @@ Main proof after the dependency wave:
 
 ## Automation-helper manifest precheck duplication control
 
-- `scripts/validate_automation_helpers.ps1` still prechecks `scripts/validate_automation_helper_surface_manifest.ps1` by default when run standalone
-- `scripts/run_phase2_gate.ps1` now passes `-SkipManifestPrecheck` only when the manifest validator already ran earlier in `validation_steps`
-- standalone validation keeps correct dependency order without making full gate runs pay for duplicate manifest proof
+- standalone `scripts/validate_automation_helpers.ps1` runs still precheck the manifest validator first by default
+- gate runs skip that internal precheck only when upstream validation order already proved the manifest earlier in `validation_steps`
 
