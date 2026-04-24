@@ -1345,3 +1345,9 @@
 - Created branch `phase-2/automation-helper-validator-manifest-precheck`
 - Updated scripts/validate_automation_helpers.ps1 to precheck scripts/validate_automation_helper_surface_manifest.ps1 before broader helper-surface validation when run standalone.
 - Updated scripts README, Phase 2 status, project-state doc, and session log to record the standalone automation-helper manifest precheck posture.
+
+## 2026-04-24
+- Created branch `phase-2/automation-helper-manifest-precheck-duplication-control`
+- Updated scripts/validate_automation_helpers.ps1 to support SkipManifestPrecheck so standalone runs still precheck the automation-helper manifest validator by default.
+- Updated scripts/run_phase2_gate.ps1 to pass SkipManifestPrecheck only when scripts/validate_automation_helper_surface_manifest.ps1 already ran earlier in validation_steps.
+- Updated scripts README, Phase 2 status, project-state doc, and session log to record automation-helper manifest precheck duplication control.

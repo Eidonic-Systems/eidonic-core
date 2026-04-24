@@ -232,4 +232,9 @@ Main proof after the dependency wave:
 - `scripts/validate_automation_helper_surface_manifest.ps1` is declared in `config/phase2_gate_surface_manifest.json` under `validation_steps` immediately before `scripts/validate_automation_helpers.ps1`
 - the standard Phase 2 gate now validates the automation-helper surface manifest before broader helper validation consumes it
 
+## Automation-helper manifest precheck duplication control
+
+- `scripts/validate_automation_helpers.ps1` still prechecks `scripts/validate_automation_helper_surface_manifest.ps1` by default when run standalone
+- `scripts/run_phase2_gate.ps1` now passes `-SkipManifestPrecheck` only when the manifest validator already ran earlier in `validation_steps`
+- standalone validation keeps correct dependency order without making full gate runs pay for duplicate manifest proof
 

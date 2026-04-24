@@ -309,4 +309,8 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 - `scripts/validate_automation_helper_surface_manifest.ps1` is declared in `config/phase2_gate_surface_manifest.json` under `validation_steps` immediately before `scripts/validate_automation_helpers.ps1`
 - the standard Phase 2 gate now validates the automation-helper surface manifest before broader helper validation runs
 
+## Current automation-helper manifest precheck duplication control posture
+
+- standalone `scripts/validate_automation_helpers.ps1` runs still precheck the manifest validator first by default
+- gate runs now skip that internal precheck only when upstream validation order already proved the manifest earlier in `validation_steps`
 
