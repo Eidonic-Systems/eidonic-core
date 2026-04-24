@@ -57,8 +57,17 @@ function Invoke-Helper {
     )
 
     Write-Section -Label $Label
-    $output = (& powershell @PowerShellArgs 2>&1 | Out-String)
-    $exitCode = $LASTEXITCODE
+
+    $previousErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+
+    try {
+        $output = (& powershell @PowerShellArgs 2>&1 | Out-String)
+        $exitCode = $LASTEXITCODE
+    }
+    finally {
+        $ErrorActionPreference = $previousErrorActionPreference
+    }
 
     [pscustomobject]@{
         label = $Label
@@ -66,7 +75,6 @@ function Invoke-Helper {
         output = $output.TrimEnd()
     }
 }
-
 $resolvedRepoRoot = (Resolve-Path $RepoRoot).Path
 Set-Location $resolvedRepoRoot
 
@@ -74,20 +82,26 @@ $gitIgnorePath = Join-Path $resolvedRepoRoot ".gitignore"
 $startHelperPath = Join-Path $resolvedRepoRoot "scripts\start_bounded_branch.ps1"
 $finishHelperPath = Join-Path $resolvedRepoRoot "scripts\finish_merged_branch.ps1"
 $gateWrapperPath = Join-Path $resolvedRepoRoot "scripts\run_phase2_gate_with_capture.ps1"
+$runtimeProofHelperPath = Join-Path $resolvedRepoRoot "scripts\run_declared_runtime_proof.ps1"
+$governanceGatePath = Join-Path $resolvedRepoRoot "scripts\run_governance_gate.ps1"
 $sessionLogHelperPath = Join-Path $resolvedRepoRoot "scripts\append_session_log_entry.ps1"
 $syncHelperPath = Join-Path $resolvedRepoRoot "scripts\sync_phase2_dependency_truth.ps1"
 $waveHelperPath = Join-Path $resolvedRepoRoot "scripts\absorb_phase2_dependency_wave.ps1"
-$truthPath = Join-Path $resolvedRepoRoot "config\phase2_python_dependency_truth.json"
+$truthPath = Join-Path $resolvedRepoRoot "config\phase2_gate_surface_manifest.json"
+$dependencyTruthPath = Join-Path $resolvedRepoRoot "config\phase2_python_dependency_truth.json"
 
 foreach ($requiredPath in @(
     $gitIgnorePath,
     $startHelperPath,
     $finishHelperPath,
     $gateWrapperPath,
+    $runtimeProofHelperPath,
+    $governanceGatePath,
     $sessionLogHelperPath,
     $syncHelperPath,
     $waveHelperPath,
-    $truthPath
+    $truthPath,
+    $dependencyTruthPath
 )) {
     if (-not (Test-Path $requiredPath)) {
         throw "Missing required automation helper surface at $requiredPath"
@@ -130,6 +144,29 @@ foreach ($pattern in @('tmp_phase2_gate_output*.txt', 'tmp_test_full_chain_outpu
     if ($gitIgnoreText -notmatch [regex]::Escape($pattern)) {
         Add-Failure -Failures $failures -Message (".gitignore missing local proof artifact pattern '{0}'" -f $pattern)
     }
+}
+
+Write-Section -Label "Checking runtime-proof helper discipline"
+$runtimeProofHelperText = Get-Content $runtimeProofHelperPath -Raw
+
+if ($runtimeProofHelperText -notmatch [regex]::Escape('post_start_runtime_steps')) {
+    Add-Failure -Failures $failures -Message "run_declared_runtime_proof.ps1 does not validate post_start_runtime_steps membership"
+}
+if ($runtimeProofHelperText -notmatch [regex]::Escape('Requested script is not declared under post_start_runtime_steps')) {
+    Add-Failure -Failures $failures -Message "run_declared_runtime_proof.ps1 missing undeclared-script refusal message"
+}
+if ($runtimeProofHelperText -notmatch [regex]::Escape('start_phase_2_stack.ps1')) {
+    Add-Failure -Failures $failures -Message "run_declared_runtime_proof.ps1 missing stack-start ownership path"
+}
+
+Write-Section -Label "Checking governance gate startup ownership"
+$governanceGateText = Get-Content $governanceGatePath -Raw
+
+if ($governanceGateText -match 'start_phase_2_stack\.ps1') {
+    Add-Failure -Failures $failures -Message "run_governance_gate.ps1 still references start_phase_2_stack.ps1"
+}
+if ($governanceGateText -match '\[switch\]\$SkipStackStart') {
+    Add-Failure -Failures $failures -Message "run_governance_gate.ps1 still carries dead SkipStackStart parameter surface"
 }
 
 $baselineStatus = Get-StatusSnapshot
@@ -260,7 +297,27 @@ if ($syncResult.exit_code -ne 0) {
     Add-Failure -Failures $failures -Message "sync_phase2_dependency_truth.ps1 dry-run failed"
 }
 
-$truth = Get-Content $truthPath -Raw | ConvertFrom-Json
+$runtimeProofUndeclaredResult = Invoke-Helper -Label "Undeclared runtime-proof helper refusal" -PowerShellArgs @(
+    "-ExecutionPolicy", "Bypass",
+    "-File", $runtimeProofHelperPath,
+    "-ScriptPath", "scripts/validate_service_topology_manifest.ps1",
+    "-SkipStackStart"
+)
+[void]$results.Add($runtimeProofUndeclaredResult)
+if ($runtimeProofUndeclaredResult.exit_code -eq 0) {
+    Add-Failure -Failures $failures -Message "run_declared_runtime_proof.ps1 did not refuse an undeclared runtime proof script"
+}
+$undeclaredOutput = [string]$runtimeProofUndeclaredResult.output
+
+if (
+    ($undeclaredOutput -notmatch 'Requested script is not declared under') -or
+    ($undeclaredOutput -notmatch 'post_start_runtime_steps') -or
+    ($undeclaredOutput -notmatch 'scripts/validate_service_topology_manifest\.ps1')
+) {
+    Add-Failure -Failures $failures -Message "run_declared_runtime_proof.ps1 undeclared-script refusal output was missing the expected message fragments"
+}
+
+$truth = Get-Content $dependencyTruthPath -Raw | ConvertFrom-Json
 $currentPydanticPin = @($truth.shared_package.required_dependency_pins | Where-Object { $_ -match '^pydantic==' }) | Select-Object -First 1
 if ([string]::IsNullOrWhiteSpace([string]$currentPydanticPin)) {
     Add-Failure -Failures $failures -Message "dependency truth missing shared pydantic pin"
@@ -316,3 +373,9 @@ if ($summary.status -ne "passed") {
 
 Write-Host ""
 Write-Host "Automation helper validation passed." -ForegroundColor Green
+
+
+
+
+
+

@@ -195,3 +195,10 @@ Main proof after the dependency wave:
 - `scripts/run_declared_runtime_proof.ps1` now owns startup for manual single runtime-proof runs unless `-SkipStackStart` is used
 - operators should not manually call `scripts/start_phase_2_stack.ps1` before a gate wrapper that already owns startup
 
+## Runtime-proof stack discipline validation
+
+- `scripts/validate_automation_helpers.ps1` now validates the runtime-proof stack discipline surface
+- `scripts/run_declared_runtime_proof.ps1` must refuse undeclared scripts outside `post_start_runtime_steps`
+- `scripts/run_governance_gate.ps1` must not reference `scripts/start_phase_2_stack.ps1`
+- `scripts/run_governance_gate.ps1` must not carry the dead `SkipStackStart` parameter surface
+

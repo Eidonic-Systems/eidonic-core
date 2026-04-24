@@ -1,7 +1,3 @@
-param(
-    [switch]$SkipStackStart
-)
-
 $ErrorActionPreference = "Stop"
 
 function Run-Step {
@@ -49,5 +45,6 @@ Run-Step -Label "Running full-chain integration test" -Action {
 
 Write-Host ""
 Write-Host "Governance gate surface passed." -ForegroundColor Green
+
 
 

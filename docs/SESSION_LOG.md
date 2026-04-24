@@ -1286,3 +1286,10 @@
 - Added scripts/run_declared_runtime_proof.ps1 as the operator-facing helper for one declared post-start runtime proof with stack-first startup owned exactly once.
 - Documented runtime-proof stack discipline across scripts README, Phase 2 status, project-state, and session log.
 - Removed duplicate startup ownership from scripts/run_governance_gate.ps1 if present so stack startup authority stays singular per proof path.
+
+## 2026-04-23
+- Created branch `phase-2/runtime-proof-stack-discipline-validation-surface`
+- Extended scripts/validate_automation_helpers.ps1 to validate the runtime-proof stack discipline surface.
+- Added refusal coverage for undeclared runtime-proof scripts outside post_start_runtime_steps.
+- Added static checks that scripts/run_governance_gate.ps1 no longer references scripts/start_phase_2_stack.ps1 and no longer carries the dead SkipStackStart parameter surface.
+- Updated scripts README, Phase 2 status, project-state doc, and session log to record the runtime-proof stack discipline validation surface.
