@@ -197,17 +197,10 @@ Main proof after the dependency wave:
 
 ## Runtime-proof stack discipline validation
 
-- `scripts/validate_automation_helpers.ps1` now validates the runtime-proof stack discipline surface
-- `scripts/run_declared_runtime_proof.ps1` must refuse undeclared scripts outside `post_start_runtime_steps`
+- `scripts/validate_automation_helpers.ps1` now validates the runtime-proof stack discipline surface through `config/automation_helper_surface_manifest.json`
+- `scripts/run_declared_runtime_proof.ps1` must refuse undeclared scripts outside the allowed proof phases
 - `scripts/run_governance_gate.ps1` must not reference `scripts/start_phase_2_stack.ps1`
-- `scripts/run_governance_gate.ps1` must not carry the dead `SkipStackStart` parameter surface
-
-## Runtime stack startup idempotence
-
-- `scripts/start_phase_2_stack.ps1` is now health-aware and reuses an already-healthy declared stack instead of opening duplicate service windows
-- `scripts/validate_runtime_stack_startup_idempotence.ps1` proves repeated startup reuses the declared stack and does not report new service starts on the second run
-
-## Startup-authority gate phase posture
+- `scripts/run_governance_gate.ps1` must not carry the dead `SkipStackStart` parameter surface## Startup-authority gate phase posture
 
 - `config/phase2_gate_surface_manifest.json` now declares `startup_authority_steps` as a dedicated gate phase
 - `scripts/validate_runtime_stack_startup_idempotence.ps1` is now integrated there instead of being forced into the wrong phase
@@ -223,4 +216,9 @@ Main proof after the dependency wave:
 
 - `scripts/validate_automation_helpers.ps1` now validates phase-aware helper behavior for `startup_authority_steps` and `post_start_runtime_steps`
 - undeclared scripts outside the allowed proof phases must be refused
+
+## Automation-helper surface manifest posture
+
+- `config/automation_helper_surface_manifest.json` now declares the helper scripts and supporting surfaces covered by `scripts/validate_automation_helpers.ps1`
+- the helper validator summary now reports the declared helper set instead of a stale hardcoded subset
 

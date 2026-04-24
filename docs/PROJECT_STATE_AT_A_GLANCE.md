@@ -294,3 +294,8 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 - startup-authority proofs are run without a pre-start stack call from the helper
 - post-start runtime proofs still receive one startup-authority call unless `-SkipStackStart` is used
 
+## Current automation-helper surface truth source
+
+- `config/automation_helper_surface_manifest.json` declares the helper scripts and supporting surfaces covered by `scripts/validate_automation_helpers.ps1`
+- helper coverage reporting should now come from that manifest instead of hardcoded lists inside the validator
+

@@ -1313,3 +1313,15 @@
 - Made the helper avoid pre-start stack calls for startup-authority proofs while preserving single-start behavior for post-start runtime proofs unless SkipStackStart is used.
 - Extended scripts/validate_automation_helpers.ps1 to validate phase-aware dry-run behavior, undeclared-script refusal across allowed proof phases, and the cleaned governance-gate startup surface.
 - Updated scripts README, Phase 2 status, project-state doc, and session log to record the declared gate-phase proof helper surface.
+
+## 2026-04-24
+- Created branch `phase-2/automation-helper-surface-manifest`
+- Added config/automation_helper_surface_manifest.json as the declared truth source for helper coverage exercised by scripts/validate_automation_helpers.ps1.
+- Reworked scripts/validate_automation_helpers.ps1 to consume the declared helper script set and supporting surfaces from the new manifest, and to report the real checked_helpers summary instead of a stale hardcoded subset.
+- Updated scripts README, Phase 2 status, project-state doc, and session log to record the automation-helper surface manifest posture.
+
+## 2026-04-24
+- Created branch `phase-2/automation-helper-surface-manifest`
+- Added config/automation_helper_surface_manifest.json as the declared truth source for helper coverage exercised by scripts/validate_automation_helpers.ps1.
+- Reworked scripts/validate_automation_helpers.ps1 to consume the declared helper script set and supporting surfaces from the new manifest, and to report the real checked_helpers summary instead of a stale hardcoded subset.
+- Updated scripts README, Phase 2 status, project-state doc, and session log to record the automation-helper surface manifest posture.

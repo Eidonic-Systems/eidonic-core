@@ -75,23 +75,92 @@ function Invoke-Helper {
         output = $output.TrimEnd()
     }
 }
+
+function Get-DeclaredSurfacePath {
+    param(
+        [hashtable]$PathMap,
+        [string]$RelativePath,
+        [string]$ManifestLabel
+    )
+
+    if (-not $PathMap.ContainsKey($RelativePath)) {
+        throw ("Automation helper surface manifest missing {0} entry '{1}'." -f $ManifestLabel, $RelativePath)
+    }
+
+    return [string]$PathMap[$RelativePath]
+}
+
 $resolvedRepoRoot = (Resolve-Path $RepoRoot).Path
 Set-Location $resolvedRepoRoot
 
-$gitIgnorePath = Join-Path $resolvedRepoRoot ".gitignore"
-$startHelperPath = Join-Path $resolvedRepoRoot "scripts\start_bounded_branch.ps1"
-$finishHelperPath = Join-Path $resolvedRepoRoot "scripts\finish_merged_branch.ps1"
-$gateWrapperPath = Join-Path $resolvedRepoRoot "scripts\run_phase2_gate_with_capture.ps1"
-$runtimeProofHelperPath = Join-Path $resolvedRepoRoot "scripts\run_declared_runtime_proof.ps1"
-$governanceGatePath = Join-Path $resolvedRepoRoot "scripts\run_governance_gate.ps1"
-$sessionLogHelperPath = Join-Path $resolvedRepoRoot "scripts\append_session_log_entry.ps1"
-$syncHelperPath = Join-Path $resolvedRepoRoot "scripts\sync_phase2_dependency_truth.ps1"
-$waveHelperPath = Join-Path $resolvedRepoRoot "scripts\absorb_phase2_dependency_wave.ps1"
-$truthPath = Join-Path $resolvedRepoRoot "config\phase2_gate_surface_manifest.json"
-$dependencyTruthPath = Join-Path $resolvedRepoRoot "config\phase2_python_dependency_truth.json"
+$helperSurfaceManifestPath = Join-Path $resolvedRepoRoot "config\automation_helper_surface_manifest.json"
+
+if (-not (Test-Path $helperSurfaceManifestPath)) {
+    throw "Missing automation helper surface manifest at $helperSurfaceManifestPath"
+}
+
+$helperSurfaceManifest = Get-Content $helperSurfaceManifestPath -Raw | ConvertFrom-Json
+$failures = [System.Collections.ArrayList]::new()
+$results = [System.Collections.ArrayList]::new()
+
+Write-Section -Label "Checking automation helper surface manifest"
+
+if ([string]::IsNullOrWhiteSpace([string]$helperSurfaceManifest.manifest_version)) {
+    Add-Failure -Failures $failures -Message "automation helper surface manifest missing manifest_version"
+}
+
+$declaredHelperScripts = @($helperSurfaceManifest.helper_scripts | ForEach-Object { [string]$_ } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+$declaredSupportingSurfaces = @($helperSurfaceManifest.supporting_surfaces | ForEach-Object { [string]$_ } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+
+if ($declaredHelperScripts.Count -eq 0) {
+    Add-Failure -Failures $failures -Message "automation helper surface manifest has no helper_scripts"
+}
+
+if ($declaredSupportingSurfaces.Count -eq 0) {
+    Add-Failure -Failures $failures -Message "automation helper surface manifest has no supporting_surfaces"
+}
+
+$helperPathMap = @{}
+$supportingPathMap = @{}
+$allDeclaredEntries = [System.Collections.ArrayList]::new()
+
+foreach ($relativePath in $declaredHelperScripts) {
+    if ($relativePath -in $allDeclaredEntries) {
+        Add-Failure -Failures $failures -Message ("duplicate automation helper surface entry '{0}'" -f $relativePath)
+        continue
+    }
+
+    [void]$allDeclaredEntries.Add($relativePath)
+    $helperPathMap[$relativePath] = Join-Path $resolvedRepoRoot $relativePath
+}
+
+foreach ($relativePath in $declaredSupportingSurfaces) {
+    if ($relativePath -in $allDeclaredEntries) {
+        Add-Failure -Failures $failures -Message ("duplicate automation helper surface entry '{0}'" -f $relativePath)
+        continue
+    }
+
+    [void]$allDeclaredEntries.Add($relativePath)
+    $supportingPathMap[$relativePath] = Join-Path $resolvedRepoRoot $relativePath
+}
+
+$gitIgnorePath = Get-DeclaredSurfacePath -PathMap $supportingPathMap -RelativePath '.gitignore' -ManifestLabel 'supporting_surfaces'
+$gateSurfaceManifestPath = Get-DeclaredSurfacePath -PathMap $supportingPathMap -RelativePath 'config/phase2_gate_surface_manifest.json' -ManifestLabel 'supporting_surfaces'
+$dependencyTruthPath = Get-DeclaredSurfacePath -PathMap $supportingPathMap -RelativePath 'config/phase2_python_dependency_truth.json' -ManifestLabel 'supporting_surfaces'
+
+$startHelperPath = Get-DeclaredSurfacePath -PathMap $helperPathMap -RelativePath 'scripts/start_bounded_branch.ps1' -ManifestLabel 'helper_scripts'
+$finishHelperPath = Get-DeclaredSurfacePath -PathMap $helperPathMap -RelativePath 'scripts/finish_merged_branch.ps1' -ManifestLabel 'helper_scripts'
+$gateWrapperPath = Get-DeclaredSurfacePath -PathMap $helperPathMap -RelativePath 'scripts/run_phase2_gate_with_capture.ps1' -ManifestLabel 'helper_scripts'
+$runtimeProofHelperPath = Get-DeclaredSurfacePath -PathMap $helperPathMap -RelativePath 'scripts/run_declared_runtime_proof.ps1' -ManifestLabel 'helper_scripts'
+$governanceGatePath = Get-DeclaredSurfacePath -PathMap $helperPathMap -RelativePath 'scripts/run_governance_gate.ps1' -ManifestLabel 'helper_scripts'
+$sessionLogHelperPath = Get-DeclaredSurfacePath -PathMap $helperPathMap -RelativePath 'scripts/append_session_log_entry.ps1' -ManifestLabel 'helper_scripts'
+$syncHelperPath = Get-DeclaredSurfacePath -PathMap $helperPathMap -RelativePath 'scripts/sync_phase2_dependency_truth.ps1' -ManifestLabel 'helper_scripts'
+$waveHelperPath = Get-DeclaredSurfacePath -PathMap $helperPathMap -RelativePath 'scripts/absorb_phase2_dependency_wave.ps1' -ManifestLabel 'helper_scripts'
 
 foreach ($requiredPath in @(
     $gitIgnorePath,
+    $gateSurfaceManifestPath,
+    $dependencyTruthPath,
     $startHelperPath,
     $finishHelperPath,
     $gateWrapperPath,
@@ -99,17 +168,12 @@ foreach ($requiredPath in @(
     $governanceGatePath,
     $sessionLogHelperPath,
     $syncHelperPath,
-    $waveHelperPath,
-    $truthPath,
-    $dependencyTruthPath
+    $waveHelperPath
 )) {
     if (-not (Test-Path $requiredPath)) {
         throw "Missing required automation helper surface at $requiredPath"
     }
 }
-
-$failures = [System.Collections.ArrayList]::new()
-$results = [System.Collections.ArrayList]::new()
 
 Write-Section -Label "Checking static finish-helper guard placement"
 $finishHelperText = Get-Content $finishHelperPath -Raw
@@ -423,14 +487,10 @@ else {
 $summary = [ordered]@{
     status = $(if ($failures.Count -eq 0) { "passed" } else { "failed" })
     repo_root = $resolvedRepoRoot
-    checked_helpers = @(
-        "scripts/start_bounded_branch.ps1",
-        "scripts/finish_merged_branch.ps1",
-        "scripts/run_phase2_gate_with_capture.ps1",
-        "scripts/append_session_log_entry.ps1",
-        "scripts/sync_phase2_dependency_truth.ps1",
-        "scripts/absorb_phase2_dependency_wave.ps1"
-    )
+    helper_surface_manifest_path = $helperSurfaceManifestPath
+    helper_surface_manifest_version = [string]$helperSurfaceManifest.manifest_version
+    checked_helpers = @($declaredHelperScripts)
+    supporting_surfaces = @($declaredSupportingSurfaces)
     results = $results
     failures = @($failures)
 }
@@ -445,13 +505,3 @@ if ($summary.status -ne "passed") {
 
 Write-Host ""
 Write-Host "Automation helper validation passed." -ForegroundColor Green
-
-
-
-
-
-
-
-
-
-
