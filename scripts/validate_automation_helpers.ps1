@@ -506,3 +506,4 @@ if ($summary.status -ne "passed") {
 Write-Host ""
 Write-Host "Automation helper validation passed." -ForegroundColor Green
 
+
