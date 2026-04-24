@@ -268,7 +268,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_phase2_gate_surface_
 
 ## Gate surface truth source note
 
-The Phase 2 validation order is now declared in `config/phase2_gate_surface_manifest.json` and consumed by `scripts/run_phase2_gate.ps1` instead of being retyped only inside the gate script.
+The Phase 2 validation order is now declared in `config/phase2_gate_surface_manifest.json` and consumed by `scripts/run_phase2_gate.ps1` across three gate phases: `validation_steps`, `startup_authority_steps`, and `post_start_runtime_steps`.
 
 ## Gate documentation rule
 
@@ -407,7 +407,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_provider_readiness_i
 
 ## Provider readiness gate integration note
 
-`config/phase2_gate_surface_manifest.json` now separates pre-start `validation_steps` from post-start `post_start_runtime_steps`.
+`config/phase2_gate_surface_manifest.json` now separates pre-start `validation_steps`, startup-authority `startup_authority_steps`, and post-start `post_start_runtime_steps`.
 
 `scripts/validate_provider_readiness_invariants.ps1` is declared in `post_start_runtime_steps` because it requires a live Orchestrator and validates warmup and health agreement after startup.
 
@@ -673,4 +673,12 @@ Checks include:
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\validate_runtime_stack_startup_idempotence.ps1
 ```
+
+## Startup-authority gate phase note
+
+`config/phase2_gate_surface_manifest.json` now declares a dedicated `startup_authority_steps` phase.
+
+That phase exists for proofs that must exercise the startup authority itself before the standard post-start runtime proofs run.
+
+`scripts/validate_runtime_stack_startup_idempotence.ps1` now lives in `startup_authority_steps` because its first-run and second-run semantics would be fake if it were forced into `post_start_runtime_steps` after the gate had already started the stack.
 

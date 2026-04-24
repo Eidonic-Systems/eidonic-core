@@ -58,6 +58,12 @@
       "script_path": "scripts/validate_phase2_postgres_bootstrap_idempotence.ps1"
     }
   ],
+  "startup_authority_steps": [
+    {
+      "label": "Validating runtime stack startup idempotence",
+      "script_path": "scripts/validate_runtime_stack_startup_idempotence.ps1"
+    }
+  ],
   "post_start_runtime_steps": [
     {
       "label": "Validating provider readiness invariants",

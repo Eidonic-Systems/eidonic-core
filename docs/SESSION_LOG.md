@@ -1299,3 +1299,10 @@
 - Made scripts/start_phase_2_stack.ps1 health-aware and idempotent so it reuses an already-healthy declared stack instead of opening duplicate service windows.
 - Added scripts/validate_runtime_stack_startup_idempotence.ps1 to prove repeated startup reuses the declared stack and does not report new service starts on the second run.
 - Updated scripts README, Phase 2 status, project-state doc, and session log to record the runtime stack startup idempotence surface.
+
+## 2026-04-24
+- Created branch `phase-2/startup-idempotence-gate-phase-surface`
+- Added startup_authority_steps as a dedicated Phase 2 gate phase in config/phase2_gate_surface_manifest.json.
+- Updated scripts/validate_phase2_gate_surface_manifest.ps1 and scripts/run_phase2_gate.ps1 to consume validation_steps, startup_authority_steps, and post_start_runtime_steps in the correct order.
+- Integrated scripts/validate_runtime_stack_startup_idempotence.ps1 into the startup-authority phase and removed the dead SkipStackStart pass-through to scripts/run_governance_gate.ps1.
+- Updated scripts README, Phase 2 status, project-state doc, and session log to record the startup-authority gate phase posture.

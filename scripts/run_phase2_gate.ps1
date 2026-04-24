@@ -57,10 +57,19 @@ $gateManifest = Get-Content $GateSurfaceManifestPath -Raw | ConvertFrom-Json
 
 Invoke-GateStepGroup -Steps @($gateManifest.validation_steps) -RepoRootPath $RepoRoot
 
-if (-not $SkipStackStart) {
+$startupAuthoritySteps = @($gateManifest.startup_authority_steps)
+
+if ($startupAuthoritySteps.Count -gt 0) {
+    Invoke-GateStepGroup -Steps $startupAuthoritySteps -RepoRootPath $RepoRoot
+}
+elseif (-not $SkipStackStart) {
     Run-Step -Label "Starting standard Phase 2 stack" -Action {
         powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\start_phase_2_stack.ps1')
     }
+}
+else {
+    Write-Host ""
+    Write-Host "Skipping standalone Phase 2 stack start because -SkipStackStart was used and no startup_authority_steps are declared." -ForegroundColor Yellow
 }
 
 Run-Step -Label "Warming provider" -Action {
@@ -108,7 +117,7 @@ Run-Step -Label "Checking Phase 2 health" -Action {
 Invoke-GateStepGroup -Steps @($gateManifest.post_start_runtime_steps) -RepoRootPath $RepoRoot
 
 Run-Step -Label "Running governance gate" -Action {
-    powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\run_governance_gate.ps1') -SkipStackStart
+    powershell -ExecutionPolicy Bypass -File (Join-Path $RepoRoot 'scripts\run_governance_gate.ps1')
 }
 
 Write-Host ""
