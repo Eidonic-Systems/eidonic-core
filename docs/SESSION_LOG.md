@@ -1293,3 +1293,9 @@
 - Added refusal coverage for undeclared runtime-proof scripts outside post_start_runtime_steps.
 - Added static checks that scripts/run_governance_gate.ps1 no longer references scripts/start_phase_2_stack.ps1 and no longer carries the dead SkipStackStart parameter surface.
 - Updated scripts README, Phase 2 status, project-state doc, and session log to record the runtime-proof stack discipline validation surface.
+
+## 2026-04-23
+- Created branch `phase-2/runtime-stack-startup-idempotence-surface`
+- Made scripts/start_phase_2_stack.ps1 health-aware and idempotent so it reuses an already-healthy declared stack instead of opening duplicate service windows.
+- Added scripts/validate_runtime_stack_startup_idempotence.ps1 to prove repeated startup reuses the declared stack and does not report new service starts on the second run.
+- Updated scripts README, Phase 2 status, project-state doc, and session log to record the runtime stack startup idempotence surface.

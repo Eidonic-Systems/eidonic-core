@@ -649,3 +649,28 @@ Checks now include:
 - `scripts/run_governance_gate.ps1` no longer references `scripts/start_phase_2_stack.ps1`
 - `scripts/run_governance_gate.ps1` no longer carries the dead `SkipStackStart` parameter surface
 
+## start_phase_2_stack.ps1 idempotence note
+
+`scripts/start_phase_2_stack.ps1` is now health-aware and idempotent.
+
+Current startup behavior:
+- reuses already-healthy declared services instead of opening duplicate windows
+- avoids spawning duplicates when a declared service port is already listening and health is still settling
+- still enforces topology validation, runtime preflight, PostgreSQL bootstrap, schema bootstrap, schema-drift validation, health checks, and provider warmup
+
+## validate_runtime_stack_startup_idempotence.ps1
+
+Validates that repeated Phase 2 startup reuses an already-healthy declared stack instead of spawning duplicates.
+
+Checks include:
+- first startup run completes successfully
+- second startup run completes successfully
+- second startup run reports reuse of the already-healthy declared stack
+- second startup run reports per-service reuse
+- second startup run does not report new service starts
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_runtime_stack_startup_idempotence.ps1
+```
+
