@@ -1325,3 +1325,8 @@
 - Added config/automation_helper_surface_manifest.json as the declared truth source for helper coverage exercised by scripts/validate_automation_helpers.ps1.
 - Reworked scripts/validate_automation_helpers.ps1 to consume the declared helper script set and supporting surfaces from the new manifest, and to report the real checked_helpers summary instead of a stale hardcoded subset.
 - Updated scripts README, Phase 2 status, project-state doc, and session log to record the automation-helper surface manifest posture.
+
+## 2026-04-24
+- Created branch `phase-2/automation-helper-surface-manifest-validation-surface`
+- Added scripts/validate_automation_helper_surface_manifest.ps1 to validate config/automation_helper_surface_manifest.json directly.
+- Recorded the new automation-helper surface manifest validation posture in scripts README, Phase 2 status, project-state doc, and session log.

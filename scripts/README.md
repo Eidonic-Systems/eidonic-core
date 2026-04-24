@@ -696,3 +696,4 @@ That manifest declares:
 - the supporting truth surfaces those helpers depend on
 - the helper list reported in the validator summary
 
+
