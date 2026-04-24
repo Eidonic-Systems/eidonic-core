@@ -262,3 +262,11 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 - `scripts/validate_governance_negative_matrix_provenance_invariants.ps1` is declared in `config/phase2_gate_surface_manifest.json` under `post_start_runtime_steps`
 - the standard Phase 2 gate now proves the negative governance fixture matrix falls through to normal orchestration and persists matching default-success governance provenance across artifact and lineage retrieval surfaces
 
+## Current runtime-proof stack discipline posture
+
+- static validators belong to `validation_steps`
+- live endpoint proofs belong to `post_start_runtime_steps`
+- `scripts/start_phase_2_stack.ps1` is the single startup authority
+- `scripts/run_phase2_gate.ps1` owns startup for full gate runs unless `-SkipStackStart` is used
+- `scripts/run_declared_runtime_proof.ps1` owns startup for manual single runtime-proof runs unless `-SkipStackStart` is used
+
