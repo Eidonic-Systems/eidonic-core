@@ -1351,3 +1351,9 @@
 - Updated scripts/validate_automation_helpers.ps1 to support SkipManifestPrecheck so standalone runs still precheck the automation-helper manifest validator by default.
 - Updated scripts/run_phase2_gate.ps1 to pass SkipManifestPrecheck only when scripts/validate_automation_helper_surface_manifest.ps1 already ran earlier in validation_steps.
 - Updated scripts README, Phase 2 status, project-state doc, and session log to record automation-helper manifest precheck duplication control.
+
+## 2026-04-24
+- Created branch `phase-2/automation-helper-surface-recovery-alignment`
+- Extended config/recovery_surface_manifest.json so recovery validation explicitly knows about config/automation_helper_surface_manifest.json and scripts/validate_automation_helper_surface_manifest.ps1.
+- Updated docs/CODEX_WORKFLOW.md, docs/PHASE_2_STATUS.md, and docs/PROJECT_STATE_AT_A_GLANCE.md to align recovery-facing automation-helper truth, validation, gate order, and duplication-control posture.
+- Removed the duplicated phase-2/automation-helper-surface-manifest session-log entry and recorded this recovery-alignment branch.

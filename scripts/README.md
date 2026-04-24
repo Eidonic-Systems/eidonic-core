@@ -187,6 +187,23 @@ Current hardening expectations:
 - `absorb_phase2_dependency_wave.ps1` must not dirty the dependency truth file on a no-op approved version path
 - `append_session_log_entry.ps1` should accept multiple note arguments cleanly through `powershell -File`
 
+## validate_automation_helper_surface_manifest.ps1
+
+Validates `config/automation_helper_surface_manifest.json` as the declared truth source for automation-helper coverage.
+
+Checks include:
+- manifest version presence
+- non-empty `helper_scripts` list
+- non-empty `supporting_surfaces` list
+- unique paths across both lists
+- helper script paths resolve to PowerShell scripts under `scripts/`
+- declared paths exist on disk
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\validate_automation_helper_surface_manifest.ps1
+```
+
 ## validate_automation_helpers.ps1
 
 Validates the local workflow automation helper layer for bounded branch flow, merged-branch cleanup, gate capture, session-log append behavior, dependency truth sync, and no-op dependency-wave idempotence.
@@ -707,6 +724,7 @@ That means the standard Phase 2 gate validates the automation-helper surface man
 `config/phase2_gate_surface_manifest.json` now includes `scripts/validate_automation_helper_surface_manifest.ps1` under `validation_steps` immediately before `scripts/validate_automation_helpers.ps1`.
 
 That means the standard Phase 2 gate validates the automation-helper surface manifest directly before downstream helper-surface validation depends on it.
+
 
 
 

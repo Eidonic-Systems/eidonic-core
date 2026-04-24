@@ -63,6 +63,11 @@ At the start of a new chat, read in this order:
 - `AGENTS.md`
 - then the specific manifest, script, or doc tied to the requested task
 
+If the task touches automation-helper control surfaces, read these before broader helper work:
+- `config/automation_helper_surface_manifest.json`
+- `scripts/validate_automation_helper_surface_manifest.ps1`
+- `scripts/validate_automation_helpers.ps1`
+
 ## Dependency-wave rule
 
 When multiple bot PRs represent one shared dependency wave:
@@ -90,6 +95,9 @@ These exist to reduce repeated manual branch churn and keep proof and session-lo
 ## Automation helper validation rule
 
 When changing any of these surfaces:
+- `config/automation_helper_surface_manifest.json`
+- `scripts/validate_automation_helper_surface_manifest.ps1`
+- `scripts/validate_automation_helpers.ps1`
 - `scripts/start_bounded_branch.ps1`
 - `scripts/finish_merged_branch.ps1`
 - `scripts/run_phase2_gate_with_capture.ps1`
@@ -98,6 +106,7 @@ When changing any of these surfaces:
 - `scripts/absorb_phase2_dependency_wave.ps1`
 
 run:
+- `powershell -ExecutionPolicy Bypass -File .\scripts\validate_automation_helper_surface_manifest.ps1`
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_automation_helpers.ps1`
 
 ## Codex surface validation rule
@@ -140,7 +149,6 @@ When changing `scripts/README.md`, run:
 
 When operator-facing recovery validators are integrated into the standard Phase 2 gate, update that manifest and prove the result with gate-manifest validation and the normal gate run.
 
-
 ## Root-doc surface validation rule
 
 When changing `README.md` or `SECURITY.md`, run:
@@ -154,4 +162,3 @@ When changing `README.md` or `SECURITY.md`, run:
 
 When changing the authoritative status surfaces named in `README.md`, run:
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_authoritative_status_surfaces.ps1`
-

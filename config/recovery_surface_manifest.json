@@ -68,7 +68,10 @@
         "scripts[\\\\/]validate_untracked_repo_files\\.ps1",
         "scripts[\\\\/]validate_scripts_readme_surface\\.ps1",
         "scripts[\\\\/]validate_root_doc_surfaces\\.ps1",
-        "scripts[\\\\/]validate_authoritative_status_surfaces\\.ps1"
+        "scripts[\\\\/]validate_authoritative_status_surfaces\\.ps1",
+        "config/automation_helper_surface_manifest\\.json",
+        "scripts/validate_automation_helper_surface_manifest\\.ps1",
+        "scripts/validate_automation_helpers\\.ps1"
       ]
     },
     {
@@ -86,7 +89,10 @@
         "scripts[\\\\/]validate_untracked_repo_files\\.ps1",
         "scripts[\\\\/]validate_scripts_readme_surface\\.ps1",
         "scripts[\\\\/]validate_root_doc_surfaces\\.ps1",
-        "scripts[\\\\/]validate_authoritative_status_surfaces\\.ps1"
+        "scripts[\\\\/]validate_authoritative_status_surfaces\\.ps1",
+        "config/automation_helper_surface_manifest\\.json",
+        "scripts/validate_automation_helper_surface_manifest\\.ps1",
+        "scripts/validate_automation_helpers\\.ps1"
       ]
     },
     {
@@ -119,7 +125,9 @@
     "scripts/validate_untracked_repo_files.ps1",
     "scripts/validate_scripts_readme_surface.ps1",
     "scripts/validate_root_doc_surfaces.ps1",
-    "scripts/validate_authoritative_status_surfaces.ps1"
+    "scripts/validate_authoritative_status_surfaces.ps1",
+    "config/automation_helper_surface_manifest.json",
+    "scripts/validate_automation_helper_surface_manifest.ps1"
   ],
   "project_state_required_sections": [
     "## Current gate posture",
@@ -132,7 +140,11 @@
     "## Current untracked-file guard surface",
     "## Current scripts-readme validation surface",
     "## Current root-doc validation surface",
-    "## Current authoritative-status validation surface"
+    "## Current authoritative-status validation surface",
+    "## Current automation-helper surface truth source",
+    "## Current automation-helper surface manifest validation posture",
+    "## Current automation-helper surface manifest gate posture",
+    "## Current automation-helper manifest precheck duplication control posture"
   ],
   "scripts_readme_required_references": [
     "config/service_topology_manifest.json",
@@ -151,14 +163,19 @@
     "scripts/validate_project_state_surface.ps1",
     "scripts/validate_session_log_surface.ps1",
     "scripts/validate_untracked_repo_files.ps1",
-    "scripts/validate_scripts_readme_surface.ps1"
+    "scripts/validate_scripts_readme_surface.ps1",
+    "config/automation_helper_surface_manifest.json",
+    "scripts/validate_automation_helper_surface_manifest.ps1"
   ],
   "scripts_readme_required_sections": [
     "## run_phase2_gate.ps1",
     "## validate_recovery_surface_manifest.ps1",
     "## validate_scripts_readme_surface.ps1",
     "## Gate documentation rule",
-    "## Recovery-surface truth source note"
+    "## Recovery-surface truth source note",
+    "## validate_automation_helper_surface_manifest.ps1",
+    "## Automation-helper surface truth source note",
+    "## Automation-helper surface manifest gate integration note"
   ],
   "root_doc_surface_checks": [
     {
