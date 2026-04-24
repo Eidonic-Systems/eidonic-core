@@ -189,7 +189,7 @@ Main proof after the dependency wave:
 
 ## Runtime-proof stack discipline
 
-- `scripts/validate_phase2_gate_surface_manifest.ps1` declares the split between static `validation_steps` and live `post_start_runtime_steps`
+- `scripts/validate_phase2_gate_surface_manifest.ps1` now declares the three-phase split between `validation_steps`, `startup_authority_steps`, and `post_start_runtime_steps`
 - `scripts/start_phase_2_stack.ps1` remains the startup authority
 - `scripts/run_phase2_gate.ps1` owns startup for full gate runs unless `-SkipStackStart` is used
 - `scripts/run_declared_runtime_proof.ps1` now owns startup for manual single runtime-proof runs unless `-SkipStackStart` is used
@@ -206,4 +206,10 @@ Main proof after the dependency wave:
 
 - `scripts/start_phase_2_stack.ps1` is now health-aware and reuses an already-healthy declared stack instead of opening duplicate service windows
 - `scripts/validate_runtime_stack_startup_idempotence.ps1` proves repeated startup reuses the declared stack and does not report new service starts on the second run
+
+## Startup-authority gate phase posture
+
+- `config/phase2_gate_surface_manifest.json` now declares `startup_authority_steps` as a dedicated gate phase
+- `scripts/validate_runtime_stack_startup_idempotence.ps1` is now integrated there instead of being forced into the wrong phase
+- the standard Phase 2 gate now proves startup-authority behavior before downstream post-start runtime proofs run
 

@@ -79,18 +79,17 @@ if ([string]::IsNullOrWhiteSpace([string]$manifest.manifest_version)) {
     Add-Failure -Failures $failures -Message "gate surface manifest missing manifest_version"
 }
 
-if (-not ($manifest.PSObject.Properties.Name -contains 'validation_steps')) {
-    Add-Failure -Failures $failures -Message "gate surface manifest missing validation_steps"
-}
-
-if (-not ($manifest.PSObject.Properties.Name -contains 'post_start_runtime_steps')) {
-    Add-Failure -Failures $failures -Message "gate surface manifest missing post_start_runtime_steps"
+foreach ($requiredPhase in @('validation_steps', 'startup_authority_steps', 'post_start_runtime_steps')) {
+    if (-not ($manifest.PSObject.Properties.Name -contains $requiredPhase)) {
+        Add-Failure -Failures $failures -Message ("gate surface manifest missing {0}" -f $requiredPhase)
+    }
 }
 
 $labelsSeen = [System.Collections.ArrayList]::new()
 $pathsSeen = [System.Collections.ArrayList]::new()
 
 Test-StepArray -Steps @($manifest.validation_steps) -Label 'validation_steps' -RepoRootPath $resolvedRepoRoot -Failures $failures -LabelsSeen $labelsSeen -PathsSeen $pathsSeen
+Test-StepArray -Steps @($manifest.startup_authority_steps) -Label 'startup_authority_steps' -RepoRootPath $resolvedRepoRoot -Failures $failures -LabelsSeen $labelsSeen -PathsSeen $pathsSeen
 Test-StepArray -Steps @($manifest.post_start_runtime_steps) -Label 'post_start_runtime_steps' -RepoRootPath $resolvedRepoRoot -Failures $failures -LabelsSeen $labelsSeen -PathsSeen $pathsSeen
 
 $summary = [ordered]@{
@@ -98,6 +97,7 @@ $summary = [ordered]@{
     manifest_path = $manifestPath
     manifest_version = [string]$manifest.manifest_version
     validation_step_count = @($manifest.validation_steps).Count
+    startup_authority_step_count = @($manifest.startup_authority_steps).Count
     post_start_runtime_step_count = @($manifest.post_start_runtime_steps).Count
     failures = @($failures)
 }

@@ -38,7 +38,7 @@ Gate validation truth source:
 Gate manifest validator:
 - `scripts/validate_phase2_gate_surface_manifest.ps1`
 
-The gate consumes declared pre-start validation order from `validation_steps`, then consumes declared post-start runtime validation order from `post_start_runtime_steps` after startup, state checks, warmup, and health.
+The gate consumes declared pre-start validation order from `validation_steps`, then consumes startup-authority proof order from `startup_authority_steps`, then consumes post-start runtime validation order from `post_start_runtime_steps` after startup-authority proof, state checks, warmup, and health.
 
 ## Current governance posture
 
@@ -281,4 +281,10 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 - `scripts/start_phase_2_stack.ps1` reuses an already-healthy declared stack
 - repeated startup is expected to avoid duplicate service-window launches
 - `scripts/validate_runtime_stack_startup_idempotence.ps1` proves the second startup run reuses the declared stack instead of starting services again
+
+## Current startup-authority gate posture
+
+- `config/phase2_gate_surface_manifest.json` now declares `startup_authority_steps`
+- startup-authority proofs run between static validation and post-start runtime proofs
+- `scripts/validate_runtime_stack_startup_idempotence.ps1` now lives in that startup-authority phase
 
