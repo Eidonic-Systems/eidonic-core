@@ -299,4 +299,8 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 - `config/automation_helper_surface_manifest.json` declares the helper scripts and supporting surfaces covered by `scripts/validate_automation_helpers.ps1`
 - helper coverage reporting should now come from that manifest instead of hardcoded lists inside the validator
 
+## Current automation-helper surface manifest gate posture
+
+- `scripts/validate_automation_helper_surface_manifest.ps1` is declared in `config/phase2_gate_surface_manifest.json` under `validation_steps`
+- the standard Phase 2 gate now validates the automation-helper surface manifest before broader helper validation runs
 

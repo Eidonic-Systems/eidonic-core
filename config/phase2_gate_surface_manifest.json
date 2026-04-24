@@ -14,6 +14,10 @@
       "script_path": "scripts/validate_automation_helpers.ps1"
     },
     {
+      "label": "Validating automation helper surface manifest",
+      "script_path": "scripts/validate_automation_helper_surface_manifest.ps1"
+    },
+    {
       "label": "Validating Phase 2 workflow surface",
       "script_path": "scripts/validate_phase2_workflow_surface.ps1"
     },

@@ -222,4 +222,8 @@ Main proof after the dependency wave:
 - `config/automation_helper_surface_manifest.json` now declares the helper scripts and supporting surfaces covered by `scripts/validate_automation_helpers.ps1`
 - the helper validator summary now reports the declared helper set instead of a stale hardcoded subset
 
+## Automation-helper surface manifest gate posture
+
+- `scripts/validate_automation_helper_surface_manifest.ps1` is declared in `config/phase2_gate_surface_manifest.json` under `validation_steps`
+- the standard Phase 2 gate now validates the automation-helper surface manifest directly before downstream helper-surface validation depends on it
 
