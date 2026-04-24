@@ -687,4 +687,12 @@ That phase exists for proofs that must exercise the startup authority itself bef
 
 `scripts/validate_runtime_stack_startup_idempotence.ps1` now lives in `startup_authority_steps` because its first-run and second-run semantics would be fake if it were forced into `post_start_runtime_steps` after the gate had already started the stack.
 
+## Automation-helper surface truth source note
+
+`config/automation_helper_surface_manifest.json` is the declared truth source for the helper coverage exercised by `scripts/validate_automation_helpers.ps1`.
+
+That manifest declares:
+- the helper scripts that must be covered
+- the supporting truth surfaces those helpers depend on
+- the helper list reported in the validator summary
 
