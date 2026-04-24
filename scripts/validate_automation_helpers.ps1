@@ -149,14 +149,16 @@ foreach ($pattern in @('tmp_phase2_gate_output*.txt', 'tmp_test_full_chain_outpu
 Write-Section -Label "Checking runtime-proof helper discipline"
 $runtimeProofHelperText = Get-Content $runtimeProofHelperPath -Raw
 
-if ($runtimeProofHelperText -notmatch [regex]::Escape('post_start_runtime_steps')) {
-    Add-Failure -Failures $failures -Message "run_declared_runtime_proof.ps1 does not validate post_start_runtime_steps membership"
-}
-if ($runtimeProofHelperText -notmatch [regex]::Escape('Requested script is not declared under post_start_runtime_steps')) {
-    Add-Failure -Failures $failures -Message "run_declared_runtime_proof.ps1 missing undeclared-script refusal message"
-}
-if ($runtimeProofHelperText -notmatch [regex]::Escape('start_phase_2_stack.ps1')) {
-    Add-Failure -Failures $failures -Message "run_declared_runtime_proof.ps1 missing stack-start ownership path"
+foreach ($requiredToken in @(
+    'startup_authority_steps',
+    'post_start_runtime_steps',
+    'Requested script is not declared under allowed proof phases',
+    'start_phase_2_stack.ps1',
+    '[switch]$DryRun'
+)) {
+    if ($runtimeProofHelperText -notmatch [regex]::Escape($requiredToken)) {
+        Add-Failure -Failures $failures -Message ("run_declared_runtime_proof.ps1 missing required runtime-proof token '{0}'" -f $requiredToken)
+    }
 }
 
 Write-Section -Label "Checking governance gate startup ownership"
@@ -297,24 +299,94 @@ if ($syncResult.exit_code -ne 0) {
     Add-Failure -Failures $failures -Message "sync_phase2_dependency_truth.ps1 dry-run failed"
 }
 
-$runtimeProofUndeclaredResult = Invoke-Helper -Label "Undeclared runtime-proof helper refusal" -PowerShellArgs @(
+$runtimeProofStartupDryRunResult = Invoke-Helper -Label "Dry-run startup-authority proof helper" -PowerShellArgs @(
+    "-ExecutionPolicy", "Bypass",
+    "-File", $runtimeProofHelperPath,
+    "-ScriptPath", "scripts/validate_runtime_stack_startup_idempotence.ps1",
+    "-DryRun"
+)
+[void]$results.Add($runtimeProofStartupDryRunResult)
+if ($runtimeProofStartupDryRunResult.exit_code -ne 0) {
+    Add-Failure -Failures $failures -Message "run_declared_runtime_proof.ps1 startup-authority dry-run failed"
+}
+foreach ($pattern in @(
+    'resolved declared phase: startup_authority_steps',
+    'no pre-start stack call is allowed for startup_authority_steps',
+    'Would run declared proof: scripts/validate_runtime_stack_startup_idempotence.ps1'
+)) {
+    if ($runtimeProofStartupDryRunResult.output -notmatch [regex]::Escape($pattern)) {
+        Add-Failure -Failures $failures -Message ("run_declared_runtime_proof.ps1 startup-authority dry-run missing pattern '{0}'" -f $pattern)
+    }
+}
+if ($runtimeProofStartupDryRunResult.output -match [regex]::Escape('Would start Phase 2 stack once before runtime proof.')) {
+    Add-Failure -Failures $failures -Message "run_declared_runtime_proof.ps1 startup-authority dry-run incorrectly advertised a pre-start stack call"
+}
+
+$runtimeProofPostStartDryRunResult = Invoke-Helper -Label "Dry-run post-start runtime proof helper" -PowerShellArgs @(
+    "-ExecutionPolicy", "Bypass",
+    "-File", $runtimeProofHelperPath,
+    "-ScriptPath", "scripts/validate_governance_negative_matrix_provenance_invariants.ps1",
+    "-DryRun"
+)
+[void]$results.Add($runtimeProofPostStartDryRunResult)
+if ($runtimeProofPostStartDryRunResult.exit_code -ne 0) {
+    Add-Failure -Failures $failures -Message "run_declared_runtime_proof.ps1 post-start dry-run failed"
+}
+foreach ($pattern in @(
+    'resolved declared phase: post_start_runtime_steps',
+    'Would start Phase 2 stack once before runtime proof.',
+    'Would run declared proof: scripts/validate_governance_negative_matrix_provenance_invariants.ps1'
+)) {
+    if ($runtimeProofPostStartDryRunResult.output -notmatch [regex]::Escape($pattern)) {
+        Add-Failure -Failures $failures -Message ("run_declared_runtime_proof.ps1 post-start dry-run missing pattern '{0}'" -f $pattern)
+    }
+}
+
+$runtimeProofPostStartSkipDryRunResult = Invoke-Helper -Label "Dry-run post-start runtime proof helper with SkipStackStart" -PowerShellArgs @(
+    "-ExecutionPolicy", "Bypass",
+    "-File", $runtimeProofHelperPath,
+    "-ScriptPath", "scripts/validate_governance_negative_matrix_provenance_invariants.ps1",
+    "-SkipStackStart",
+    "-DryRun"
+)
+[void]$results.Add($runtimeProofPostStartSkipDryRunResult)
+if ($runtimeProofPostStartSkipDryRunResult.exit_code -ne 0) {
+    Add-Failure -Failures $failures -Message "run_declared_runtime_proof.ps1 post-start SkipStackStart dry-run failed"
+}
+foreach ($pattern in @(
+    'resolved declared phase: post_start_runtime_steps',
+    'Skipping pre-start stack call because -SkipStackStart was used.',
+    'Would run declared proof: scripts/validate_governance_negative_matrix_provenance_invariants.ps1'
+)) {
+    if ($runtimeProofPostStartSkipDryRunResult.output -notmatch [regex]::Escape($pattern)) {
+        Add-Failure -Failures $failures -Message ("run_declared_runtime_proof.ps1 post-start SkipStackStart dry-run missing pattern '{0}'" -f $pattern)
+    }
+}
+
+$runtimeProofUndeclaredResult = Invoke-Helper -Label "Undeclared gate-phase proof helper refusal" -PowerShellArgs @(
     "-ExecutionPolicy", "Bypass",
     "-File", $runtimeProofHelperPath,
     "-ScriptPath", "scripts/validate_service_topology_manifest.ps1",
-    "-SkipStackStart"
+    "-DryRun"
 )
 [void]$results.Add($runtimeProofUndeclaredResult)
 if ($runtimeProofUndeclaredResult.exit_code -eq 0) {
-    Add-Failure -Failures $failures -Message "run_declared_runtime_proof.ps1 did not refuse an undeclared runtime proof script"
+    Add-Failure -Failures $failures -Message "run_declared_runtime_proof.ps1 did not refuse an undeclared gate-phase proof script"
 }
-$undeclaredOutput = [string]$runtimeProofUndeclaredResult.output
 
-if (
-    ($undeclaredOutput -notmatch 'Requested script is not declared under') -or
-    ($undeclaredOutput -notmatch 'post_start_runtime_steps') -or
-    ($undeclaredOutput -notmatch 'scripts/validate_service_topology_manifest\.ps1')
-) {
-    Add-Failure -Failures $failures -Message "run_declared_runtime_proof.ps1 undeclared-script refusal output was missing the expected message fragments"
+$undeclaredOutput = [string]$runtimeProofUndeclaredResult.output
+$undeclaredNormalized = (($undeclaredOutput -replace '\s+', ' ').Trim()).ToLowerInvariant()
+
+foreach ($requiredFragment in @(
+    'requested script is not declared under',
+    'allowed proof',
+    'startup_authority_steps',
+    'post_start_runtime_steps',
+    'scripts/validate_service_topology_manifest.ps1'
+)) {
+    if ($undeclaredNormalized -notlike ("*" + $requiredFragment.ToLowerInvariant() + "*")) {
+        Add-Failure -Failures $failures -Message ("run_declared_runtime_proof.ps1 undeclared-script refusal output was missing required fragment '{0}'" -f $requiredFragment)
+    }
 }
 
 $truth = Get-Content $dependencyTruthPath -Raw | ConvertFrom-Json
@@ -373,6 +445,10 @@ if ($summary.status -ne "passed") {
 
 Write-Host ""
 Write-Host "Automation helper validation passed." -ForegroundColor Green
+
+
+
+
 
 
 

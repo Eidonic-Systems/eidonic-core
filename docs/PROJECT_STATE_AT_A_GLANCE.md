@@ -268,7 +268,7 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 - live endpoint proofs belong to `post_start_runtime_steps`
 - `scripts/start_phase_2_stack.ps1` is the single startup authority
 - `scripts/run_phase2_gate.ps1` owns startup for full gate runs unless `-SkipStackStart` is used
-- `scripts/run_declared_runtime_proof.ps1` owns startup for manual single runtime-proof runs unless `-SkipStackStart` is used
+- `scripts/run_declared_runtime_proof.ps1` is phase-aware and only owns startup for manual `post_start_runtime_steps` runs unless `-SkipStackStart` is used
 
 ## Current runtime-proof stack discipline validation posture
 
@@ -287,4 +287,10 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 - `config/phase2_gate_surface_manifest.json` now declares `startup_authority_steps`
 - startup-authority proofs run between static validation and post-start runtime proofs
 - `scripts/validate_runtime_stack_startup_idempotence.ps1` now lives in that startup-authority phase
+
+## Current declared gate-phase proof helper posture
+
+- `scripts/run_declared_runtime_proof.ps1` can resolve declared proofs from `startup_authority_steps` and `post_start_runtime_steps`
+- startup-authority proofs are run without a pre-start stack call from the helper
+- post-start runtime proofs still receive one startup-authority call unless `-SkipStackStart` is used
 

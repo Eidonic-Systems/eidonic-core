@@ -627,19 +627,24 @@ Do not manually start the stack and then run a gate wrapper that also owns start
 
 ## run_declared_runtime_proof.ps1
 
-Runs one declared `post_start_runtime_steps` proof with stack-first discipline owned exactly once.
+Runs one declared proof from an allowed gate proof phase.
 
-Supports:
-- validating that the requested script is declared under `post_start_runtime_steps` in `config/phase2_gate_surface_manifest.json`
-- starting the Phase 2 stack once before the selected runtime proof unless `-SkipStackStart` is used
-- refusing undeclared scripts
+Allowed phases:
+- `startup_authority_steps`
+- `post_start_runtime_steps`
+
+Behavior:
+- resolves the declared phase automatically unless `-PhaseName` is provided
+- refuses scripts that are not declared under the allowed proof phases
+- does not pre-start the stack for `startup_authority_steps` because that would contaminate startup-authority proof semantics
+- starts the Phase 2 stack once for `post_start_runtime_steps` unless `-SkipStackStart` is used
+- supports `-DryRun` so operator and validator surfaces can prove phase handling without launching the stack
 
 ### Run from repository root
 ```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\run_declared_runtime_proof.ps1 -ScriptPath scripts/validate_runtime_stack_startup_idempotence.ps1 -DryRun
 powershell -ExecutionPolicy Bypass -File .\scripts\run_declared_runtime_proof.ps1 -ScriptPath scripts/validate_governance_negative_matrix_provenance_invariants.ps1
-```
-
-## Runtime-proof stack discipline validation note
+```## Runtime-proof stack discipline validation note
 
 `scripts/validate_automation_helpers.ps1` now validates the runtime-proof stack discipline surface.
 
@@ -681,4 +686,5 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_runtime_stack_startu
 That phase exists for proofs that must exercise the startup authority itself before the standard post-start runtime proofs run.
 
 `scripts/validate_runtime_stack_startup_idempotence.ps1` now lives in `startup_authority_steps` because its first-run and second-run semantics would be fake if it were forced into `post_start_runtime_steps` after the gate had already started the stack.
+
 
