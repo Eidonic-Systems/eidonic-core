@@ -22,11 +22,6 @@ function Run-Step {
     }
 }
 
-if (-not $SkipStackStart) {
-    Run-Step -Label "Starting standard Phase 2 stack" -Action {
-        powershell -ExecutionPolicy Bypass -File .\scripts\start_phase_2_stack.ps1
-    }
-}
 
 Run-Step -Label "Comparing governance manifest to baseline" -Action {
     powershell -ExecutionPolicy Bypass -File .\scripts\compare_governance_manifest_to_baseline.ps1
@@ -54,3 +49,5 @@ Run-Step -Label "Running full-chain integration test" -Action {
 
 Write-Host ""
 Write-Host "Governance gate surface passed." -ForegroundColor Green
+
+

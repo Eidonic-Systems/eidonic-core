@@ -614,3 +614,28 @@ powershell -ExecutionPolicy Bypass -File .\scripts\validate_governance_negative_
 
 That means the standard Phase 2 gate proves the negative governance fixture matrix falls through to normal orchestration and persists matching default-success governance provenance across artifact and lineage retrieval surfaces after startup, warmup, and baseline runtime checks.
 
+## Runtime-proof stack discipline note
+
+There must be only one startup owner per proof path.
+
+- `scripts\start_phase_2_stack.ps1` is the startup authority
+- `scripts\run_phase2_gate.ps1` may invoke that startup authority for full gate runs
+- `scripts\run_phase2_gate_with_capture.ps1` is only a wrapper over `scripts\run_phase2_gate.ps1` and should not be paired with a manual pre-call to `scripts\start_phase_2_stack.ps1` unless `-SkipStackStart` is used
+- `scripts\run_declared_runtime_proof.ps1` is the manual operator helper for one declared runtime proof and starts the stack once unless `-SkipStackStart` is used
+
+Do not manually start the stack and then run a gate wrapper that also owns startup unless you intentionally pass `-SkipStackStart` to the downstream gate entrypoint.
+
+## run_declared_runtime_proof.ps1
+
+Runs one declared `post_start_runtime_steps` proof with stack-first discipline owned exactly once.
+
+Supports:
+- validating that the requested script is declared under `post_start_runtime_steps` in `config/phase2_gate_surface_manifest.json`
+- starting the Phase 2 stack once before the selected runtime proof unless `-SkipStackStart` is used
+- refusing undeclared scripts
+
+### Run from repository root
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\run_declared_runtime_proof.ps1 -ScriptPath scripts/validate_governance_negative_matrix_provenance_invariants.ps1
+```
+

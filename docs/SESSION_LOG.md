@@ -1280,3 +1280,9 @@
 - Created branch `phase-2/governance-negative-matrix-provenance-gate-integration`
 - Integrated scripts/validate_governance_negative_matrix_provenance_invariants.ps1 into config/phase2_gate_surface_manifest.json under post_start_runtime_steps so the standard Phase 2 gate proves the negative governance fixture matrix falls through to normal orchestration and persists matching default-success governance provenance across artifact and lineage retrieval surfaces.
 - Updated the scripts README, Orchestrator README, Phase 2 status doc, project-state doc, and session log to record governance negative matrix provenance gate integration.
+
+## 2026-04-23
+- Created branch `phase-2/runtime-proof-stack-discipline-surface`
+- Added scripts/run_declared_runtime_proof.ps1 as the operator-facing helper for one declared post-start runtime proof with stack-first startup owned exactly once.
+- Documented runtime-proof stack discipline across scripts README, Phase 2 status, project-state, and session log.
+- Removed duplicate startup ownership from scripts/run_governance_gate.ps1 if present so stack startup authority stays singular per proof path.
