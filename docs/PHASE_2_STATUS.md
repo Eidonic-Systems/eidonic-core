@@ -192,7 +192,7 @@ Main proof after the dependency wave:
 - `scripts/validate_phase2_gate_surface_manifest.ps1` now declares the three-phase split between `validation_steps`, `startup_authority_steps`, and `post_start_runtime_steps`
 - `scripts/start_phase_2_stack.ps1` remains the startup authority
 - `scripts/run_phase2_gate.ps1` owns startup for full gate runs unless `-SkipStackStart` is used
-- `scripts/run_declared_runtime_proof.ps1` now owns startup for manual single runtime-proof runs unless `-SkipStackStart` is used
+- `scripts/run_declared_runtime_proof.ps1` now resolves allowed proof phases and only owns startup for `post_start_runtime_steps` unless `-SkipStackStart` is used
 - operators should not manually call `scripts/start_phase_2_stack.ps1` before a gate wrapper that already owns startup
 
 ## Runtime-proof stack discipline validation
@@ -212,4 +212,15 @@ Main proof after the dependency wave:
 - `config/phase2_gate_surface_manifest.json` now declares `startup_authority_steps` as a dedicated gate phase
 - `scripts/validate_runtime_stack_startup_idempotence.ps1` is now integrated there instead of being forced into the wrong phase
 - the standard Phase 2 gate now proves startup-authority behavior before downstream post-start runtime proofs run
+
+## Declared gate-phase proof helper posture
+
+- `scripts/run_declared_runtime_proof.ps1` now resolves proofs across `startup_authority_steps` and `post_start_runtime_steps`
+- startup-authority proofs do not receive a pre-start stack call from the helper
+- post-start runtime proofs still receive one startup-authority call unless `-SkipStackStart` is used
+
+## Declared gate-phase proof helper validation
+
+- `scripts/validate_automation_helpers.ps1` now validates phase-aware helper behavior for `startup_authority_steps` and `post_start_runtime_steps`
+- undeclared scripts outside the allowed proof phases must be refused
 

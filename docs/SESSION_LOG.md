@@ -1306,3 +1306,10 @@
 - Updated scripts/validate_phase2_gate_surface_manifest.ps1 and scripts/run_phase2_gate.ps1 to consume validation_steps, startup_authority_steps, and post_start_runtime_steps in the correct order.
 - Integrated scripts/validate_runtime_stack_startup_idempotence.ps1 into the startup-authority phase and removed the dead SkipStackStart pass-through to scripts/run_governance_gate.ps1.
 - Updated scripts README, Phase 2 status, project-state doc, and session log to record the startup-authority gate phase posture.
+
+## 2026-04-24
+- Created branch `phase-2/declared-gate-phase-proof-helper-surface`
+- Reworked scripts/run_declared_runtime_proof.ps1 into a phase-aware helper that resolves declared proofs across startup_authority_steps and post_start_runtime_steps.
+- Made the helper avoid pre-start stack calls for startup-authority proofs while preserving single-start behavior for post-start runtime proofs unless SkipStackStart is used.
+- Extended scripts/validate_automation_helpers.ps1 to validate phase-aware dry-run behavior, undeclared-script refusal across allowed proof phases, and the cleaned governance-gate startup surface.
+- Updated scripts README, Phase 2 status, project-state doc, and session log to record the declared gate-phase proof helper surface.
