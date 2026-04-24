@@ -708,3 +708,4 @@ That means the standard Phase 2 gate validates the automation-helper surface man
 
 That means the standard Phase 2 gate validates the automation-helper surface manifest directly before downstream helper-surface validation depends on it.
 
+
