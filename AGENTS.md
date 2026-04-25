@@ -114,4 +114,23 @@ A branch is done only when:
 ## Recovery-surface proof
 
 - `scripts/validate_recovery_surface_manifest.ps1`
+## Review guidelines
+
+When reviewing this repository, flag these as high-priority issues:
+
+- public docs claiming runtime behavior that is only target posture
+- docs treating handoff files as authoritative truth sources
+- branch scope expansion beyond the requested files
+- missing session-log update for structural repo changes
+- missing proof command for validator, manifest, script, or public-doc changes
+- edits to gate, startup, governance, routing, or persistence surfaces without explicit proof
+- new dependencies without a declared reason and validation path
+- changes that bypass `config/phase2_gate_surface_manifest.json`, `config/recovery_surface_manifest.json`, or `config/automation_helper_surface_manifest.json`
+
+For documentation-only PRs, still check:
+- truth classification
+- manifest references
+- validator expectations
+- malformed headings or joined markdown sections
+- stale branch-history language presented as current truth
 

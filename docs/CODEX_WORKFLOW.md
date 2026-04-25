@@ -179,4 +179,31 @@ When changing `README.md` or `SECURITY.md`, run:
 
 When changing the authoritative status surfaces named in `README.md`, run:
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_authoritative_status_surfaces.ps1`
+## Codex operator templates
+
+Use these repo-carried templates before delegating repetitive work to Codex:
+
+- `docs/CODEX_TASK_TEMPLATE.md`
+- `docs/CODEX_REPETITIVE_WORK_PACK.md`
+- `docs/CODEX_AUDIT_REPORT_TEMPLATE.md`
+
+These templates define:
+- allowed files
+- forbidden files
+- truth sources
+- proof commands
+- acceptance criteria
+- final report format
+- stop conditions
+
+## Codex GitHub review posture
+
+Codex may be used for PR review once Codex GitHub review is enabled for the repository.
+
+Recommended manual PR prompt:
+
+`@codex review for public truth drift, missing proof updates, validator risk, and scope creep.`
+
+Codex review is an additional signal.
+It does not replace human review, required proof commands, or branch discipline.
 
