@@ -12,6 +12,23 @@ Codex should be used for bounded implementation, validation, documentation, and 
 
 Codex should not be used as a substitute for repo truth, architectural judgment, or uncontrolled multi-branch experimentation.
 
+## Codex acceleration posture
+
+Codex should now be used for repetitive bounded work after the relevant truth source and proof command are named.
+
+Good Codex acceleration targets:
+- public doc truth reconciliation
+- manifest reference propagation
+- validator reference propagation
+- session-log and project-state sync
+- README and status-surface alignment
+
+Codex is not allowed to:
+- invent runtime status
+- expand branch scope
+- treat handoff files as authoritative
+- replace current repo manifests, validators, or proved command paths
+
 ## Repo Codex surfaces
 
 - project config: `.codex/config.toml`
@@ -162,3 +179,4 @@ When changing `README.md` or `SECURITY.md`, run:
 
 When changing the authoritative status surfaces named in `README.md`, run:
 - `powershell -ExecutionPolicy Bypass -File .\scripts\validate_authoritative_status_surfaces.ps1`
+

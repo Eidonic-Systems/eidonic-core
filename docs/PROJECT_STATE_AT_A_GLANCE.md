@@ -4,6 +4,16 @@
 
 Phase 2 build solidification, trust-surface hardening, and Codex operating-surface setup.
 
+## Current truth classification posture
+
+Public docs should distinguish:
+- live repo surfaces
+- local operator-proved surfaces
+- declared validation surfaces
+- target posture
+
+External-facing docs must not claim broad runtime behavior as complete unless current repo code or a proved local gate/validator path supports it.
+
 ## Current runtime spine
 
 `signal-gateway -> herald-service -> session-engine -> eidon-orchestrator`
@@ -88,7 +98,9 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 ## Current automation helper validation surface
 
 - `scripts/validate_automation_helper_surface_manifest.ps1`
-- `scripts/validate_automation_helpers.ps1`## Current temp-file hygiene surface
+- scripts/validate_automation_helpers.ps1`r
+
+## Current temp-file hygiene surface
 
 - `.gitignore` ignores local proof artifact files
 - `scripts/finish_merged_branch.ps1` pre-cleans known temp output files before dirty-tree refusal
@@ -307,4 +319,5 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 
 - standalone `scripts/validate_automation_helpers.ps1` runs still precheck the manifest validator first by default
 - gate runs now skip that internal precheck only when upstream validation order already proved the manifest earlier in `validation_steps`
+
 

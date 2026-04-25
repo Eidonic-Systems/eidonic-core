@@ -1357,3 +1357,9 @@
 - Extended config/recovery_surface_manifest.json so recovery validation explicitly knows about config/automation_helper_surface_manifest.json and scripts/validate_automation_helper_surface_manifest.ps1.
 - Updated docs/CODEX_WORKFLOW.md, docs/PHASE_2_STATUS.md, and docs/PROJECT_STATE_AT_A_GLANCE.md to align recovery-facing automation-helper truth, validation, gate order, and duplication-control posture.
 - Removed the duplicated phase-2/automation-helper-surface-manifest session-log entry and recorded this recovery-alignment branch.
+
+## 2026-04-25
+- Created branch `phase-2/repo-truth-reconciliation`
+- Reconciled public repo truth surfaces so README, Orchestrator README, Phase 2 status, project-state, and Codex workflow distinguish live repo surfaces, local operator-proved surfaces, declared validation surfaces, and target posture.
+- Reduced over-absolute public wording around provider, routing, governance, persistence, and provenance claims while preserving the real declared proof surfaces and local Phase 2 gate posture.
+- Fixed malformed recovery-doc heading joins in Phase 2 status and project-state surfaces.
