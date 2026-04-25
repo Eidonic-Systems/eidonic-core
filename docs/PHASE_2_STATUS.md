@@ -2,20 +2,30 @@
 
 This document is the current high-level status surface for Phase 2 work in Eidonic Core.
 
+## Truth classification rule
+
+This document distinguishes:
+- live repo surfaces
+- local operator-proved surfaces
+- declared validation surfaces
+- target posture
+
+A runtime claim should be stated as local/operator-proved or declared-validation-backed unless current repo code and proof surfaces make it plainly live.
+
 ## Current architecture
 The system now has:
-- PostgreSQL-backed artifact persistence
-- PostgreSQL-backed lineage persistence
+- artifact persistence behavior through PostgreSQL-backed proof surfaces
+- lineage persistence behavior through PostgreSQL-backed proof surfaces
 - local Ollama provider support
 - warmup and readiness surfaces
-- persisted provider provenance
-- persisted provider failure semantics
+- provider provenance through declared runtime proof surfaces
+- provider failure semantics through declared runtime proof surfaces
 - plain-text response guard behavior
 - narrow domain-task routing with fallback
-- routing provenance
+- routing provenance through declared runtime proof surfaces
 - governance policy surfaces
 - governance eval surface
-- governance provenance
+- governance provenance through declared runtime proof surfaces
 - narrow governance enforcement pilot
 - pinned governance baseline
 - manifest-backed governance rules
@@ -32,7 +42,7 @@ Current routing truth:
 - routing remains narrow and explicit
 - control remains the default model
 - candidate routing is limited and reversible
-- routing provenance is persisted
+- routing provenance through declared runtime proof surfaces is persisted
 
 ## Governance status
 Mirror Laws:
@@ -200,7 +210,9 @@ Main proof after the dependency wave:
 - `scripts/validate_automation_helpers.ps1` now validates the runtime-proof stack discipline surface through `config/automation_helper_surface_manifest.json`
 - `scripts/run_declared_runtime_proof.ps1` must refuse undeclared scripts outside the allowed proof phases
 - `scripts/run_governance_gate.ps1` must not reference `scripts/start_phase_2_stack.ps1`
-- `scripts/run_governance_gate.ps1` must not carry the dead `SkipStackStart` parameter surface## Startup-authority gate phase posture
+- scripts/run_governance_gate.ps1 must not carry the dead SkipStackStart parameter surface
+
+## Startup-authority gate phase posture
 
 - `config/phase2_gate_surface_manifest.json` now declares `startup_authority_steps` as a dedicated gate phase
 - `scripts/validate_runtime_stack_startup_idempotence.ps1` is now integrated there instead of being forced into the wrong phase
@@ -236,4 +248,5 @@ Main proof after the dependency wave:
 
 - standalone `scripts/validate_automation_helpers.ps1` runs still precheck the manifest validator first by default
 - gate runs skip that internal precheck only when upstream validation order already proved the manifest earlier in `validation_steps`
+
 
