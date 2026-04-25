@@ -1363,3 +1363,8 @@
 - Reconciled public repo truth surfaces so README, Orchestrator README, Phase 2 status, project-state, and Codex workflow distinguish live repo surfaces, local operator-proved surfaces, declared validation surfaces, and target posture.
 - Reduced over-absolute public wording around provider, routing, governance, persistence, and provenance claims while preserving the real declared proof surfaces and local Phase 2 gate posture.
 - Fixed malformed recovery-doc heading joins in Phase 2 status and project-state surfaces.
+
+## 2026-04-25
+- Created branch `phase-2/codex-operator-bootstrap`
+- Added Codex operator templates for bounded task delegation, repetitive work handling, and audit report triage.
+- Updated Codex workflow and AGENTS review guidelines so Codex can assist with repetitive alignment, audit, and PR review work without inventing repo truth or bypassing proof commands.
