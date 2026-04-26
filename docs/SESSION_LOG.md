@@ -1368,3 +1368,9 @@
 - Created branch `phase-2/codex-operator-bootstrap`
 - Added Codex operator templates for bounded task delegation, repetitive work handling, and audit report triage.
 - Updated Codex workflow and AGENTS review guidelines so Codex can assist with repetitive alignment, audit, and PR review work without inventing repo truth or bypassing proof commands.
+
+## 2026-04-25
+- Created branch `phase-2/codex-first-repetitive-alignment-trial`
+- Ran the first Codex CLI read-only repo inspection trial.
+- Codex read AGENTS.md and Codex/project-state operating surfaces, reported gate shape, startup authority, recovery truth source, and automation-helper truth source without editing files or inventing runtime status.
+- Updated project-state to carry the current next operational branch so future Codex inspections can recover the intended next step from repo-carried truth.

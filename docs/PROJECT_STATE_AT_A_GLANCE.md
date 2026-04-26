@@ -320,4 +320,16 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 - standalone `scripts/validate_automation_helpers.ps1` runs still precheck the manifest validator first by default
 - gate runs now skip that internal precheck only when upstream validation order already proved the manifest earlier in `validation_steps`
 
+## Current next operational branch
+
+Recommended next branch:
+- `phase-2/codex-first-repetitive-alignment-trial`
+
+Purpose:
+- prove Codex CLI can inspect repo-carried truth surfaces without editing files
+- verify Codex follows `AGENTS.md`, Codex workflow guidance, and task-template constraints
+- use the result to decide whether Codex can safely handle bounded repetitive alignment work
+
+Next expected branch after this trial:
+- `phase-2/codex-assisted-repetitive-doc-alignment`
 
