@@ -1374,3 +1374,7 @@
 - Ran the first Codex CLI read-only repo inspection trial.
 - Codex read AGENTS.md and Codex/project-state operating surfaces, reported gate shape, startup authority, recovery truth source, and automation-helper truth source without editing files or inventing runtime status.
 - Updated project-state to carry the current next operational branch so future Codex inspections can recover the intended next step from repo-carried truth.
+
+## 2026-04-25
+- Recorded a bounded markdown typo fix in `docs/PROJECT_STATE_AT_A_GLANCE.md`.
+- Corrected the malformed automation-helper validation bullet for `scripts/validate_automation_helpers.ps1` without changing repo truth or runtime claims.

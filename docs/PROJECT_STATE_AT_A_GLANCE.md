@@ -98,7 +98,7 @@ Keep reducing duplicated truth and turn recurring manual workflows into bounded,
 ## Current automation helper validation surface
 
 - `scripts/validate_automation_helper_surface_manifest.ps1`
-- scripts/validate_automation_helpers.ps1`r
+- `scripts/validate_automation_helpers.ps1`
 
 ## Current temp-file hygiene surface
 
