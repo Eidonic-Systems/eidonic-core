@@ -333,3 +333,9 @@ Purpose:
 Next expected branch after this trial:
 - `phase-2/codex-assisted-repetitive-doc-alignment`
 
+## Current Codex context packet surface
+
+- `docs/CODEX_CONTEXT_PACKET.md` tells Codex what repo-carried truth surfaces to read before non-trivial work
+- the context packet is not authoritative; it points to manifests, validators, project-state, session log, and Codex task templates
+- future Codex runs should use it to recover build posture across chats without inventing repo status
+

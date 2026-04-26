@@ -1378,3 +1378,8 @@
 ## 2026-04-25
 - Recorded a bounded markdown typo fix in `docs/PROJECT_STATE_AT_A_GLANCE.md`.
 - Corrected the malformed automation-helper validation bullet for `scripts/validate_automation_helpers.ps1` without changing repo truth or runtime claims.
+
+## 2026-04-26
+- Created branch `phase-2/codex-context-packet-surface`
+- Added docs/CODEX_CONTEXT_PACKET.md as the repo-carried read-order and context map for Codex tasks.
+- Updated Codex workflow, AGENTS, and project-state surfaces so future Codex runs can recover gate, startup, recovery, automation-helper, and truth-classification posture from repo-carried context instead of chat memory.
