@@ -74,11 +74,16 @@ Every Codex-driven structural branch should leave behind:
 
 ## Recovery rule for new chats
 
+This section is for humans starting a new chat.
+
 At the start of a new chat, read in this order:
 - `docs/PROJECT_STATE_AT_A_GLANCE.md`
 - latest entries in `docs/SESSION_LOG.md`
 - `AGENTS.md`
 - then the specific manifest, script, or doc tied to the requested task
+
+This is not the Codex task execution read order.
+For Codex task execution, start with `docs/CODEX_CONTEXT_PACKET.md`.
 
 If the task touches automation-helper control surfaces, read these before broader helper work:
 - `config/automation_helper_surface_manifest.json`
@@ -206,4 +211,18 @@ Recommended manual PR prompt:
 
 Codex review is an additional signal.
 It does not replace human review, required proof commands, or branch discipline.
+## Codex context packet
 
+For Codex task execution, start with:
+
+- `docs/CODEX_CONTEXT_PACKET.md`
+
+The context packet is not an authoritative truth source.
+It points Codex to the authoritative repo truth sources, including manifests, validators, project-state, session log, and task templates.
+
+Role split:
+- human new-chat recovery uses the `Recovery rule for new chats` section above
+- Codex task execution uses `docs/CODEX_CONTEXT_PACKET.md` first
+- task-specific manifests, validators, scripts, and docs still win over summaries
+
+Codex should use the context packet to recover build posture across chats and sessions without inventing repo status.

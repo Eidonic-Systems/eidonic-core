@@ -133,4 +133,12 @@ For documentation-only PRs, still check:
 - validator expectations
 - malformed headings or joined markdown sections
 - stale branch-history language presented as current truth
+## Codex context packet
+
+For Codex tasks, read `docs/CODEX_CONTEXT_PACKET.md` before doing non-trivial repo work.
+
+The context packet is not authoritative.
+It points to the repo truth sources Codex must consult before editing.
+
+Codex should not rely on chat memory or handoff files as repo truth.
 
