@@ -1383,3 +1383,7 @@
 - Created branch `phase-2/codex-context-packet-surface`
 - Added docs/CODEX_CONTEXT_PACKET.md as the repo-carried read-order and context map for Codex tasks.
 - Updated Codex workflow, AGENTS, and project-state surfaces so future Codex runs can recover gate, startup, recovery, automation-helper, and truth-classification posture from repo-carried context instead of chat memory.
+
+## 2026-04-26
+- Created branch `phase-2/codex-pr-review-playbook`
+- Added docs/CODEX_PR_REVIEW_PLAYBOOK.md to define manual Codex PR review prompts, setup posture, response handling, automatic-review caution, and human-review boundaries. Updated Codex workflow, AGENTS, and project-state surfaces to point to the Codex PR review playbook.
