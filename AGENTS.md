@@ -141,4 +141,20 @@ The context packet is not authoritative.
 It points to the repo truth sources Codex must consult before editing.
 
 Codex should not rely on chat memory or handoff files as repo truth.
+## Codex PR review
+
+For pull request review with Codex, use `docs/CODEX_PR_REVIEW_PLAYBOOK.md`.
+
+Codex review should flag:
+- public truth drift
+- missing proof updates
+- validator risk
+- allowed-file violations
+- forbidden-file edits
+- stale branch-history wording
+- malformed markdown
+- scope creep
+
+Codex review is not authority.
+Human review and proof commands remain required.
 

@@ -226,3 +226,20 @@ Role split:
 - task-specific manifests, validators, scripts, and docs still win over summaries
 
 Codex should use the context packet to recover build posture across chats and sessions without inventing repo status.
+## Codex PR review playbook
+
+Use `docs/CODEX_PR_REVIEW_PLAYBOOK.md` before asking Codex to review pull requests.
+
+The playbook defines:
+- setup requirements
+- manual review prompts
+- documentation PR review prompts
+- manifest and validator PR review prompts
+- runtime PR review prompts
+- what Codex must check
+- what humans must still check
+- when automatic review may be considered later
+
+Codex PR review is an additional signal.
+It does not replace human review, required proof commands, branch discipline, or repo truth sources.
+

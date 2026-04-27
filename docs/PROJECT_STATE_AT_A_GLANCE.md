@@ -339,3 +339,10 @@ Next expected branch after this trial:
 - the context packet is not authoritative; it points to manifests, validators, project-state, session log, and Codex task templates
 - future Codex runs should use it to recover build posture across chats without inventing repo status
 
+## Current Codex PR review surface
+
+- `docs/CODEX_PR_REVIEW_PLAYBOOK.md` defines how to use Codex as a pull request reviewer
+- manual `@codex review` should be used before considering automatic reviews
+- Codex review is an additional signal, not authority
+- human review, proof commands, and repo truth sources remain required
+
